@@ -6,7 +6,7 @@
 /*   By: mjeyavat <mjeyavat@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/09 15:59:52 by mjeyavat          #+#    #+#             */
-/*   Updated: 2022/02/09 16:42:45 by mjeyavat         ###   ########.fr       */
+/*   Updated: 2022/02/09 18:20:44 by mjeyavat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,17 +43,23 @@ typedef struct s_pipe{
 	int		fd[2];
 	int		tmp_fd;
 	pid_t	pid;
-	int		amount_cmd;
 }	t_pipe;
 
 typedef struct s_comands
 {
     char *token;
-    char *simple_command;
+	int	    amount_cmd;
     t_pipe *pipe;   
     // struct s_comands *pre;
     // struct s_comands *next;
     
 }t_commands;
+
+typedef struct s_data
+{
+    t_commands *simple_comand;
+    HIST_ENTRY **the_history_list;
+
+}t_data;
 
 //====================FUNCTIONS=========
