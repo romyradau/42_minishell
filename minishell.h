@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mjeyavat <mjeyavat@student.42.fr>          +#+  +:+       +#+        */
+/*   By: rschleic <rschleic@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/09 15:59:52 by mjeyavat          #+#    #+#             */
-/*   Updated: 2022/02/09 16:42:45 by mjeyavat         ###   ########.fr       */
+/*   Updated: 2022/02/09 20:04:49 by rschleic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,5 +55,11 @@ typedef struct s_comands
     // struct s_comands *next;
     
 }t_commands;
+
+typedef struct s_token
+{
+	char **token_list;
+	// tbc
+}t_token;
 
 //====================FUNCTIONS=========
