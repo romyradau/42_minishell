@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mjeyavat <mjeyavat@student.42.fr>          +#+  +:+       +#+        */
+/*   By: rschleic <rschleic@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/09 15:03:47 by mjeyavat          #+#    #+#             */
-/*   Updated: 2022/02/09 16:38:26 by mjeyavat         ###   ########.fr       */
+/*   Updated: 2022/02/09 17:54:11 by rschleic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,10 +27,15 @@ int main()
 	while (1)
 	{
 		set_user();
+		//after that, prompt s been created
 		inpt = readline("$");
+		// we must free input (requierd by readline)
 		add_history(inpt);
-		//printf("%s", inpt);
-		printf("\n");
+		//how to implement a working history??
+		//If you want the user to be able to get at the line later, (with C-p for example), you must call add_history () to save the line away in a history list of such lines.
+		//but how?
+		// printf("%s", inpt);
+		// printf("\n");
 	}
 	return 0;
 }
