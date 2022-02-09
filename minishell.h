@@ -6,7 +6,7 @@
 /*   By: mjeyavat <mjeyavat@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/09 15:59:52 by mjeyavat          #+#    #+#             */
-/*   Updated: 2022/02/09 16:42:45 by mjeyavat         ###   ########.fr       */
+/*   Updated: 2022/02/09 21:05:26 by mjeyavat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,5 +55,11 @@ typedef struct s_comands
     // struct s_comands *next;
     
 }t_commands;
+
+typedef struct s_envp
+{
+	//TODO: ENV PATH has to be copied and saved into this struct
+}t_envp;
+
 
 //====================FUNCTIONS=========
