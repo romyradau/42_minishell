@@ -6,8 +6,8 @@
 /*   By: rschleic <rschleic@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/09 15:59:52 by mjeyavat          #+#    #+#             */
-/*   Updated: 2022/02/09 20:04:49 by rschleic         ###   ########.fr       */
-/*                                                                            */
+/*   Updated: 2022/02/10 17:29:38 by mjeyavat         ###   ########.fr       */
+/*                                                    ###   ########.fr       */
 /* ************************************************************************** */
 
 #ifndef MINISHELL_H
@@ -19,9 +19,9 @@
 #endif
 
 #include <stdio.h>
-#include <unistd.h>
 #include <readline/readline.h>
 #include <readline/history.h>
+#include "libft/libft.h"
 #include <stdlib.h>
 
 //===============COLOR CODE=================================//
@@ -35,6 +35,7 @@
 #define WHT "\e[0;37m"
 #define RESET "\033[0m"
 //====================Sturcts==============================
+
 typedef struct s_pipe{
 	int		in;
 	int		out;
@@ -43,19 +44,35 @@ typedef struct s_pipe{
 	int		fd[2];
 	int		tmp_fd;
 	pid_t	pid;
-	int		amount_cmd;
 }	t_pipe;
 
 typedef struct s_comands
 {
-    char *token;
-    char *simple_command;
-    t_pipe *pipe;   
+	char *cmd;
+	char *cmd_flag;
+	char *cmd_args;
     // struct s_comands *pre;
     // struct s_comands *next;
     
 }t_commands;
 
+
+typedef struct s_data
+{
+	int		amount_cmd;
+	t_commands *cmd;
+	t_pipe *pipe;
+} t_data;
+
+// typedef struct s_envp
+// {
+// 	//TODO: ENV PATH has to be copied and saved into this struct
+// }t_envp;
+
+
+//====================FUNCTIONS=========
+void init_pars(char **tokens);
+=======
 typedef struct s_token
 {
 	char **token_list;
@@ -63,3 +80,4 @@ typedef struct s_token
 }t_token;
 
 //====================FUNCTIONS=========
+
