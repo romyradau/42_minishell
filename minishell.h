@@ -62,6 +62,15 @@ typedef struct s_token
 	// tbc
 }t_token;
 
+
+typedef struct s_env
+{
+	char	**env;
+	
+}
+
+//====================FUNCTIONS=========
+=======
 typedef struct s_data
 {
 	int			amount_tokens;
@@ -70,15 +79,11 @@ typedef struct s_data
 	t_pipe 		*pipe;
 } t_data;
 
-// typedef struct s_envp
-// {
-// 	//TODO: ENV PATH has to be copied and saved into this struct
-// }t_envp;
-
 
 //====================FUNCTIONS=========
 void init_lex(char **input);
 int count_quots(t_data *data, char c);
 
 //====================FUNCTIONS=========
+
 
