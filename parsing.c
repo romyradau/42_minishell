@@ -1,16 +1,37 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parser.c                                           :+:      :+:    :+:   */
+/*   parsing.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rschleic <rschleic@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/02/09 20:06:29 by rschleic          #+#    #+#             */
-/*   Updated: 2022/02/09 21:10:42 by rschleic         ###   ########.fr       */
+/*   Created: 2022/02/10 17:08:59 by mjeyavat          #+#    #+#             */
+/*   Updated: 2022/02/10 19:01:53 by rschleic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+
 #include "minishell.h"
+
+/**
+ * see if those are valid cmd
+ * safe them to struct
+*/
+
+void init_pars(char **tokens)
+{
+    //t_commands *cmd;
+    char **full_str;
+    int i;
+    
+    i = 0;
+    full_str = ft_split((*tokens), ' ');
+    while(full_str[i])
+    {
+        printf("%s\n", full_str[i]);
+        i++;
+    }
+}
 
 /*
 shell gets input
@@ -35,8 +56,6 @@ $?
 anfuhrungszeichen und spaces entfernen bei weirden langen commands
 */
 
-
-t_token lexer()
 
 /*
 parses tokens in commands
