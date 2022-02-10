@@ -6,7 +6,7 @@
 /*   By: rschleic <rschleic@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/09 15:59:52 by mjeyavat          #+#    #+#             */
-/*   Updated: 2022/02/09 20:04:49 by rschleic         ###   ########.fr       */
+/*   Updated: 2022/02/10 19:57:44 by rschleic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,5 +61,11 @@ typedef struct s_token
 	char **token_list;
 	// tbc
 }t_token;
+
+typedef struct s_env
+{
+	char	**env;
+	
+}
 
 //====================FUNCTIONS=========
