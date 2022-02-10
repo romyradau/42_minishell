@@ -6,7 +6,7 @@
 /*   By: mjeyavat <mjeyavat@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/09 15:03:47 by mjeyavat          #+#    #+#             */
-/*   Updated: 2022/02/09 21:01:09 by mjeyavat         ###   ########.fr       */
+/*   Updated: 2022/02/10 17:35:37 by mjeyavat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ int main()
 		set_user();
 		//after that, prompt s been created
 		inpt = readline("$");
+		init_pars(&inpt);
 		// we must free input (requierd by readline)
 		add_history(inpt);
 		//how to implement a working history?? (done 60%);
