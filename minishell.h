@@ -6,7 +6,7 @@
 /*   By: mjeyavat <mjeyavat@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/09 15:59:52 by mjeyavat          #+#    #+#             */
-/*   Updated: 2022/02/10 18:52:10 by mjeyavat         ###   ########.fr       */
+/*   Updated: 2022/02/10 19:57:44 by rschleic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,15 @@ typedef struct s_token
 	// tbc
 }t_token;
 
+
+typedef struct s_env
+{
+	char	**env;
+	
+}
+
+//====================FUNCTIONS=========
+=======
 typedef struct s_data
 {
 	int		amount_cmd;
@@ -69,15 +78,11 @@ typedef struct s_data
 	t_pipe *pipe;
 } t_data;
 
-// typedef struct s_envp
-// {
-// 	//TODO: ENV PATH has to be copied and saved into this struct
-// }t_envp;
-
 
 //====================FUNCTIONS=========
 void init_pars(char **tokens);
 
 
 //====================FUNCTIONS=========
+
 
