@@ -6,7 +6,7 @@
 /*   By: mjeyavat <mjeyavat@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/09 15:59:52 by mjeyavat          #+#    #+#             */
-/*   Updated: 2022/02/10 18:52:10 by mjeyavat         ###   ########.fr       */
+/*   Updated: 2022/02/10 20:25:47 by mjeyavat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,9 +64,10 @@ typedef struct s_token
 
 typedef struct s_data
 {
-	int		amount_cmd;
-	t_commands *cmd;
-	t_pipe *pipe;
+	int			amount_tokens;
+	t_token 	*token;
+	t_commands 	*cmd;
+	t_pipe 		*pipe;
 } t_data;
 
 // typedef struct s_envp
@@ -76,8 +77,8 @@ typedef struct s_data
 
 
 //====================FUNCTIONS=========
-void init_pars(char **tokens);
-
+void init_lex(char **input);
+int count_quots(t_data *data, char c);
 
 //====================FUNCTIONS=========
 
