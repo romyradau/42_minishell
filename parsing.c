@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rschleic <rschleic@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mjeyavat <mjeyavat@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/10 17:08:59 by mjeyavat          #+#    #+#             */
-/*   Updated: 2022/02/10 19:01:53 by rschleic         ###   ########.fr       */
+/*   Updated: 2022/02/10 20:28:21 by mjeyavat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,20 +17,54 @@
  * see if those are valid cmd
  * safe them to struct
 */
-
-void init_pars(char **tokens)
+int count_quots(t_data *data, char c)
 {
-    //t_commands *cmd;
+    int i;
+    int j;
+    int quots;
+    
+    i = 0;
+    j = 0;
+    quots = 0;
+    while(i < data->amount_tokens)
+    {
+        j = 0;
+        while (data->token->token_list[i][j])
+        {
+            if (data->token->token_list[i][j] == c)
+                quots++;
+            j++;
+        }
+        i++;
+    }
+    return(quots);
+}
+
+void init_lex(char **input)
+{
+    
+    t_data *data;
     char **full_str;
     int i;
     
     i = 0;
-    full_str = ft_split((*tokens), ' ');
-    while(full_str[i])
+    full_str = ft_split((*input), ' ');
+    data = (t_data *)malloc(sizeof(full_str));
+    if (!data)
+        return; 
+    data->token = (t_token *)malloc(sizeof(char **));
+    if (!data->token)
+        return;
+    data->token->token_list = full_str;
+    while(data->token->token_list[i])
     {
-        printf("%s\n", full_str[i]);
+        printf("%s\n", data->token->token_list[i]);
         i++;
     }
+    data->amount_tokens = i;
+    //test
+    printf("command amount %d\n", data->amount_tokens);
+    printf("there are %d quots\n", count_quots(data, '"'));
 }
 
 /*

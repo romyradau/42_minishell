@@ -6,7 +6,7 @@
 /*   By: mjeyavat <mjeyavat@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/09 15:59:52 by mjeyavat          #+#    #+#             */
-/*   Updated: 2022/02/10 19:57:44 by rschleic         ###   ########.fr       */
+/*   Updated: 2022/02/10 20:25:47 by mjeyavat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,15 +73,16 @@ typedef struct s_env
 =======
 typedef struct s_data
 {
-	int		amount_cmd;
-	t_commands *cmd;
-	t_pipe *pipe;
+	int			amount_tokens;
+	t_token 	*token;
+	t_commands 	*cmd;
+	t_pipe 		*pipe;
 } t_data;
 
 
 //====================FUNCTIONS=========
-void init_pars(char **tokens);
-
+void init_lex(char **input);
+int count_quots(t_data *data, char c);
 
 //====================FUNCTIONS=========
 
