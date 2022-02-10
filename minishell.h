@@ -3,11 +3,11 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rschleic <rschleic@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mjeyavat <mjeyavat@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/09 15:59:52 by mjeyavat          #+#    #+#             */
-/*   Updated: 2022/02/10 17:29:38 by mjeyavat         ###   ########.fr       */
-/*                                                    ###   ########.fr       */
+/*   Updated: 2022/02/10 18:52:10 by mjeyavat         ###   ########.fr       */
+/*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINISHELL_H
@@ -56,6 +56,11 @@ typedef struct s_comands
     
 }t_commands;
 
+typedef struct s_token
+{
+	char **token_list;
+	// tbc
+}t_token;
 
 typedef struct s_data
 {
@@ -72,12 +77,7 @@ typedef struct s_data
 
 //====================FUNCTIONS=========
 void init_pars(char **tokens);
-=======
-typedef struct s_token
-{
-	char **token_list;
-	// tbc
-}t_token;
+
 
 //====================FUNCTIONS=========
 
