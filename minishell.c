@@ -3,16 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mjeyavat <mjeyavat@student.42.fr>          +#+  +:+       +#+        */
+/*   By: rschleic <rschleic@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/09 15:03:47 by mjeyavat          #+#    #+#             */
-/*   Updated: 2022/02/10 20:23:33 by mjeyavat         ###   ########.fr       */
+/*   Updated: 2022/02/11 15:17:25 by rschleic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 //testing out readline functon
 
 #include "minishell.h"
+
 void set_user()
 {
 	char path[200];
@@ -31,6 +32,7 @@ int main()
 		//after that, prompt s been created
 		inpt = readline("$");
 		init_lex(&inpt);
+		printf("inpt = %s\n", inpt);
 		// we must free input (requierd by readline)
 		add_history(inpt);
 		//how to implement a working history?? (done 60%);

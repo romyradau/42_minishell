@@ -3,16 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mjeyavat <mjeyavat@student.42.fr>          +#+  +:+       +#+        */
+/*   By: rschleic <rschleic@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/09 15:59:52 by mjeyavat          #+#    #+#             */
-/*   Updated: 2022/02/10 20:51:29 by mjeyavat         ###   ########.fr       */
+/*   Updated: 2022/02/11 15:18:49 by rschleic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINISHELL_H
 # define MINISHELL_H
-#endif
 
 #ifndef BUFF
 # define BUFF 200
@@ -67,17 +66,17 @@ typedef struct s_env
 {
 	char	**env;
 	
-}
+}t_env;
 
 //====================FUNCTIONS=========
-=======
+
 typedef struct s_data
 {
 	int			amount_tokens;
 	t_token 	*token;
 	t_commands 	*cmd;
 	t_pipe 		*pipe;
-} t_data;
+}t_data;
 
 
 //====================FUNCTIONS=========
@@ -87,3 +86,4 @@ int count_quots(t_data *data, char c);
 //====================FUNCTIONS=========
 
 
+#endif
