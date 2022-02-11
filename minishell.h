@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rschleic <rschleic@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mjeyavat <mjeyavat@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/09 15:59:52 by mjeyavat          #+#    #+#             */
-/*   Updated: 2022/02/11 15:18:49 by rschleic         ###   ########.fr       */
+/*   Updated: 2022/02/11 17:36:55 by mjeyavat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@
 #include <readline/history.h>
 #include "libft/libft.h"
 #include <stdlib.h>
+#include <stdbool.h>
 
 //===============COLOR CODE=================================//
 #define BLK "\e[0;30m"
@@ -44,38 +45,23 @@ typedef struct s_pipe{
 	int		tmp_fd;
 	pid_t	pid;
 }	t_pipe;
-
-typedef struct s_comands
+/**
+ * this is our linked list which has simp cmd
+*/
+typedef struct simple_cmd
 {
-	char *cmd;
-	char *cmd_flag;
-	char *cmd_args;
-    // struct s_comands *pre;
-    // struct s_comands *next;
+	char 			**cmd_arg;
+	bool			pipe;
+	t_simple_cmd 	*next;
     
-}t_commands;
-
-typedef struct s_token
-{
-	char **token_list;
-	// tbc
-}t_token;
-
-
-typedef struct s_env
-{
-	char	**env;
-	
-}t_env;
-
-//====================FUNCTIONS=========
+}t_simple_cmd;
 
 typedef struct s_data
 {
-	int			amount_tokens;
-	t_token 	*token;
-	t_commands 	*cmd;
-	t_pipe 		*pipe;
+	int				amount_scmd;
+	char 			**env;
+	t_simple_cmd 	*simp_cmd;
+	
 }t_data;
 
 
