@@ -3,19 +3,19 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mjeyavat <mjeyavat@student.42.fr>          +#+  +:+       +#+        */
+/*   By: rschleic <rschleic@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/10 17:08:59 by mjeyavat          #+#    #+#             */
-/*   Updated: 2022/02/10 20:28:21 by mjeyavat         ###   ########.fr       */
+/*   Updated: 2022/02/11 13:33:46 by rschleic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 
 #include "minishell.h"
 
-/**
- * see if those are valid cmd
- * safe them to struct
+/*
+  see if those are valid cmd
+  safe them to struct
 */
 int count_quots(t_data *data, char c)
 {
