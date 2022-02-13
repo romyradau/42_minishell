@@ -3,10 +3,11 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mjeyavat <mjeyavat@student.42.fr>          +#+  +:+       +#+        */
+/*   By: rschleic <rschleic@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/09 15:59:52 by mjeyavat          #+#    #+#             */
 /*   Updated: 2022/02/13 22:16:41 by mjeyavat         ###   ########.fr       */
+/*   Updated: 2022/02/13 18:18:07 by rschleic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +40,7 @@
 #define RESET "\033[0m"
 //====================Sturcts==============================
 
-typedef struct s_pipe{
+typedef struct s_red{
 	int		in;
 	int		out;
 	int		heredoc;
@@ -47,25 +48,28 @@ typedef struct s_pipe{
 	int		fd[2];
 	int		tmp_fd;
 	pid_t	pid;
-}	t_pipe;
+}	t_red;
 /**
  * this is our linked list which has simp cmd
 */
-typedef struct simple_cmd
-{
-	char 				**cmd_arg;
-	bool				pipe;
-	struct simple_cmd 	*next;
-    
-}t_simple_cmd;
+typedef struct s_package
+{   
+	int			redirection;
+	bool		pipe;
+	char		*env_VAR;
+	char 		*cmd;
+	char		**cmd_args;
+	t_red		*redir;
+//man könnte auch alles in eine struct hauen
+	t_package	*next;
+} t_package;
 
 typedef struct s_data
 {
-	int				amount_scmd;
+	int				packages;
 	char 			**env;
-	t_simple_cmd 	*simp_cmd;
-	
-}t_data;
+	t_package		*package;
+} t_data;
 
 
 //====================FUNCTIONS=========
