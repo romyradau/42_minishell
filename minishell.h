@@ -6,6 +6,7 @@
 /*   By: rschleic <rschleic@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/09 15:59:52 by mjeyavat          #+#    #+#             */
+/*   Updated: 2022/02/13 22:16:41 by mjeyavat         ###   ########.fr       */
 /*   Updated: 2022/02/13 18:18:07 by rschleic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
@@ -23,6 +24,9 @@
 #include "libft/libft.h"
 #include <stdlib.h>
 #include <stdbool.h>
+#include <fcntl.h>
+#include <unistd.h>
+#include <signal.h>
 
 //===============COLOR CODE=================================//
 #define BLK "\e[0;30m"
@@ -49,7 +53,7 @@ typedef struct s_red{
  * this is our linked list which has simp cmd
 */
 typedef struct s_package
-{
+{   
 	int			redirection;
 	bool		pipe;
 	char		*env_VAR;
@@ -71,6 +75,8 @@ typedef struct s_data
 //====================FUNCTIONS=========
 void init_lex(char **input);
 int count_quots(t_data *data, char c);
+void btn_handler(int sig);
+void prompt();
 
 //====================FUNCTIONS=========
 
