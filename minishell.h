@@ -3,13 +3,13 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rschleic <rschleic@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mjeyavat <mjeyavat@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/09 15:59:52 by mjeyavat          #+#    #+#             */
-/*   Updated: 2022/02/13 22:16:41 by mjeyavat         ###   ########.fr       */
-/*   Updated: 2022/02/13 18:18:07 by rschleic         ###   ########.fr       */
+/*   Updated: 2022/02/13 22:32:16 by mjeyavat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 
 #ifndef MINISHELL_H
 # define MINISHELL_H
@@ -61,7 +61,7 @@ typedef struct s_package
 	char		**cmd_args;
 	t_red		*redir;
 //man könnte auch alles in eine struct hauen
-	t_package	*next;
+	struct s_package	*next;
 } t_package;
 
 typedef struct s_data
