@@ -6,7 +6,7 @@
 /*   By: mjeyavat <mjeyavat@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/13 14:04:12 by mjeyavat          #+#    #+#             */
-/*   Updated: 2022/02/13 22:15:05 by mjeyavat         ###   ########.fr       */
+/*   Updated: 2022/02/15 18:51:18 by mjeyavat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,11 +15,11 @@
 /**
  * SIGINT	= CTRL+C signal
 */
-void  btn_handler(int sig)
+void	btn_handler(int sig)
 {
-	char path[200];
+	char	path[200];
+
 	getcwd(path, BUFF);
-	// signal(sig, SIG_IGN);
 	if (sig == SIGINT)
 	{
 		write(1, "\n", 1);
@@ -27,4 +27,9 @@ void  btn_handler(int sig)
 		rl_on_new_line();
 		rl_redisplay();
 	}
+	if (sig == SIGQUIT)
+	{
+		write(1,"",0);
+	}
+
 }
