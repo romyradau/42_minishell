@@ -1,15 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   minishell.h                                        :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: mjeyavat <mjeyavat@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/02/09 15:59:52 by mjeyavat          #+#    #+#             */
-/*   Updated: 2022/02/15 16:01:54 by mjeyavat         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
@@ -72,10 +60,11 @@ typedef struct s_data
 
 
 //====================FUNCTIONS=========
-void	init_lex(char **input);
-int		count_quots(t_data *data, char c);
-void	btn_handler(int sig);
-int		prompt();
+
+void init_lex(char **input);
+int count_quots(t_data *data, char c);
+void btn_handler(int sig);
+int prompt();
 
 //====================FUNCTIONS=========
 
