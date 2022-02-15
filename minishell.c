@@ -1,16 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   minishell.c                                        :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: rschleic <rschleic@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/02/09 15:03:47 by mjeyavat          #+#    #+#             */
-/*   Updated: 2022/02/15 19:12:42 by rschleic         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
-
 //testing out readline functon
 
 #include "minishell.h"
@@ -50,19 +37,30 @@ int	push_package(t_package **head, char *cmd)
 
 int	prompt(t_package **package)
 {
-	char path[200];
-	char *input;
-	int id;
-	char *user = "\e[0;36mminishell@rschleic&mjeyavat\033[0m>";
-	id = getpid();
+	char	path[200];
+	char	*input;
+	char	*user;
+	struct sigaction sa;
+
+	sa.sa_handler = btn_handler;
+	sigemptyset(&sa.sa_mask);
+	sa.sa_flags = SA_RESTART;
+
+	user = "\e[0;36mminishell@rschleic&mjeyavat\033[0m>";
 	getcwd(path, BUFF);
-	while(1)
+	while (1)
 	{
-		signal(SIGINT, btn_handler);
-		//printf("%s%s>%s%s%s", user, RESET, BLU, path, RESET);
+		if (sigaction(SIGINT, &sa, NULL) == -1)
+			return (-1);
+		if (sigaction(SIGQUIT, &sa, NULL) == -1)
+			return (-1);
 		input = readline(user);
-		printf("%s\n", input);
-		if (push_package(package, input))
+		if (input == NULL)
+		{
+			write(1, "exit\n", 5);
+			return (1);
+		}
+    if (push_package(package, input))
 			return (1);
 		print_package(package);
 		add_history(input);
@@ -70,7 +68,7 @@ int	prompt(t_package **package)
 	return (0);
 }
 
-int main()
+int	main(void)
 {
 	t_package	*package;
 	
@@ -82,13 +80,5 @@ int main()
 		//correct error message
 		return(1);
 	}
-	
-	//after that, prompt s been created
-	//init_lex(&inpt);
-	// we must free input (requierd by readline)
-	//how to implement a working history?? (done 60%);
-	//but how?
-	// printf("%s", inpt);
-	// printf("\n");
-	return 0;
+	return (0);
 }
