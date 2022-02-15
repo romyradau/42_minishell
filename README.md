@@ -12,3 +12,5 @@ this is a 42project
 5th day again parser problems to find a good structure - new approach going through prompt char by char
 6th day Signal handling - new approach for parser - new structs
 7th day (Monday) day off && signals :)
+8th day finally implemented cmd_packag list, completetd signals
+	now input handling can start
