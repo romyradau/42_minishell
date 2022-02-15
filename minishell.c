@@ -11,16 +11,24 @@ void	print_package(t_package *head)
 	}
 }
 
-int	push_package(t_package **head, char *cmd)
+void	fill_package(t_package **newNode, char *input)
+{
+	//functions die eine nach der anderen input-rules anwenden
+	//und ein nach dem anderen package value bestücken
+	(*newNode)->cmd = input;
+
+}
+
+int	push_package(t_package **head, char *input)
 {
 	t_package *newNode;
 	t_package *last;
 	
 	newNode = malloc(sizeof(t_package));
 	if (newNode == NULL)
-		return (1); 
+		return (1);
 	ft_bzero(newNode, sizeof(t_package));
-	newNode->cmd = cmd;
+	fill_package(&newNode, input);
 	last = *head;
 	if (*head == NULL)
 	{
@@ -31,13 +39,14 @@ int	push_package(t_package **head, char *cmd)
 	while (last->next != NULL)
 		last = last->next;
 	last->next = newNode;
+	//zeile die neue node dran hängt
 	newNode->next = NULL;
 	return (0);
 }
 
 int	prompt(t_package **package)
 {
-	char	path[200];
+	// char	path[200];
 	char	*input;
 	char	*user;
 	struct sigaction sa;
@@ -47,7 +56,7 @@ int	prompt(t_package **package)
 	sa.sa_flags = SA_RESTART;
 
 	user = "\e[0;36mminishell@rschleic&mjeyavat\033[0m>";
-	getcwd(path, BUFF);
+	// getcwd(path, BUFF);
 	while (1)
 	{
 		if (sigaction(SIGINT, &sa, NULL) == -1)
@@ -60,21 +69,24 @@ int	prompt(t_package **package)
 			write(1, "exit\n", 5);
 			return (1);
 		}
-    if (push_package(package, input))
+		if (push_package(package, input))
 			return (1);
-		print_package(package);
+		print_package(*package);
 		add_history(input);
 	}
 	return (0);
 }
 
-int	main(void)
+int	main(char	**env)
 {
-	t_package	*package;
+	t_package	*head;
+	t_data		data;
+
+	data.env = env;
+	//env in data.env speichern
+	head = NULL;
 	
-	package = NULL;
-	
-	if (prompt(&package))
+	if (prompt(&head))
 	{
 		//free
 		//correct error message
