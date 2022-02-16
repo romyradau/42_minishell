@@ -27,6 +27,15 @@
 # define RESET		"\033[0m"
 //====================Sturcts==============================
 
+typedef enum {
+	NOTHING,
+	PIPE,
+	TRUNCATE,
+	INFILE,
+	APPEND,//>>
+	HEREDOC
+} meta;
+
 typedef struct s_red{
 	int		in;
 	int		out;
@@ -65,6 +74,7 @@ void init_lex(char **input);
 int count_quots(t_data *data, char c);
 void btn_handler(int sig);
 int prompt();
+
 
 //====================FUNCTIONS=========
 
