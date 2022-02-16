@@ -140,7 +140,7 @@ int	prompt(t_package **package)
 	sigemptyset(&sa.sa_mask);
 	sa.sa_flags = SA_RESTART;
 
-	user = "\e[0;36mminishell@rschleic&mjeyavat\033[0m";
+	user = "\e[0;36mminishell@rschleic&mjeyavat\033[0m>";
 	// getcwd(path, BUFF);
 	while (1)
 	{

@@ -19,5 +19,4 @@ void	btn_handler(int sig)
 	{
 		write(1,"",0);
 	}
-
 }
