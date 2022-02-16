@@ -6,7 +6,7 @@
 /*   By: mjeyavat <mjeyavat@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/09 15:03:47 by mjeyavat          #+#    #+#             */
-/*   Updated: 2022/02/15 18:43:13 by mjeyavat         ###   ########.fr       */
+/*   Updated: 2022/02/16 15:11:04 by mjeyavat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,6 @@ int	prompt(void)
 	sa.sa_handler = btn_handler;
 	sigemptyset(&sa.sa_mask);
 	sa.sa_flags = SA_RESTART;
-
 	user = "\e[0;36mminishell@rschleic&mjeyavat\033[0m>";
 	getcwd(path, BUFF);
 	while (1)
