@@ -14,3 +14,5 @@ this is a 42project
 7th day (Monday) day off && signals :)
 8th day finally implemented cmd_packag list, completetd signals
 	now input handling can start
+9th day builtin echo && move forward in parsing
+	input string can recognise metachars and put everything in between them in substrings
