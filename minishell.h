@@ -36,30 +36,41 @@ typedef enum {
 	HEREDOC
 } meta;
 
-typedef struct s_red{
+typedef struct s_file{
 	int		in;
+	// data.in = open(package->in, O_RDONLY);
 	int		out;
+	// data.out = open(package->out, O_RDWR | O_CREAT | O_TRUNC, 0644);
 	int		heredoc;
 	char	*limiter;
 	int		fd[2];
 	int		tmp_fd;
 	pid_t	pid;
-}	t_red;
-/**
- * this is our linked list which has simp cmd
+}	t_file;
+/*
+wie man multiple redirections in der pipex struktur andert 
+muss ich noch nachschauen
+bis jetzt war es so anfang kann in oder herdoc sein udn ende das oufile
+jetzt konnen solche redirections uberall stehen
 */
+
 typedef struct s_package
 {
 	int					redirection;
+	char				*in;
+	char				*out;
 	bool				pipe;
 	char				*env_var;
 	char				*cmd;
 	char				**cmd_args;
-	t_red				*redir;
+	t_file				*redir;
 //man könnte auch alles in eine struct hauen
 	struct s_package	*next;
 }	t_package;
 
+/**
+ * this is our linked list 
+*/
 typedef struct s_data
 {
 	int				packages;
@@ -74,6 +85,8 @@ void init_lex(char **input);
 int count_quots(t_data *data, char c);
 void btn_handler(int sig);
 int prompt();
+char	**special_split(char const *s, char c);
+
 
 
 //====================FUNCTIONS=========
