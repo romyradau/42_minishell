@@ -6,9 +6,23 @@ void	print_package(t_package *head)
 {
 	while (head)
 	{
-		printf("cmd: %s\n", head->cmd);
-		printf("pipe: %d\n", head->pipe);
+		printf("cmd:	%s\n", head->cmd);
+		printf("pipe:	%d\n", head->pipe);
+		printf("op:	%d\n", head->redirection);
+
 		head = head->next;
+	}
+}
+
+void	print2Darray(char **split)
+{
+	int	i;
+
+	i = 0;
+	while (split[i])
+	{
+		printf("pipe_package: 	%s\n", split[i]);
+		i++;
 	}
 }
 
@@ -18,11 +32,12 @@ void	fill_package(t_package **newNode, char *input, int operator)
 	//und ein nach dem anderen package value bestücken
 
 	(*newNode)->cmd = ft_strdup(input);
+	//freen - aber spater dann beim listen leeren
+	(*newNode)->redirection = operator;
 	if (operator == PIPE)
 		(*newNode)->pipe = true;
 	else
 		(*newNode)->pipe = false;
-	//wird spater gefretw ennw ir die komplette liste freen 
 
 }
 
@@ -58,11 +73,19 @@ int	char_compare(char *input, int *i)
 		return PIPE;
 	else if (input[*i] == '<')
 	{
+		//einbauen das ab hier des danacha bgecutted wird
+		//aber nur die pipe sachen abgetrennt werden!
 		if (input[(*i) + 1] == '<')
 		{
 			(*i)++;
+			// printf("input<<: 	%s\n", input);
+			//function die "des danach" als package->redirection speichert
 			return HEREDOC;
+
 		}
+		// printf("input<: 	%s\n", input);
+		//function die "des danach" als package->redir->in speichert
+		//muss aber noch als char * abgespeichert werden
 		return INFILE;
 	}
 	else if (input[*i] == '>')
@@ -70,8 +93,14 @@ int	char_compare(char *input, int *i)
 		if (input[(*i) + 1] == '>')
 		{
 			(*i)++;
+			// printf("input>>: 	%s\n", input);
+
+			//function die "des danach" als package->redirection speichert
 			return APPEND;
 		}
+		// printf("input>: 	%s\n", input);
+
+		//function die "des danach" als package->redirection speichert
 		return TRUNCATE;
 	}
 	else
@@ -90,27 +119,29 @@ void	check_metachars(char *input, t_package **head)
 	while (input[i])
 	{
 		int operator = char_compare(input, &i);
+			// printf("operator:	%d\n", operator);
 		if (operator || input[i + 1] == '\0')
-		//++ ware (nicht wirklich aber schon )segfault | + 1 ist besser
 		{
 			if (operator >= 4)
 			{
-					simpl_cmd = ft_substr(input, j, i - 1);
+					simpl_cmd = ft_substr(input, j, i - j - 1);
+					// printf("simpl_cmd:	%s\n", simpl_cmd);
+					//des was hier steht ware schon da file!
 					j = i + 1;
 				//freen!
 			}
 			else
 			{
-				// printf("test = %c\n", input[i]);
 				if (input[i + 1] == '\0')
 					simpl_cmd = ft_substr(input, j, i - j + 1);
+					//fur only pipes das + 1 weggemacht...
+					//braucht man nur wenn da eine single pipe steht am schluss
+					//ist aber invalid also besser + 1
 				else
 					simpl_cmd = ft_substr(input, j, i - j);
 				j = i + 1;
+				// printf("j:	%d\n", j);
 			}	
-			// printf("simpl_cmd:	%s\n", simpl_cmd);
-			// printf("operator:	%d\n", operator);
-			// printf("symbol:	%c\n", input[i]);
 			push_package(head, simpl_cmd, operator);
 			free(simpl_cmd);
 		}
@@ -131,7 +162,6 @@ int string_zerlegen(t_package **package, char *input)
 
 int	prompt(t_package **package)
 {
-	// char	path[200];
 	char	*input;
 	char	*user;
 	struct sigaction sa;
@@ -141,7 +171,6 @@ int	prompt(t_package **package)
 	sa.sa_flags = SA_RESTART;
 
 	user = "\e[0;36mminishell@rschleic&mjeyavat\033[0m>";
-	// getcwd(path, BUFF);
 	while (1)
 	{
 		if (sigaction(SIGINT, &sa, NULL) == -1)
@@ -155,6 +184,16 @@ int	prompt(t_package **package)
 			return (1);
 		}
 		/* start parsing */
+		char	**split = special_split(input, '|');
+		if (!split)
+		{
+			printf("error");
+			return 1;
+			//nicht nur returnen sondern einfach mit nachster prompt weiter machen
+		}
+		// printf("split[0] = %s\n", split[0]);
+		print2Darray(split);
+		// (void)split;
 		string_zerlegen(package, input);
 
 		// if (push_package(package, input))
