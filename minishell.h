@@ -30,10 +30,10 @@
 typedef enum {
 	NOTHING,
 	PIPE,
-	TRUNCATE,
-	INFILE,
-	APPEND,//>>
-	HEREDOC
+	TRUNCATE, //>
+	INFILE, //<
+	APPEND, //>>
+	HEREDOC //<<
 } meta;
 
 typedef struct s_file{
@@ -56,11 +56,16 @@ jetzt konnen solche redirections uberall stehen
 
 typedef struct s_package
 {
-	int					redirection;
-	char				*in;
-	char				*out;
+	// infiles
+	int					*in_redirection;	// [<,      <<,       <]
+	char				**infiles;			// [ file1, heredoc, file2 ]
+
+	// outfiles
+	int					*out_redirection;
+	char				**outfiles;
+
 	bool				pipe;
-	char				*env_var;
+	// char				*env_var;
 	char				*cmd;
 	char				**cmd_args;
 	t_file				*redir;
@@ -74,8 +79,9 @@ typedef struct s_package
 typedef struct s_data
 {
 	int				packages;
+	char			**processes;
 	char			**env;
-	t_package		*package;
+	t_package		*head;
 }	t_data;
 
 
@@ -87,6 +93,11 @@ void btn_handler(int sig);
 int prompt();
 char	**special_split(char const *s, char c);
 
+//====================PARSING=========
+// handle_input
+int	push_package(t_package **head, char *current_process);
+void	print_package(t_package *head);
+void	print2Darray(char **split);
 
 
 //====================FUNCTIONS=========
