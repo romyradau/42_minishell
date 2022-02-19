@@ -6,7 +6,7 @@
 /*   By: rschleic <rschleic@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/10 17:08:59 by mjeyavat          #+#    #+#             */
-/*   Updated: 2022/02/18 19:03:08 by rschleic         ###   ########.fr       */
+/*   Updated: 2022/02/20 00:40:55 by rschleic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,12 +15,18 @@
 
 void	print_package(t_package *head)
 {
+	int	i;
+
+	i = 0;
 	while (head)
 	{
 		printf("cmd:	%s\n", head->cmd);
+		while (head->cmd_args && head->cmd_args[0])
+		{
+			printf("cmd_args:	%s\n", head->cmd_args[i]);
+			head->cmd_args++;
+		}
 		printf("pipe:	%d\n", head->pipe);
-		// printf("op:	%d\n", head->redirection);
-
 		head = head->next;
 	}
 }
@@ -84,63 +90,79 @@ bool	is_metachar(char c)
 		return false;
 }
 
-char	*get_file(char *current_process, int start)
+char	*get_file(char *current_process, int *end)
 {
-	int	end;
+	int	start;
 	
-	start++;
-	while (current_process[start] == ' ')
-		start++;
-	end = start;
-	while (current_process[end] && !is_metachar(current_process[end]))
-		end++;
-	char *ret = ft_substr(current_process, start, end - start);
-	return ret;
+	(*end)++;
+	while (current_process[*end] == ' ')
+		(*end)++;
+	start = *end;
+	while (current_process[*end] && !is_metachar(current_process[*end]))
+		(*end)++;
+	char *ret = ft_substr(current_process, start, (*end) - start);
+	return (ret);
 }
 
-void	check_redirections(t_package **newNode, char *current_process)
+char	*check_redirections(t_package **newNode, char *current_process)
 {
 	int i = 0;
 	int iR = 0;
 	int oR = 0;
 	int operator = NOTHING;
+	char	*remainder;
+	remainder = ft_calloc(ft_strlen(current_process) + 1, sizeof(char));
+	int		remainder_index = 0;
 
 	(*newNode)->outfiles = malloc(sizeof(char *) * 256);
 	(*newNode)->infiles = malloc(sizeof(char *) * 256);
-	//function that checks how many reds there are
-	//@Alex kann auch jmd red ohne filename eingeben - if - was dann???
+	// function that checks how many reds there are
+	// @Alex kann auch jmd red ohne filename eingeben - if - was dann???
+	// ->dann kann das nciht geöffnet werden
 	(*newNode)->out_redirection = malloc(sizeof(int) * 256);
 	(*newNode)->in_redirection = malloc(sizeof(int) * 256);
-	//check max files in process and maybe use ft_calloc
-	//b-zero package setzt nur den **in/out auf 0 nicht dem seine elemente
+	// check max files in process and maybe use ft_calloc
+	// b-zero package setzt nur den **in/out auf 0 nicht dem seine elemente
 	while (current_process[i])
 	{
 		operator = char_compare(current_process, &i);
 		if (operator == INFILE || operator == HEREDOC)
 		{
 			(*newNode)->in_redirection[iR] = operator;
-			(*newNode)->infiles[iR] = get_file(current_process, i);
+			(*newNode)->infiles[iR] = get_file(current_process, &i);
 			// i steht auf dem meta_char
 			iR++;
 		}
 		else if (operator == TRUNCATE || operator == APPEND)
 		{
 			(*newNode)->out_redirection[oR] = operator;
-			(*newNode)->outfiles[oR] = get_file(current_process, i);
+			(*newNode)->outfiles[oR] = get_file(current_process, &i);
 			oR++;
 		}
+		// if (operator)
+			// printf("hier:	%c\n", current_process[i]);
+		remainder[remainder_index] = current_process[i];
+		remainder_index++;
 		i++;
 	}
+	printf("remainder %s\n", remainder);
 	(*newNode)->in_redirection[iR] = NOTHING;
 	(*newNode)->out_redirection[oR] = NOTHING;
 	(*newNode)->infiles[iR] = NULL;
 	(*newNode)->outfiles[oR] = NULL;
+	return (remainder);
 }
+
+
 
 void	fill_package(t_package **newNode, char *current_process)
 {
+	char	*cmd_tokens;
 	
-	check_redirections(newNode, current_process);
+	cmd_tokens = check_redirections(newNode, current_process);
+	(*newNode)->cmd_args = ft_split(cmd_tokens, ' ');
+	(*newNode)->cmd = (*newNode)->cmd_args[0];
+	//special split && cmd abspeichern!
 	
 	printf("\n");
 	for (int i = 0; (*newNode)->out_redirection[i] != 0; i++)
