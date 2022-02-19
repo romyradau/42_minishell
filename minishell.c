@@ -84,7 +84,7 @@ int	prompt(t_data *data)
 		/* start execution */
 
 		/* end execution */
-		// print_package(data->head);
+		print_package(data->head);
 		add_history(input);
 	}
 	return (0);
@@ -100,6 +100,13 @@ int	main(int argc, char **argv, char	**env)
 	//env in data.env speichern
 	data.head = NULL;
 	
+	// char	*cmds[3];
+	// cmds[0] = "ls";
+	// cmds[1] = "-l";
+	// cmds[2] = NULL;
+
+	// execve("/bin/ls", cmds, env);
+
 	if (prompt(&data))
 	{
 		//free

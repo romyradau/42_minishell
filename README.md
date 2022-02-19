@@ -13,4 +13,10 @@ this is a 42project
 	input string can recognise metachars and put everything in between them in substrings
 10th day echo nearly finished except for edge cases
 	special_pipe_split by quotes
+11th echo in progress 
+	pipe_packages: process tokens, for every package create list element
+	speicher redirections correct ab
+	speicher cmd richtig ab
+12th day package struct filed
+	still needs the edge cases
 	 
