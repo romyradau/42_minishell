@@ -1,3 +1,4 @@
+
 NAME = minishell
 
 FILES = minishell.c handle_input.c pipe_splitter.c ./utils/sig_handls.c ./utils/builtins.c

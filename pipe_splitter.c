@@ -83,6 +83,7 @@ char	**special_split(char const *s, char c)
 		start = ft_count(start, s, c);
 		end = ft_count_toNext(start, s, c);
 		result[i] = ft_substr(s, start, end - start);
+		printf("%s\n", result[i]);
 		i++;
 		start = end;
 	}

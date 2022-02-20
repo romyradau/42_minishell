@@ -87,15 +87,16 @@ typedef struct s_data
 
 //====================FUNCTIONS=========
 
-void init_lex(char **input);
-int count_quots(t_data *data, char c);
-void btn_handler(int sig);
-int prompt();
+void 	init_lex(char **input);
+char    *cut_quot_sequence(char *str, char c);
+int		builtin_picker(t_package *package);
+void	btn_handler(int sig);
+int 	prompt();
 char	**special_split(char const *s, char c);
 
 //====================PARSING=========
 // handle_input
-int	push_package(t_package **head, char *current_process);
+int		push_package(t_package **head, char *current_process);
 void	print_package(t_package *head);
 void	print2Darray(char **split);
 
