@@ -94,10 +94,11 @@ typedef struct s_builtin
 
 //====================FUNCTIONS=========
 
-void init_lex(char **input);
-int count_quots(t_data *data, char c);
-void btn_handler(int sig);
-int prompt();
+void 	init_lex(char **input);
+char    *cut_quot_sequence(char *str, char c);
+int		builtin_picker(t_package *package);
+void	btn_handler(int sig);
+int 	prompt();
 char	**special_split(char const *s, char c);
 
 //====================PARSING=========

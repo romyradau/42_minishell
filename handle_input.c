@@ -1,14 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   handle_input.c                                     :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: rschleic <rschleic@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/02/10 17:08:59 by mjeyavat          #+#    #+#             */
-/*   Updated: 2022/02/20 17:43:28 by rschleic         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
 
 
 #include "minishell.h"
@@ -20,13 +9,14 @@ void	print_package(t_package *head)
 	i = 0;
 	while (head)
 	{
-		printf("cmd:	%s\n", head->cmd);
-		while (head->cmd_args && head->cmd_args[0])
-		{
-			printf("cmd_args:	%s\n", head->cmd_args[i]);
-			head->cmd_args++;
-		}
-		printf("pipe:	%d\n", head->pipe);
+		builtin_picker(head);
+		// printf("cmd:	%s\n", head->cmd);
+		// while (head->cmd_args && head->cmd_args[0])
+		// {
+		// 	printf("cmd_args:	%s\n", head->cmd_args[i]);
+		// 	head->cmd_args++;
+		// }
+		// printf("pipe:	%d\n", head->pipe);
 		head = head->next;
 	}
 }
@@ -160,8 +150,9 @@ void	fill_package(t_package **newNode, char *current_process)
 	char	*cmd_tokens;
 	
 	cmd_tokens = check_redirections(newNode, current_process);
+
 	printf("cmd_tokens	%s\n", cmd_tokens);
-	(*newNode)->cmd_args = ft_split(cmd_tokens, ' ');
+	(*newNode)->cmd_args = special_split(cmd_tokens, ' ');
 	(*newNode)->cmd = (*newNode)->cmd_args[0];
 	//special split && cmd abspeichern!
 	
