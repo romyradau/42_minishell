@@ -84,6 +84,13 @@ typedef struct s_data
 	t_package		*head;
 }	t_data;
 
+typedef struct s_builtin
+{
+	char	*echo_str;
+	//cd
+	//pwd
+	//env
+}	t_builtin;
 
 //====================FUNCTIONS=========
 
@@ -95,7 +102,7 @@ char	**special_split(char const *s, char c);
 
 //====================PARSING=========
 // handle_input
-int	push_package(t_package **head, char *current_process);
+int		push_package(t_package **head, char *current_process);
 void	print_package(t_package *head);
 void	print2Darray(char **split);
 

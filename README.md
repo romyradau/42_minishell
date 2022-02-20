@@ -19,4 +19,11 @@ this is a 42project
 	speicher cmd richtig ab
 12th day package struct filed
 	still needs the edge cases
+13th day echo &&
+#	builtin struct?
+#	logik fur builtins zsm durchgehen morgen
+#	pipe logik ausdenken
+#	bzw zahlen wie viele prozesse es gibt
+#	und die mit den redirections verlinken
+
 	 
