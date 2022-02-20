@@ -84,6 +84,13 @@ typedef struct s_data
 	t_package		*head;
 }	t_data;
 
+typedef struct s_builtin
+{
+	char	*echo_str;
+	//cd
+	//pwd
+	//env
+}	t_builtin;
 
 //====================FUNCTIONS=========
 

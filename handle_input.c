@@ -1,14 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   handle_input.c                                     :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: mjeyavat <mjeyavat@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/02/10 17:08:59 by mjeyavat          #+#    #+#             */
-/*   Updated: 2022/02/20 18:05:49 by mjeyavat         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
 
 
 #include "minishell.h"
@@ -161,6 +150,8 @@ void	fill_package(t_package **newNode, char *current_process)
 	char	*cmd_tokens;
 	
 	cmd_tokens = check_redirections(newNode, current_process);
+
+	printf("cmd_tokens	%s\n", cmd_tokens);
 	(*newNode)->cmd_args = special_split(cmd_tokens, ' ');
 	(*newNode)->cmd = (*newNode)->cmd_args[0];
 	//special split && cmd abspeichern!
