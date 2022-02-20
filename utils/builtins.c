@@ -10,6 +10,8 @@
 ◦ exit with no options - exit
 */
 
+//TODO: fix segfault for -n -n case
+
 int check_quot_sequence(char *str, char c, bool *q)
 {
     int i;
@@ -44,27 +46,6 @@ char    *cut_quot_sequence(char *str, char c)
     else
         return (NULL);
 }
-
-// char	*fuse_quots_sequence(char **cmd_arg, bool flage)
-// {
-// 	char	*tmp_output;
-// 	char	*output;
-// 	int		i;
-
-// 	tmp_output = NULL;
-// 	output = NULL;
-// 	if (flage)
-// 		i = 2;
-// 	else
-// 		i = 1;
-// 	if (!cmd_arg[i] || !cmd_arg[i + 1])
-// 		return (NULL);
-// 	tmp_output = ft_strjoin(cmd_arg[i], cmd_arg[i + 1]);
-// 	output = cut_quot_sequence(tmp_output, '"');
-// 	free(tmp_output);
-// 	return (output);
-
-// }
 
 int doublestr_len(char **cmd_arg)
 {
@@ -116,6 +97,20 @@ char *handle_qouts(char **cmd_arg, int index)
 	return (output);
 }
 
+void destroy_output(char **output)
+{
+	int i;
+
+	i = 0;
+	while (output[i])
+	{
+		free(output[i]);
+		output[i] = 0;
+		i++;
+	}
+	free(output);
+}
+
 void	ft_echo(char **output, bool flag)
 {
 	int i;
@@ -154,19 +149,21 @@ int builtin_picker(t_package *package)
     {
 		while (cmd_arg[i])
 		{
-			if (!ft_strncmp(cmd_arg[i], "-n", doublestr_len(cmd_arg)))
+			while (!ft_strncmp(cmd_arg[i], "-n", doublestr_len(cmd_arg)))
 			{
 				i++;
 				flag = true;
 			}
-			// handle qoutos
 			output[j] = handle_qouts(cmd_arg, i);
-			//run echo
-			i++;
 			j++;
+			i++;
+			// handle qoutos
+			//run echo
+			// i++;
 		}
 		output[i + 1] = "\0";
         ft_echo(output, flag);
+		destroy_output(output); //TODO: ----> this is the issue
         return (1);
     }
     return (0);
