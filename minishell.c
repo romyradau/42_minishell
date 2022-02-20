@@ -93,9 +93,20 @@ int	prompt(t_data *data)
 int	main(int argc, char **argv, char	**env)
 {
 	t_data		data;
+	// char		*wc_args[5];
 
 	(void) argc;
 	(void) argv;
+
+	//TODO: wired spaces maybe problem
+	// wc_args[0] = "wc";
+	// wc_args[1] = "-l";
+	// wc_args[2] = " ";
+	// wc_args[3] = " ";
+	// wc_args[4] = " ";
+
+
+	// execve("/usr/bin/wc", wc_args, env);
 	data.env = env;
 	//env in data.env speichern
 	data.head = NULL;
