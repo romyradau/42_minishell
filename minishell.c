@@ -84,6 +84,7 @@ int	prompt(t_data *data)
 		/* start execution */
 
 		/* end execution */
+		// printf("\n");
 		print_package(data->head);
 		add_history(input);
 	}

@@ -6,7 +6,7 @@
 /*   By: mjeyavat <mjeyavat@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/10 17:08:59 by mjeyavat          #+#    #+#             */
-/*   Updated: 2022/02/20 18:05:49 by mjeyavat         ###   ########.fr       */
+/*   Updated: 2022/02/21 20:02:52 by mjeyavat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,20 +16,17 @@
 void	print_package(t_package *head)
 {
 	int	i;
-
+	
 	i = 0;
-	while (head)
-	{
-		builtin_picker(head);
-		// printf("cmd:	%s\n", head->cmd);
-		// while (head->cmd_args && head->cmd_args[0])
-		// {
-		// 	printf("cmd_args:	%s\n", head->cmd_args[i]);
-		// 	head->cmd_args++;
-		// }
-		// printf("pipe:	%d\n", head->pipe);
-		head = head->next;
-	}
+	// printf("cmd:	%s\n", (*head)->cmd);
+	builtin_picker(head);
+	// while (head->cmd_args && head->cmd_args[0] && head != NULL)
+	// {
+		// (*head)->cmd_args++;
+		// printf("cmd_args:	%s\n", (*head)->cmd_args[i]);
+	// }
+	head = head->next;
+	// printf("pipe:	%d\n", (*head)->pipe);
 }
 
 void	print2Darray(char **split)
@@ -37,13 +34,13 @@ void	print2Darray(char **split)
 	int	i;
 
 	i = 0;
-	printf("-------- pipe_package start --------\n");
+	// printf("-------- pipe_package start --------\n");
 	while (split[i])
 	{
 		printf("%s\n", split[i]);
 		i++;
 	}
-	printf("-------- pipe_package end --------\n\n");
+	// printf("-------- pipe_package end --------\n\n");
 }
 
 int	char_compare(char *current_process, int *i)
