@@ -97,34 +97,36 @@ char *handle_qouts(char **cmd_arg, int index)
 	return (output);
 }
 
-void destroy_output(char **output)
+
+void	ft_echo(char **output, bool flag, t_package *package)
 {
 	int i;
+	int ret;
 
 	i = 0;
-	while (output[i])
+	ret = 0;
+	if (*package->out_redirection == 2)
 	{
-		free(output[i]);
-		output[i] = 0;
-		i++;
+		ret = open(*package->outfiles, O_CREAT | O_WRONLY);
+		if (ret < 0)
+			return ;
+		printf("file has been created: %s\n", *package->outfiles);// TODO---> delete this line later
 	}
-	free(output);
-}
-
-void	ft_echo(char **output, bool flag)
-{
-	int i;
-
-	i = 0;
 	if (!output)
-		printf("%s", "error");
-	while (output[i])
 	{
-		printf("%s ", output[i]);
+		printf("%s", "error");
+		return ;
+	}
+	while (output[i])
+	{	
+		// printf("ret: %d\n", ret);// TODO---> delete this line later
+		ft_putstr_fd(output[i], ret);
+		if (output[i + 1])
+			write(ret, " ", 1);
 		i++;
 	}
 	if (!flag)
-		printf("\n");
+		write(1, "\n", 1);
 }
 
 int builtin_picker(t_package *package)
@@ -153,6 +155,11 @@ int builtin_picker(t_package *package)
 			{
 				i++;
 				flag = true;
+				if (!cmd_arg[i])
+				{
+					printf("\n");
+					return (1);
+				}
 			}
 			output[j] = handle_qouts(cmd_arg, i);
 			j++;
@@ -162,8 +169,8 @@ int builtin_picker(t_package *package)
 			// i++;
 		}
 		output[i + 1] = "\0";
-        ft_echo(output, flag);
-		destroy_output(output); //TODO: ----> this is the issue
+        ft_echo(output, flag, package);
+		// destroy_output(output); //TODO: ----> this is the issue
         return (1);
     }
     return (0);
