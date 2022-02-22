@@ -10,13 +10,13 @@ void	print_package(t_package *head)
 	while (head)
 	{
 		builtin_picker(head);
-		// printf("cmd:	%s\n", head->cmd);
-		// while (head->cmd_args && head->cmd_args[0])
-		// {
-		// 	printf("cmd_args:	%s\n", head->cmd_args[i]);
-		// 	head->cmd_args++;
-		// }
-		// printf("pipe:	%d\n", head->pipe);
+		printf("cmd:	%s\n", head->cmd);
+		while (head->cmd_args && head->cmd_args[0])
+		{
+			printf("cmd_args:	%s\n", head->cmd_args[i]);
+			head->cmd_args++;
+		}
+		printf("pipe:	%d\n", head->pipe);
 		head = head->next;
 	}
 }
