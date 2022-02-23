@@ -3,18 +3,27 @@
 
 void	print_package(t_package *head)
 {
-	int	i;
-	
+	// int	flag;
+	int i;
+	 printf("cmd:	%s\n", head->cmd);
+	// flag = 0;
 	i = 0;
-	// printf("cmd:	%s\n", (*head)->cmd);
-	builtin_picker(head);
-	// while (head->cmd_args && head->cmd_args[0] && head != NULL)
-	// {
-		// (*head)->cmd_args++;
-		// printf("cmd_args:	%s\n", (*head)->cmd_args[i]);
-	// }
-	head = head->next;
-	// printf("pipe:	%d\n", (*head)->pipe);
+	while (head != NULL)
+	{
+		//  if (!flag)
+		//  {
+		//  	builtin_picker(head);
+		//  	flag = 1;
+		//  }
+		 i = 0;
+		  while (head->cmd_args && head->cmd_args[i])
+		  {
+			printf("cmd_args:	%s\n", head->cmd_args[i]);
+			i++;
+		  }
+		//  printf("pipe:	%d\n", head->pipe);
+		head = head->next;
+	}
 }
 
 void	print2Darray(char **split)
@@ -131,7 +140,7 @@ char	*check_redirections(t_package **newNode, char *current_process)
 		remainder_index++;
 		i++;
 	}
-	printf("remainder %s\n", remainder);
+	// printf("remainder %s\n", remainder);
 	(*newNode)->in_redirection[iR] = NOTHING;
 	(*newNode)->out_redirection[oR] = NOTHING;
 	(*newNode)->infiles[iR] = NULL;
@@ -147,12 +156,12 @@ void	fill_package(t_package **newNode, char *current_process)
 	
 	cmd_tokens = check_redirections(newNode, current_process);
 
-	printf("cmd_tokens	%s\n", cmd_tokens);
+	// printf("cmd_tokens	%s\n", cmd_tokens);
 	(*newNode)->cmd_args = special_split(cmd_tokens, ' ');
 	(*newNode)->cmd = (*newNode)->cmd_args[0];
 	//special split && cmd abspeichern!
 	
-	printf("\n");
+	// printf("\n");
 	for (int i = 0; (*newNode)->out_redirection[i] != 0; i++)
 		printf("out_redirection[%d] = %d\n", i , (*newNode)->out_redirection[i]);
 	for (int i = 0; (*newNode)->in_redirection[i] != 0; i++)
