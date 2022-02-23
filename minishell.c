@@ -73,7 +73,10 @@ int	prompt(t_data *data)
 			//nicht nur returnen sondern einfach mit nachster prompt weiter machen
 		}
 		data->processes = trim_spaces(data);
-		print2Darray(data->processes);
+
+		// print2Darray(data->processes);
+		// (void)split;
+
 		process_tokens(data);
 
 		/* end parsing */
