@@ -2,27 +2,27 @@
 
 #include "minishell.h"
 
-
 int process_tokens(t_data *data)
 {
-	char	*current_process;
+	char		*current_process;
+	t_package	*current_package;
 	int		i;
 
 
 	i = 0;
 	current_process = data->processes[i];
+	current_package = data->head;
 	while (data->processes[i])
 	{
 		push_package(&data->head, data->processes[i]);
-		// check_metachars(data->head, current_process);
-		//wie kann ich mir fur meine struct die pipes abseichern?
+		// if (data->processes[i + 1] != NULL)
+		// 	current_package->pipe = true;
+		// current_package = current_package->next;
+		//hier wird der pipe bool gesetzt, ohne in fill package zu gehen
+		//weird error "malloc: *** error for object 0xc000000000000000: pointer being freed was not allocated"
+		//blöder fix in push package
 		i++;
 	}
-	// check_quotes();
-
-
-	// if (push_package(package, simple_cmd))
-	// 	return (1);
 	return (0);
 }
 
@@ -73,18 +73,17 @@ int	prompt(t_data *data)
 			//nicht nur returnen sondern einfach mit nachster prompt weiter machen
 		}
 		data->processes = trim_spaces(data);
+
 		// print2Darray(data->processes);
 		// (void)split;
+
 		process_tokens(data);
 
-		// if (push_package(package, input))
-		// 	return (1);
 		/* end parsing */
 
 		/* start execution */
 
 		/* end execution */
-		// printf("\n");
 		print_package(data->head);
 		add_history(input);
 	}
@@ -98,18 +97,7 @@ int	main(int argc, char **argv, char	**env)
 
 	(void) argc;
 	(void) argv;
-
-	//TODO: wired spaces maybe problem
-	// wc_args[0] = "wc";
-	// wc_args[1] = "-l";
-	// wc_args[2] = " ";
-	// wc_args[3] = " ";
-	// wc_args[4] = " ";
-
-
-	// execve("/usr/bin/wc", wc_args, env);
 	data.env = env;
-	//env in data.env speichern
 	data.head = NULL;
 	
 	// char	*cmds[3];

@@ -3,15 +3,19 @@
 /*                                                        :::      ::::::::   */
 /*   ft_split.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mjeyavat <mjeyavat@student.42.fr>          +#+  +:+       +#+        */
+/*   By: rschleic <rschleic@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/30 15:25:43 by mjeyavat          #+#    #+#             */
-/*   Updated: 2021/07/19 13:07:59 by mjeyavat         ###   ########.fr       */
+/*   Updated: 2022/02/22 19:38:43 by rschleic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
+/*
+cat <infile | bla      bla | wc -l       " "
+1    2        1        2
+*/
 static size_t	ft_findW_cnt(char const *s, char c)
 {
 	int		i;

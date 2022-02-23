@@ -29,6 +29,7 @@ int	ft_findW_count(char const *s, char c)
 	return (cnt);
 }
 
+
 static int	ft_count(int cnt, char const *str, char c)
 {
 	int	i;
@@ -91,7 +92,6 @@ char	**special_split(char const *s, char c)
 		start = ft_count(start, s, c);
 		end = ft_count_toNext(start, s, c);
 		result[i] = ft_substr(s, start, end - start);
-		// printf("%s\n", result[i]);
 		i++;
 		start = end;
 	}
