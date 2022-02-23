@@ -20,7 +20,6 @@ int check_quot_sequence(char *str, char c, bool *q)
     if (str[i] == c)
     {
 		(*q) = true;
-		// printf("bool %d\n", (*q));
         i = ft_strlen(str)-1;
         if (str[i] == c)
             return (1);
@@ -97,6 +96,44 @@ char *handle_qouts(char **cmd_arg, int index)
 	return (output);
 }
 
+int echo_variants(char *str, const char *str2, unsigned int len)
+{
+	unsigned int i;
+
+	i = 0;
+	while (str[i] && (i < len))
+	{
+
+		if (str[i] == str2[i])
+			i++;
+		else if (str[i] == ft_toupper(str2[i]))
+			i++;
+		else
+			break ;
+	}
+	if (i == len)
+		return (1);
+	return (0);
+	
+}
+
+t_package *pipe_case(t_package *package)
+{
+	int i;
+
+	i = 0;
+	if (package->next)
+	{
+		while (package->next)
+		{
+			if (echo_variants(package->next->cmd, "echo", ft_strlen("echo")))
+				package = package->next;
+			else
+				break ;
+		}
+	}
+	return (package);
+}
 
 void	ft_echo(char **output, bool flag, t_package *package)
 {
@@ -105,12 +142,13 @@ void	ft_echo(char **output, bool flag, t_package *package)
 
 	i = 0;
 	ret = 0;
+	// printf("\n==========ECHO STARTS=======================\n");
 	if (*package->out_redirection == 2)
 	{
 		ret = open(*package->outfiles, O_CREAT | O_WRONLY);
 		if (ret < 0)
 			return ;
-		printf("file has been created: %s\n", *package->outfiles);// TODO---> delete this line later
+		printf("file has been created: %s\n", *package->outfiles);
 	}
 	if (!output)
 	{
@@ -119,7 +157,6 @@ void	ft_echo(char **output, bool flag, t_package *package)
 	}
 	while (output[i])
 	{	
-		// printf("ret: %d\n", ret);// TODO---> delete this line later
 		ft_putstr_fd(output[i], ret);
 		if (output[i + 1])
 			write(ret, " ", 1);
@@ -128,6 +165,8 @@ void	ft_echo(char **output, bool flag, t_package *package)
 	if (!flag)
 		write(1, "\n", 1);
 }
+
+
 
 int builtin_picker(t_package *package)
 {
@@ -143,12 +182,17 @@ int builtin_picker(t_package *package)
 	flag = false;
 	i = 1;
 	j = 0;
+	package = pipe_case(package); //*this is for when pipes appear
 	cmd_arg = package->cmd_args;
 	output = (char **)malloc(doublestr_len(cmd_arg) * sizeof(char *));
+	// int test = echo_variants(cmd_arg[0], "echo", ft_strlen("echo"));
+	// printf("test: %d\n", test);
 	if(!output)
 		return (0);
-	if (!ft_strncmp(cmd_arg[0], "echo", doublestr_len(cmd_arg)))
+	if (echo_variants(cmd_arg[0], "echo", ft_strlen(cmd_arg[0])))
     {
+		if (!cmd_arg[i])
+			printf("\n");
 		while (cmd_arg[i])
 		{
 			while (!ft_strncmp(cmd_arg[i], "-n", doublestr_len(cmd_arg)))
@@ -164,13 +208,11 @@ int builtin_picker(t_package *package)
 			output[j] = handle_qouts(cmd_arg, i);
 			j++;
 			i++;
-			// handle qoutos
-			//run echo
-			// i++;
 		}
 		output[i + 1] = "\0";
         ft_echo(output, flag, package);
-		// destroy_output(output); //TODO: ----> this is the issue
+		free(output);
+		*output = 0;
         return (1);
     }
     return (0);

@@ -3,20 +3,26 @@
 
 void	print_package(t_package *head)
 {
-	int	i;
-	
-	printf("cmd:	%s\n", head->cmd);
-	// builtin_picker(head);
+
+	// int	flag;
+	int i;
+	 printf("cmd:	%s\n", head->cmd);
+	// flag = 0;
+	i = 0;
 	while (head != NULL)
 	{
-		builtin_picker(head);
-		printf("cmd:	%s\n", head->cmd);
-		while (head->cmd_args && head->cmd_args[0])
-		{
+		//  if (!flag)
+		//  {
+		//  	builtin_picker(head);
+		//  	flag = 1;
+		//  }
+		 i = 0;
+		  while (head->cmd_args && head->cmd_args[i])
+		  {
 			printf("cmd_args:	%s\n", head->cmd_args[i]);
-			head->cmd_args++;
-		}
-		printf("pipe:	%d\n", head->pipe);
+			i++;
+		  }
+		//  printf("pipe:	%d\n", head->pipe);
 		head = head->next;
 	}
 }
@@ -120,7 +126,7 @@ char	*check_redirections(t_package **newNode, char *current_process)
 		remainder_index++;
 		i++;
 	}
-	printf("remainder %s\n", remainder);
+	// printf("remainder %s\n", remainder);
 	(*newNode)->in_redirection[iR] = NOTHING;
 	(*newNode)->out_redirection[oR] = NOTHING;
 	(*newNode)->infiles[iR] = NULL;
@@ -141,7 +147,7 @@ void	fill_package(t_package **newNode, char *current_process)
 	(*newNode)->cmd = (*newNode)->cmd_args[0];
 	//special split && cmd abspeichern!
 	
-	printf("\n");
+	// printf("\n");
 	for (int i = 0; (*newNode)->out_redirection[i] != 0; i++)
 		printf("out_redirection[%d] = %d\n", i , (*newNode)->out_redirection[i]);
 	for (int i = 0; (*newNode)->in_redirection[i] != 0; i++)
