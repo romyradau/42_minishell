@@ -3,23 +3,32 @@
 int	ft_findW_count(char const *s, char c)
 {
 	int	i = 0;
-	int	cnt = 1;
+	int	cnt = 0;
+	//warum ist count default 1 ???
 	int	dq = 1;
 	int	sq = 1;
 	while (s[i] != '\0')
 	{
-		if (s[i] == '"' && sq == 1)
-			dq *= -1;
-		if (s[i] == '\'' && dq == 1)
-			sq *= -1;
-		if (c == s[i] && sq == 1 && dq == 1)
+		if (s[i] != c || sq == -1 || dq == -1)
+		{
+			if (s[i] == '"' && sq == 1)
+				dq *= -1;
+			if (s[i] == '\'' && dq == 1)
+				sq *= -1;
 			cnt++;
+			while ((s[i] != c || sq == -1 || dq == -1) && s[i] != '\0')
+				i++;
+		}
+		if (c == s[i] && sq == 1 && dq == 1)
+			while ((c == s[i] && sq == 1 && dq == 1) && s[i] != '\0')
+				i++;
 		i++;
 	}
 	if (sq == -1 || dq == -1)
 		return (-1);
 	return (cnt);
 }
+
 
 static int	ft_count(int cnt, char const *str, char c)
 {
@@ -83,7 +92,6 @@ char	**special_split(char const *s, char c)
 		start = ft_count(start, s, c);
 		end = ft_count_toNext(start, s, c);
 		result[i] = ft_substr(s, start, end - start);
-		printf("%s\n", result[i]);
 		i++;
 		start = end;
 	}

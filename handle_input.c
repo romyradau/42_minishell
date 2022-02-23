@@ -1,13 +1,13 @@
 
-
 #include "minishell.h"
 
 void	print_package(t_package *head)
 {
 	int	i;
-
-	i = 0;
-	while (head)
+	
+	printf("cmd:	%s\n", head->cmd);
+	// builtin_picker(head);
+	while (head != NULL)
 	{
 		builtin_picker(head);
 		printf("cmd:	%s\n", head->cmd);
@@ -42,15 +42,9 @@ int	char_compare(char *current_process, int *i)
 		if (current_process[(*i) + 1] == '<')
 		{
 			(*i)++;
-			// printf("input<<: 	%s\n", input);
-			//function die "des danach" als package->redirection speichert
-			//muss aber noch als char * abgespeichert werden
 			return HEREDOC;
 
 		}
-		// printf("input<: 	%s\n", input);
-		//function die "des danach" als package->redir->in speichert
-		//muss aber noch als char * abgespeichert werden
 		return INFILE;
 	}
 	else if (current_process[(*i)] == '>')
@@ -58,14 +52,8 @@ int	char_compare(char *current_process, int *i)
 		if (current_process[(*i) + 1] == '>')
 		{
 			(*i)++;
-			// printf("input>>: 	%s\n", input);
-			//function die "des danach" als package->redirection speichert
-			//muss aber noch als char * abgespeichert werden
 			return APPEND;
 		}
-		// printf("input>: 	%s\n", input);
-		//function die "des danach" als package->redirection speichert
-		//muss aber noch als char * abgespeichert werden
 		return TRUNCATE;
 	}
 	else
@@ -104,11 +92,10 @@ char	*check_redirections(t_package **newNode, char *current_process)
 	remainder = ft_calloc(ft_strlen(current_process) + 1, sizeof(char));
 	int		remainder_index = 0;
 
-	(*newNode)->outfiles = malloc(sizeof(char *) * 256);
-	(*newNode)->infiles = malloc(sizeof(char *) * 256);
+	(*newNode)->outfiles = (char **)malloc(sizeof(char *) * 256);
+	(*newNode)->infiles = (char **)malloc(sizeof(char *) * 256);
+	//muss hier nicht auch noch der space fur den actual string allocated werden?
 	// function that checks how many reds there are
-	// @Alex kann auch jmd red ohne filename eingeben - if - was dann???
-	// ->dann kann das nciht geöffnet werden
 	(*newNode)->out_redirection = malloc(sizeof(int) * 256);
 	(*newNode)->in_redirection = malloc(sizeof(int) * 256);
 	// check max files in process and maybe use ft_calloc
@@ -120,7 +107,6 @@ char	*check_redirections(t_package **newNode, char *current_process)
 		{
 			(*newNode)->in_redirection[iR] = operator;
 			(*newNode)->infiles[iR] = get_file(current_process, &i);
-			// i steht auf dem meta_char
 			iR++;
 		}
 		else if (operator == TRUNCATE || operator == APPEND)
@@ -129,8 +115,7 @@ char	*check_redirections(t_package **newNode, char *current_process)
 			(*newNode)->outfiles[oR] = get_file(current_process, &i);
 			oR++;
 		}
-		// if (operator)
-			// printf("hier:	%c\n", current_process[i]);
+
 		remainder[remainder_index] = current_process[i];
 		remainder_index++;
 		i++;
@@ -142,7 +127,7 @@ char	*check_redirections(t_package **newNode, char *current_process)
 	(*newNode)->outfiles[oR] = NULL;
 	return (remainder);
 }
-
+//morgen
 
 
 void	fill_package(t_package **newNode, char *current_process)
@@ -151,7 +136,7 @@ void	fill_package(t_package **newNode, char *current_process)
 	
 	cmd_tokens = check_redirections(newNode, current_process);
 
-	printf("cmd_tokens	%s\n", cmd_tokens);
+	// printf("cmd_tokens	%s\n", cmd_tokens);
 	(*newNode)->cmd_args = special_split(cmd_tokens, ' ');
 	(*newNode)->cmd = (*newNode)->cmd_args[0];
 	//special split && cmd abspeichern!
@@ -165,25 +150,8 @@ void	fill_package(t_package **newNode, char *current_process)
 		printf("infiles[%d] = %s\n", i , (*newNode)->infiles[i]);
 	for	(int i = 0; (*newNode)->outfiles[i] != NULL; i++)
 		printf("outfiles[%d] = %s\n", i , (*newNode)->outfiles[i]);
-	
-	// //functions die eine nach der anderen input-rules anwenden
-	// //und ein nach dem anderen package value bestücken
-	// if (operator == TRUNCATE)
-	// 	//function die "des danach" als package->redirection speichert
-	// if (operator == APPEND)
 
-	// if (operator == INFILE)
-
-	// if (operator == HEREDOC)
-
-	// (*newNode)->cmd = ft_strdup(input);
-	// //muss der est ohhne redirections sein
-	// //freen - aber spater dann beim listen leeren
-	// (*newNode)->redirection = operator;
-	// if (operator == PIPE)
-	// 	(*newNode)->pipe = true;
-	// else
-	// 	(*newNode)->pipe = false;
+	// freen - aber spater dann beim listen leeren
 }
 
 int	push_package(t_package **head, char *current_process)
@@ -204,7 +172,11 @@ int	push_package(t_package **head, char *current_process)
 		return (0);
 	}
 	while (last->next != NULL)
+	{
+		last->pipe = true;
 		last = last->next;
+	}	
+	
 	last->next = newNode;
 	//zeile die neue node dran hängt
 	newNode->next = NULL;

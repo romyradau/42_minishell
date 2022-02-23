@@ -25,5 +25,8 @@ this is a 42project
 #	pipe logik ausdenken
 #	bzw zahlen wie viele prozesse es gibt
 #	und die mit den redirections verlinken
+14th tuesday
+	split fix fur cmd_args
+	pipe bool implemented;
 
 	 
