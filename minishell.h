@@ -94,11 +94,11 @@ typedef struct s_builtin
 
 //====================FUNCTIONS=========
 
-void 	init_lex(char **input);
-char    *cut_quot_sequence(char *str, char c);
+void	init_lex(char **input);
+char	*cut_quot_sequence(char *str, char c);
 int		builtin_picker(t_package *package);
 void	btn_handler(int sig);
-int 	prompt();
+int		prompt();
 char	**special_split(char const *s, char c);
 
 //====================PARSING=========
@@ -108,7 +108,9 @@ void	print_package(t_package *head);
 void	print2Darray(char **split);
 
 
-//====================FUNCTIONS=========
+//====================PRINTING=========
 
+void	print2Darray(char **split);
+void	print_package(t_package *head);
 
 #endif

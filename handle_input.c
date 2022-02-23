@@ -1,46 +1,6 @@
 
 #include "minishell.h"
 
-void	print_package(t_package *head)
-{
-
-	// int	flag;
-	int i;
-	 printf("cmd:	%s\n", head->cmd);
-	// flag = 0;
-	i = 0;
-	while (head != NULL)
-	{
-		//  if (!flag)
-		//  {
-		//  	builtin_picker(head);
-		//  	flag = 1;
-		//  }
-		 i = 0;
-		  while (head->cmd_args && head->cmd_args[i])
-		  {
-			printf("cmd_args:	%s\n", head->cmd_args[i]);
-			i++;
-		  }
-		//  printf("pipe:	%d\n", head->pipe);
-		head = head->next;
-	}
-}
-
-void	print2Darray(char **split)
-{
-	int	i;
-
-	i = 0;
-	printf("-------- pipe_package start --------\n");
-	while (split[i])
-	{
-		printf("%s\n", split[i]);
-		i++;
-	}
-	printf("-------- pipe_package end --------\n\n");
-}
-
 int	char_compare(char *current_process, int *i)
 {
 	if (current_process[(*i)] == '<')
@@ -177,6 +137,7 @@ int	push_package(t_package **head, char *current_process)
 		(*head)->next = NULL;
 		return (0);
 	}
+	printf("last->next %p\n", last->next);
 	while (last->next != NULL)
 	{
 		last->pipe = true;
@@ -184,7 +145,6 @@ int	push_package(t_package **head, char *current_process)
 	}	
 	
 	last->next = newNode;
-	//zeile die neue node dran hängt
 	newNode->next = NULL;
 	return (0);
 }
