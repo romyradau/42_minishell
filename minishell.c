@@ -4,14 +4,14 @@
 
 int process_tokens(t_data *data)
 {
-	char		*current_process;
-	t_package	*current_package;
+	// char		*current_process;
+	// t_package	*current_package;
 	int		i;
 
 
 	i = 0;
-	current_process = data->processes[i];
-	current_package = data->head;
+	// current_process = data->processes[i];
+	// current_package = data->head;
 	while (data->processes[i])
 	{
 		push_package(&data->head, data->processes[i]);

@@ -3,7 +3,7 @@
 int	ft_findW_count(char const *s, char c)
 {
 	int	i = 0;
-	int	cnt = 0;
+	int	cnt = 1;
 	int	dq = 1;
 	int	sq = 1;
 	while (s[i] != '\0')
