@@ -14,9 +14,15 @@ int process_tokens(t_data *data)
 	current_package = data->head;
 	while (data->processes[i])
 	{
-		push_package(&data->head, data->processes[i]);
-		// if (data->processes[i + 1] != NULL)
+		printf("wie oft pushst du? %d mal\n", i + 1);
+		printf("current_process %s\n", data->processes[i]);
+		if (data->processes[i][0] != '\0')
+			push_package(&data->head, data->processes[i]);
+			// printf("yes is NULLTERMINANTE\n");
+		// if (data->processes[i] != NULL)
 		// 	current_package->pipe = true;
+		// 	// printf("while\n");
+		// 	// segfault??
 		// current_package = current_package->next;
 		//hier wird der pipe bool gesetzt, ohne in fill package zu gehen
 		//weird error "malloc: *** error for object 0xc000000000000000: pointer being freed was not allocated"
@@ -46,6 +52,7 @@ int	prompt(t_data *data)
 	char	*input;
 	char	*user;
 	struct sigaction sa;
+	int		i;
 
 	sa.sa_handler = btn_handler;
 	sigemptyset(&sa.sa_mask);
@@ -66,6 +73,7 @@ int	prompt(t_data *data)
 		}
 		/* start parsing */
 		data->processes = special_split(input, '|');
+		//freen?
 		if (!data->processes)
 		{
 			printf("error");
@@ -73,8 +81,14 @@ int	prompt(t_data *data)
 			//nicht nur returnen sondern einfach mit nachster prompt weiter machen
 		}
 		data->processes = trim_spaces(data);
+		i = 0;
+		while (data->processes[i])
+		{
+			printf("anzahl packages:	%d\n", i);
+			i++;
+		}
 
-		// print2Darray(data->processes);
+		print2Darray(data->processes);
 		// (void)split;
 
 		process_tokens(data);
