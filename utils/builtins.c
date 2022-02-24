@@ -101,7 +101,7 @@ int echo_variants(char *str, const char *str2, unsigned int len)
 	unsigned int i;
 
 	i = 0;
-	while (str[i] && (i < len))
+	while (str[i] && (i <= len))
 	{
 
 		if (str[i] == str2[i])
@@ -155,11 +155,16 @@ void	ft_echo(char **output, bool flag, t_package *package)
 		printf("%s", "error");
 		return ;
 	}
+	printf("test1\n");
 	while (output[i])
 	{	
-		ft_putstr_fd(output[i], ret);
+		printf("i:%d = output:%s\n", i, output[i]);
+		// ft_putstr_fd(output[i], ret);
 		if (output[i + 1])
-			write(ret, " ", 1);
+		{
+			printf("deeeez nutz\n");
+			// write(ret, ".", 1);
+		}
 		i++;
 	}
 	if (!flag)
@@ -171,7 +176,6 @@ void	ft_echo(char **output, bool flag, t_package *package)
 int builtin_picker(t_package *package)
 {
 
-	char	**cmd_arg;
 	bool	quots;
 	bool	flag;
 	int		i;
@@ -180,36 +184,41 @@ int builtin_picker(t_package *package)
 
 	quots = false;
 	flag = false;
+	output = NULL;
 	i = 1;
 	j = 0;
-	package = pipe_case(package); //*this is for when pipes appear
-	cmd_arg = package->cmd_args;
-	output = (char **)malloc(doublestr_len(cmd_arg) * sizeof(char *));
-	// int test = echo_variants(cmd_arg[0], "echo", ft_strlen("echo"));
-	// printf("test: %d\n", test);
-	if(!output)
+	if (!package)
 		return (0);
-	if (echo_variants(cmd_arg[0], "echo", ft_strlen(cmd_arg[0])))
+	// package = pipe_case(package); //*this is for when pipes appear
+	if (echo_variants(package->cmd_args[0], "echo", ft_strlen("echo")))
     {
-		if (!cmd_arg[i])
-			printf("\n");
-		while (cmd_arg[i])
+		output = (char **)malloc(doublestr_len(package->cmd_args) * sizeof(char *));
+		if(!output)
+			return (0);
+		if (!package->cmd_args[i])
 		{
-			while (!ft_strncmp(cmd_arg[i], "-n", doublestr_len(cmd_arg)))
+			free(output);
+			*output = 0;
+			printf("\n");
+			return (0);
+		}
+		while (package->cmd_args[i])
+		{
+			while (!ft_strncmp(package->cmd_args[i], "-n", doublestr_len(package->cmd_args)))
 			{
 				i++;
 				flag = true;
-				if (!cmd_arg[i])
+				if (!package->cmd_args[i])
 				{
 					printf("\n");
 					return (1);
 				}
 			}
-			output[j] = handle_qouts(cmd_arg, i);
+			output[j] = handle_qouts(package->cmd_args, i);
 			j++;
 			i++;
 		}
-		output[i + 1] = "\0";
+		output[j + 1] = "\0";
         ft_echo(output, flag, package);
 		free(output);
 		*output = 0;
