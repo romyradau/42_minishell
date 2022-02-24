@@ -86,12 +86,15 @@ char *handle_qouts(char **cmd_arg, int index)
 
 	output = NULL;	
 	quots = false;
-	if (check_quot_sequence(cmd_arg[index], '"', &quots))
+	if (check_quot_sequence(cmd_arg[index], '"', &quots) || check_quot_sequence(cmd_arg[index], 39, &quots))
 	{
-		output = cut_quot_sequence(cmd_arg[index], '"');
+		if (check_quot_sequence(cmd_arg[index], 39, &quots))
+			output = cut_quot_sequence(cmd_arg[index], 39);
+		else if (check_quot_sequence(cmd_arg[index], '"', &quots))
+			output = cut_quot_sequence(cmd_arg[index], '"');
 		quots = false;
 	}
-	else if (!check_quot_sequence(cmd_arg[index], '"', &quots))
+	else if (!check_quot_sequence(cmd_arg[index], '"', &quots) || check_quot_sequence(cmd_arg[index], 39, &quots))
 	{
 		if (quots)
 		{
@@ -192,11 +195,11 @@ void	ft_echo(char **output, bool flag, t_package *package)
 		printf("%s", "error");
 		return ;
 	}
-	while (output[i][0] != 10) //---> wenn es nicht
+	while (output[i][0] != 10)
 	{	
-		printf("output[i][0]%d\n", output[i][0]);
-		printf("[%d]output:%s\n", i, output[i]);
-		// ft_putstr_fd(output[i], ret);
+		// printf("output[i][0]%d\n", output[i][0]);
+		// printf("[%d]output:%s\n", i, output[i]);
+		ft_putstr_fd(output[i], ret);
 		// if (ft_strncmp(output[i + 1], "\0", 1))
 		// {	
 		// 	printf("%s\n", output[i + 1]);
