@@ -5,6 +5,8 @@ void	print_package(t_package *head)
 {
 
 	// int i;
+	// system("clear");
+	printf("===============PRINT_PACKAGE=================\n");
 	while (head != NULL)
 	{
 	 	// printf("cmd:	%s\n", head->cmd);
@@ -33,3 +35,5 @@ void	print2Darray(char **split)
 	}
 	printf("-------- pipe_package end --------\n\n");
 }
+
+

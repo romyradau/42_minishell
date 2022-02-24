@@ -12,6 +12,20 @@
 
 //TODO: fix segfault for -n -n case
 
+char *ft_strcalloc(int size)
+{
+    char *new_s;
+    int i;
+
+    new_s = malloc(size);
+    if (!new_s)
+        return (NULL);
+    i = 0;
+    while (i < size)
+        new_s[i++] = 0;
+    return (new_s);
+}
+
 int check_quot_sequence(char *str, char c, bool *q)
 {
     int i;
@@ -86,10 +100,9 @@ char *handle_qouts(char **cmd_arg, int index)
 		}
 		else
 		{
-			output = (char *)malloc(ft_strlen(cmd_arg[index]) * sizeof(char));
-			if (!output)
-				return (0);
-			output = cmd_arg[index];
+			printf("\nin handle_qouts : the string is allocated\n");
+			output = ft_strdup(cmd_arg[index]);
+			printf(".....\nAllocation is finished!\n");
 		}
 
 	}
@@ -135,6 +148,29 @@ t_package *pipe_case(t_package *package)
 	return (package);
 }
 
+char **kill_d_str(char **str)
+{
+	char **tmp;
+	int len;
+	int i;
+
+	tmp = str;
+	len = 0;
+	i = 0;
+	while (*tmp)
+	{
+		tmp++;
+		len++;
+	}
+	while (i < len)
+	{
+		str[i] = ft_strcalloc(1);
+		i++;	
+	}
+	free(str);
+	return (str);
+}
+
 void	ft_echo(char **output, bool flag, t_package *package)
 {
 	int i;
@@ -142,36 +178,37 @@ void	ft_echo(char **output, bool flag, t_package *package)
 
 	i = 0;
 	ret = 0;
-	// printf("\n==========ECHO STARTS=======================\n");
+	printf("\n==========ECHO STARTS=======================\n");
 	if (*package->out_redirection == 2)
 	{
+		printf("package has a redirection\n");
 		ret = open(*package->outfiles, O_CREAT | O_WRONLY);
 		if (ret < 0)
 			return ;
 		printf("file has been created: %s\n", *package->outfiles);
 	}
-	if (!output)
+	if (!output[0])
 	{
 		printf("%s", "error");
 		return ;
 	}
-	printf("test1\n");
-	while (output[i])
+	while (output[i][0] != 10) //---> wenn es nicht
 	{	
-		printf("i:%d = output:%s\n", i, output[i]);
+		printf("output[i][0]%d\n", output[i][0]);
+		printf("[%d]output:%s\n", i, output[i]);
 		// ft_putstr_fd(output[i], ret);
-		if (output[i + 1])
-		{
-			printf("deeeez nutz\n");
-			// write(ret, ".", 1);
-		}
+		// if (ft_strncmp(output[i + 1], "\0", 1))
+		// {	
+		// 	printf("%s\n", output[i + 1]);
+		write(ret, " ", 1);
+		// }
 		i++;
 	}
 	if (!flag)
 		write(1, "\n", 1);
+	printf("%d\n", i);
+	kill_d_str(output);
 }
-
-
 
 int builtin_picker(t_package *package)
 {
@@ -187,11 +224,13 @@ int builtin_picker(t_package *package)
 	output = NULL;
 	i = 1;
 	j = 0;
+	printf("+++++++++++++BUTILT_IN PICKER RUNS++++++++++++\n");
 	if (!package)
 		return (0);
 	// package = pipe_case(package); //*this is for when pipes appear
 	if (echo_variants(package->cmd_args[0], "echo", ft_strlen("echo")))
     {
+		printf("\e[0;31m================ECHO is noted!======================\033[0m\n\e[0;34mcmd-> %s\033[0m\n", package->cmd_args[0]);
 		output = (char **)malloc(doublestr_len(package->cmd_args) * sizeof(char *));
 		if(!output)
 			return (0);
@@ -218,10 +257,10 @@ int builtin_picker(t_package *package)
 			j++;
 			i++;
 		}
-		output[j + 1] = "\0";
+		output[j] = ft_strdup("\n");
         ft_echo(output, flag, package);
-		free(output);
-		*output = 0;
+		printf("Pointer is freed\n");
+		// package->cmd_args[0] = ft_strcalloc(1);
         return (1);
     }
     return (0);

@@ -100,6 +100,7 @@ int	prompt(t_data *data)
 		/* end execution */
 		print_package(data->head);
 		add_history(input);
+		free(input);
 	}
 	return (0);
 }
