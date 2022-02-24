@@ -15,7 +15,7 @@ int process_tokens(t_data *data)
 	while (data->processes[i])
 	{
 		printf("wie oft pushst du? %d mal\n", i + 1);
-		printf("current_process %s\n", data->processes[i]);
+		// printf("current_process %s\n", data->processes[i]);
 		if (data->processes[i][0] != '\0')
 			push_package(&data->head, data->processes[i]);
 			// printf("yes is NULLTERMINANTE\n");
@@ -84,6 +84,7 @@ int	prompt(t_data *data)
 		i = 0;
 		while (data->processes[i])
 		{
+			// printf("data cmds:%s\n", data->processes[i]);
 			printf("anzahl packages:	%d\n", i);
 			i++;
 		}
