@@ -3,7 +3,7 @@
 int	ft_findW_count(char const *s, char c)
 {
 	int	i = 0;
-	int	cnt = 0;
+	int	cnt = 1;
 	int	dq = 1;
 	int	sq = 1;
 	while (s[i] != '\0')
@@ -27,6 +27,9 @@ int	ft_findW_count(char const *s, char c)
 		return (-1);
 	return (cnt);
 }
+//felerhafte quotes kacke
+//anfang ging aber hat leerzeichen extra allociert
+//jetzt checkt er noch nicht richtig fur quotes
 
 
 static int	ft_count(int cnt, char const *str, char c)
@@ -82,7 +85,10 @@ char	**special_split(char const *s, char c)
 
 	int	numberStrings = ft_findW_count(s, c);
 	if (numberStrings == -1)
+	{
+		printf("wheryu\n");
 		return (NULL); //error unclosed quotes
+	}
 	result = (char **)malloc((numberStrings + 1) * sizeof(char *));
 	if (!result)
 		return (NULL);

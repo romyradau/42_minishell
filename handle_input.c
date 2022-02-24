@@ -137,8 +137,7 @@ int	push_package(t_package **head, char *current_process)
 		(*head)->next = NULL;
 		return (0);
 	}
-	printf("last->next %p\n", last->next);
-	while (last->next != NULL)
+	while (last->next != NULL && last->next->cmd )
 	{
 		last->pipe = true;
 		last = last->next;
@@ -146,5 +145,6 @@ int	push_package(t_package **head, char *current_process)
 	
 	last->next = newNode;
 	newNode->next = NULL;
+	// printf("last->cmd %s\n", last->cmd);
 	return (0);
 }
