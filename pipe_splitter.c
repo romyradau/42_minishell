@@ -1,36 +1,75 @@
 #include "minishell.h"
 
+// int	ft_findW_count(char const *s, char c)
+// {
+// 	int	i = 0;
+// 	int	cnt = 1;
+// 	int	dq = 1;
+// 	int	sq = 1;
+// 	printf("string: %s\n",s);
+// 	while (s[i] != '\0')
+// 	{
+// 		printf("char in word cnt: %c\n",s[i]);
+// 		if (s[i] != c || sq == -1 || dq == -1)
+// 		{
+// 			if (s[i] == '"' && sq == 1)
+// 				dq *= -1;
+// 			if (s[i] == '\'' && dq == 1)
+// 				sq *= -1;
+// 			cnt++;
+// 			while ((s[i] != c || sq == -1 || dq == -1) && s[i] != '\0')
+// 				i++;
+// 		}
+// 		if (c == s[i] && sq == 1 && dq == 1)
+// 			while ((c == s[i] && sq == 1 && dq == 1) && s[i] != '\0')
+// 				i++;
+// 		i++;
+// 	}
+// 	if (sq == -1 || dq == -1)
+// 		return (-1);
+// 	return (cnt);
+// }
+//felerhafte quotes kacke
+//anfang ging aber hat leerzeichen extra allociert
+//jetzt checkt er noch nicht richtig fur quotes
 int	ft_findW_count(char const *s, char c)
 {
-	int	i = 0;
-	int	cnt = 1;
+	int		i;
 	int	dq = 1;
 	int	sq = 1;
+	int	cnt;
+
+	i = 0;
+	cnt = 1;
 	while (s[i] != '\0')
 	{
-		if (s[i] != c || sq == -1 || dq == -1)
-		{
+		while ((s[i] != c || sq == -1 || dq == -1) && s[i] != '\0')
+ 		{
 			if (s[i] == '"' && sq == 1)
 				dq *= -1;
 			if (s[i] == '\'' && dq == 1)
 				sq *= -1;
-			cnt++;
-			while ((s[i] != c || sq == -1 || dq == -1) && s[i] != '\0')
-				i++;
+			i++;
 		}
-		if (c == s[i] && sq == 1 && dq == 1)
-			while ((c == s[i] && sq == 1 && dq == 1) && s[i] != '\0')
-				i++;
-		i++;
+		if (s[i] != '\0')
+			cnt++;
+		while (s[i] == c)
+			i++;
 	}
-	if (sq == -1 || dq == -1)
-		return (-1);
+		// if (s[i] == c)
+			// i++;
+		// else if (s[i] != c)
+		// {
+		// 	cnt++;
+		// 	while (s[i] != '\0' && s[i] != c)
+		// 		i++;
+		// }
+	// }
 	return (cnt);
 }
-//felerhafte quotes kacke
-//anfang ging aber hat leerzeichen extra allociert
-//jetzt checkt er noch nicht richtig fur quotes
-
+//cmd "str1 str2 str3" >out | cmd2 -arg str | cmd3 str >out2 >out3
+//immer ein cmd_args zu viel
+//fixen
 
 static int	ft_count(int cnt, char const *str, char c)
 {

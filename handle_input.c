@@ -81,19 +81,23 @@ char	*check_redirections(t_package **newNode, char *current_process)
 			(*newNode)->outfiles[oR] = get_file(current_process, &i);
 			oR++;
 		}
-
+		// if (is_metachar(current_process[i]))
 		remainder[remainder_index] = current_process[i];
+		// else 
+		// 	remainder[remainder_index] = current_process[i];
+		printf(" i 	%d\n", i);
 		remainder_index++;
 		i++;
 	}
-	// printf("remainder %s\n", remainder);
+	printf("remainder %s\n", remainder);
 	(*newNode)->in_redirection[iR] = NOTHING;
 	(*newNode)->out_redirection[oR] = NOTHING;
 	(*newNode)->infiles[iR] = NULL;
 	(*newNode)->outfiles[oR] = NULL;
 	return (remainder);
 }
-//morgen
+//morgen cmd args fixen!
+
 
 
 void	fill_package(t_package **newNode, char *current_process)

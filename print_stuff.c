@@ -4,20 +4,20 @@
 void	print_package(t_package *head)
 {
 
-	// int i;
+	int i;
 	// system("clear");
 	printf("===============PRINT_PACKAGE=================\n");
 	while (head != NULL)
 	{
-	 	// printf("cmd:	%s\n", head->cmd);
-		builtin_picker(head);
-		// i = 0;
-		//   while (head->cmd_args && head->cmd_args[i])
-		//   {
-			// printf("cmd_args:	%s\n", head->cmd_args[i]);
-			// i++;
-		//   }
-		// printf("pipe:	%d\n", head->pipe);
+	 	printf("cmd:	%s\n", head->cmd);
+		// builtin_picker(head);
+		 i = 0;
+		   while (head->cmd_args && head->cmd_args[i])
+		   {
+				printf("cmd_args:	%s\n", head->cmd_args[i]);
+				i++;
+		   }
+		 printf("pipe:	%d\n", head->pipe);
 		head = head->next;
 	}
 }
