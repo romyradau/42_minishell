@@ -1,7 +1,8 @@
 
 NAME = minishell
 
-FILES = minishell.c handle_input.c pipe_splitter.c print_stuff.c ./utils/sig_handls.c ./utils/builtins.c
+FILES = minishell.c handle_input.c pipe_splitter.c print_stuff.c ./utils/sig_handls.c ./utils/builtins.c ./utils/ft_echo.c \
+		./utils/builtin_tools/handle_qouts.c ./utils/builtin_tools/handle_string.c
 
 LDFLAGS		= -L/Users/$(USER)/.brew/opt/readline/lib
 CPPFLAGS	= -I/Users/$(USER)/.brew/opt/readline/include

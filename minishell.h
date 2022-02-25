@@ -107,6 +107,17 @@ int		push_package(t_package **head, char *current_process);
 void	print_package(t_package *head);
 void	print2Darray(char **split);
 
+//====================BUILTIN==========
+int		check_quot_sequence(char *str, char c, bool *q);
+char	*cut_quot_sequence(char *str, char c);
+char	*handle_qouts(char **cmd_arg, int index);
+char	*ft_strcalloc(int size);
+int		doublestr_len(char **cmd_arg);
+char	**kill_d_str(char **str);
+int		echo_variants(char *str, const char *str2, unsigned int len);
+int		check_for_flag(char *str);
+void	ft_echo(char **output, bool flag, t_package *package);
+int		prep_echo(t_package *package);
 
 //====================PRINTING=========
 
