@@ -51,10 +51,10 @@ int	ft_findW_count(char const *s, char c)
 				sq *= -1;
 			i++;
 		}
-		if (s[i] != '\0')
-			cnt++;
 		while (s[i] == c)
 			i++;
+		if (s[i] != '\0')
+			cnt++;
 	}
 		// if (s[i] == c)
 			// i++;
@@ -65,11 +65,11 @@ int	ft_findW_count(char const *s, char c)
 		// 		i++;
 		// }
 	// }
+	// printf("counter %d\n", cnt);
 	return (cnt);
 }
-//cmd "str1 str2 str3" >out | cmd2 -arg str | cmd3 str >out2 >out3
-//immer ein cmd_args zu viel
-//fixen
+//es zahlt wensn denn ws findet
+//if space am anfag spaces weg
 
 static int	ft_count(int cnt, char const *str, char c)
 {

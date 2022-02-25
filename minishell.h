@@ -36,17 +36,26 @@ typedef enum {
 	HEREDOC //<<
 } meta;
 
-typedef struct s_file{
-	int		in;
-	// data.in = open(package->in, O_RDONLY);
-	int		out;
-	// data.out = open(package->out, O_RDWR | O_CREAT | O_TRUNC, 0644);
-	int		heredoc;
-	char	*limiter;
-	int		fd[2];
-	int		tmp_fd;
-	pid_t	pid;
-}	t_file;
+// typedef struct s_file{
+// 	int		in;
+// 	// data.in = open(package->in, O_RDONLY);
+// 	int		out;
+// 	// data.out = open(package->out, O_RDWR | O_CREAT | O_TRUNC, 0644);
+// 	int		heredoc;
+// 	char	*limiter;
+// 	int		fd[2];
+// 	int		tmp_fd;
+// 	pid_t	pid;
+// }	t_file;
+
+typedef struct s_red{
+	int		i;
+	int		operator;
+	int		left_over_index;
+	char	*left_over;
+	int		iR;
+	int		oR;
+}	t_red;
 /*
 wie man multiple redirections in der pipex struktur andert 
 muss ich noch nachschauen
@@ -68,7 +77,7 @@ typedef struct s_package
 	// char				*env_var;
 	char				*cmd;
 	char				**cmd_args;
-	t_file				*redir;
+	// t_file				*redir;
 //man könnte auch alles in eine struct hauen
 	struct s_package	*next;
 }	t_package;

@@ -2,35 +2,32 @@
 
 #include "minishell.h"
 
-int process_tokens(t_data *data)
+int process_packages(t_data *data)
 {
-	// char		*current_process;
-	// t_package	*current_package;
+	t_package	*current_package;
 	int		i;
 
-
 	i = 0;
-	// current_process = data->processes[i];
-	// current_package = data->head;
 	while (data->processes[i])
 	{
-		printf("wie oft pushst du? %d mal\n", i + 1);
-		// printf("current_process %s\n", data->processes[i]);
 		if (data->processes[i][0] != '\0')
 			push_package(&data->head, data->processes[i]);
-			// printf("yes is NULLTERMINANTE\n");
-		// if (data->processes[i] != NULL)
-		// 	current_package->pipe = true;
-		// 	// printf("while\n");
-		// 	// segfault??
-		// current_package = current_package->next;
-		//hier wird der pipe bool gesetzt, ohne in fill package zu gehen
-		//weird error "malloc: *** error for object 0xc000000000000000: pointer being freed was not allocated"
-		//blöder fix in push package
+		//braucht man != '\0' noch??? nicht wirklich but i keep it though - glaube das war weil's eins zu viel gab mit ner \0 drin
+		current_package = data->head;
+		if (data->processes[i] != NULL)
+		{
+			while (current_package->next)
+			{
+				current_package->pipe = true;
+				current_package = current_package->next;
+			}
+		}
 		i++;
 	}
 	return (0);
 }
+//pusht die packages
+//setzt den pipe bool fur alle packages
 
 char	**trim_spaces(t_data *data)
 {
@@ -46,13 +43,14 @@ char	**trim_spaces(t_data *data)
 	}
 	return (data->processes);
 }
+//trimt von den pipe_packages noch überflussige spaces ab
+//damit im weiteren Verlauf wirklich nur mit dem string gearbeitet werden kann
 
 int	prompt(t_data *data)
 {
 	char	*input;
 	char	*user;
-	struct sigaction sa;
-	int		i;
+	struct	sigaction sa;
 
 	sa.sa_handler = btn_handler;
 	sigemptyset(&sa.sa_mask);
@@ -65,12 +63,15 @@ int	prompt(t_data *data)
 			return (-1);
 		if (sigaction(SIGQUIT, &sa, NULL) == -1)
 			return (-1);
+		//TODO eigene function
 		input = readline(user);
 		if (input == NULL)
 		{
 			write(1, "exit\n", 5);
 			return (1);
 		}
+		//TODO eigene function
+
 		/* start parsing */
 		data->processes = special_split(input, '|');
 		//freen?
@@ -81,24 +82,14 @@ int	prompt(t_data *data)
 			//nicht nur returnen sondern einfach mit nachster prompt weiter machen
 		}
 		data->processes = trim_spaces(data);
-		i = 0;
-		while (data->processes[i])
-		{
-			// printf("data cmds:%s\n", data->processes[i]);
-			printf("anzahl packages:	%d\n", i);
-			i++;
-		}
-
 		print2Darray(data->processes);
-		// (void)split;
-
-		process_tokens(data);
+		process_packages(data);
 
 		/* end parsing */
 
 		/* start execution */
-
 		/* end execution */
+
 		print_package(data->head);
 		add_history(input);
 		free(input);
@@ -109,7 +100,6 @@ int	prompt(t_data *data)
 int	main(int argc, char **argv, char	**env)
 {
 	t_data		data;
-	// char		*wc_args[5];
 
 	(void) argc;
 	(void) argv;

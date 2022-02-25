@@ -20,6 +20,7 @@ void	print_package(t_package *head)
 		 printf("pipe:	%d\n", head->pipe);
 		head = head->next;
 	}
+	printf("===============PRINT_PACKAGE=================\n");
 }
 
 void	print2Darray(char **split)
