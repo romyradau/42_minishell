@@ -2,33 +2,6 @@
 
 #include "minishell.h"
 
-int process_packages(t_data *data)
-{
-	t_package	*current_package;
-	int		i;
-
-	i = 0;
-	while (data->processes[i])
-	{
-		if (data->processes[i][0] != '\0')
-			push_package(&data->head, data->processes[i]);
-		//braucht man != '\0' noch??? nicht wirklich but i keep it though - glaube das war weil's eins zu viel gab mit ner \0 drin
-		current_package = data->head;
-		if (data->processes[i] != NULL)
-		{
-			while (current_package->next)
-			{
-				current_package->pipe = true;
-				current_package = current_package->next;
-			}
-		}
-		i++;
-	}
-	return (0);
-}
-//pusht die packages
-//setzt den pipe bool fur alle packages
-
 char	**trim_spaces(t_data *data)
 {
 	char	*temp;
@@ -46,6 +19,17 @@ char	**trim_spaces(t_data *data)
 //trimt von den pipe_packages noch überflussige spaces ab
 //damit im weiteren Verlauf wirklich nur mit dem string gearbeitet werden kann
 
+
+int	empty_input(char *input)
+{
+		if (input == NULL)
+		{
+			write(1, "exit\n", 5);
+			return (1);
+		}
+		return (0);
+}
+
 int	prompt(t_data *data)
 {
 	char	*input;
@@ -55,6 +39,7 @@ int	prompt(t_data *data)
 	sa.sa_handler = btn_handler;
 	sigemptyset(&sa.sa_mask);
 	sa.sa_flags = SA_RESTART;
+	//TODO eigene function
 
 	user = "\e[0;36mminishell@rschleic&mjeyavat\033[0m>";
 	while (1)
@@ -65,26 +50,25 @@ int	prompt(t_data *data)
 			return (-1);
 		//TODO eigene function
 		input = readline(user);
-		if (input == NULL)
-		{
-			write(1, "exit\n", 5);
+		if (empty_input(input))
 			return (1);
-		}
-		//TODO eigene function
 
 		/* start parsing */
 		data->processes = special_split(input, '|');
 		//freen?
 		if (!data->processes)
 		{
-			printf("error");
+			printf("error: unclosed quotes");
 			return 1;
+			//wie sieht error handling bei open quotes aus?
+			//soll da gleich in die neue prompt gegangen werden?
 			//nicht nur returnen sondern einfach mit nachster prompt weiter machen
+			//TODO eigene function
 		}
 		data->processes = trim_spaces(data);
+		//protecten??
 		print2Darray(data->processes);
 		process_packages(data);
-
 		/* end parsing */
 
 		/* start execution */
@@ -103,16 +87,8 @@ int	main(int argc, char **argv, char	**env)
 
 	(void) argc;
 	(void) argv;
+	ft_bzero(&data, sizeof(t_data));
 	data.env = env;
-	data.head = NULL;
-	
-	// char	*cmds[3];
-	// cmds[0] = "ls";
-	// cmds[1] = "-l";
-	// cmds[2] = NULL;
-
-	// execve("/bin/ls", cmds, env);
-
 	if (prompt(&data))
 	{
 		//free
@@ -121,3 +97,9 @@ int	main(int argc, char **argv, char	**env)
 	}
 	return (0);
 }
+
+/*
+main = introduction of t_data & stores env & sends to->
+prompt = readline & packages vorbereiten
+process_packages = pusht die packages & setzt den pipe bool fur alle packages
+*/
