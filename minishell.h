@@ -74,7 +74,7 @@ typedef struct s_package
 	char				**outfiles;
 
 	bool				pipe;
-	// char				*env_var;
+	// char				**env_var; //gibt vlt mehrere in einem package
 	char				*cmd;
 	char				**cmd_args;
 	// t_file				*redir;
@@ -101,7 +101,7 @@ typedef struct s_builtin
 	//env
 }	t_builtin;
 
-//====================FUNCTIONS=========
+/*====================FUNCTIONS=========*/
 
 void	init_lex(char **input);
 char	*cut_quot_sequence(char *str, char c);
@@ -110,16 +110,24 @@ void	btn_handler(int sig);
 int		prompt();
 char	**special_split(char const *s, char c);
 
-//====================PARSING=========
-// handle_input
-int		push_package(t_package **head, char *current_process);
+/*====================PARSING=========*/
+
+int		process_packages(t_data *data);
+// int		push_package(t_package **head, char *current_process);
+void	fill_package(t_package **newNode, char *current_process);
 void	print_package(t_package *head);
 void	print2Darray(char **split);
 
-
-//====================PRINTING=========
+/*====================PRINTING=========*/
 
 void	print2Darray(char **split);
 void	print_package(t_package *head);
+
+/*====================CALCULATING=========*/
+
+void	allocate_redirections(t_package **newNode, char *current_process);
+bool	is_metachar(char c);
+int		char_compare(char *current_process, int *i);
+
 
 #endif
