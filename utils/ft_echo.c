@@ -28,13 +28,22 @@ void	ft_echo(char **output, bool flag, t_package *package)
 {
 	int i;
 	int len;
+	// int j;
 	int ret;
 
 	i = 0;
 	len = ft_d_strlen(output);
-	printf("len; %d\n", len - 1);
+	// j = 0;
+	// package->builtin->echo_str = (char **)malloc(len + 1 * sizeof(char *));
+	// while (j < len)
+	// {
+	// 	package->builtin->echo_str[j] = ft_strdup(output[j]);
+	// 	// ft_strdup(output[]); //TODO ->kann evntl zu memleaks führen muss richting gemelloct werden
+	// 	j++;
+	// }	
+	// printf("len; %d\n", len - 1);
 	ret = 0;
-	printf("\n==========ECHO STARTS=======================\n");
+	printf("\n\e[0;33m================ECHO STARTS=======================\033[0m\n");
 	if (*package->out_redirection == 2)
 	{
 		printf("package has a redirection\n");
@@ -57,7 +66,9 @@ void	ft_echo(char **output, bool flag, t_package *package)
 	}
 	if (!flag)
 		write(1, "\n", 1);
+
 	kill_d_str(output);
+	printf("\n\e[0;33m==================ECHO END=======================\033[0m\n");
 }
 
 t_package *echo_pipecase(t_package *package)

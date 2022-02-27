@@ -56,6 +56,14 @@ typedef struct s_red{
 	int		iR;
 	int		oR;
 }	t_red;
+
+typedef struct s_builtin
+{
+	char	**echo_str;
+	//env
+	char	*home_path;
+}	t_builtin;
+
 /*
 wie man multiple redirections in der pipex struktur andert 
 muss ich noch nachschauen
@@ -79,6 +87,7 @@ typedef struct s_package
 	char				**cmd_args;
 	// t_file				*redir;
 //man könnte auch alles in eine struct hauen
+	t_builtin			*builtin; //TODO ->new Mohan (27.02.22)
 	struct s_package	*next;
 }	t_package;
 
@@ -93,13 +102,6 @@ typedef struct s_data
 	t_package		*head;
 }	t_data;
 
-typedef struct s_builtin
-{
-	char	*echo_str;
-	//cd
-	//pwd
-	//env
-}	t_builtin;
 
 /*====================FUNCTIONS=========*/
 
