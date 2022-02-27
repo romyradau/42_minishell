@@ -63,6 +63,7 @@ int builtin_picker(t_package *package)
     }
 	if (cmd_variants(package->cmd_args[0], "cd", ft_strlen("cd")))
 	{
+		printf("\e[0;31m CD fialed here!\033[0m\n");
 		if (prep_cd(package))
 		{
 			printf("+++++++++++++BUTILT_IN PICKER COMPLETED FOR CD++++++++++++\n");
