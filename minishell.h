@@ -125,12 +125,13 @@ char	*cut_quot_sequence(char *str, char c);
 char	*handle_qouts(char **cmd_arg, int index);
 char	*ft_strcalloc(int size);
 int		doublestr_len(char **cmd_arg);
+int 	ft_d_strlen(char **str);
 char	**kill_d_str(char **str);
-int		echo_variants(char *str, const char *str2, unsigned int len);
-int		check_for_flag(char *str);
+int		cmd_variants(char *str, const char *str2, unsigned int len);
+int		check_for_flag(char *str, bool *flag);
 void	ft_echo(char **output, bool flag, t_package *package);
-int		prep_echo(t_package *package);
-
+int 	prep_echo(t_package *package, bool flag);
+int 	prep_cd(t_package *package);
 //====================PRINTING=========
 
 void	print2Darray(char **split);

@@ -12,7 +12,7 @@
 
 
 
-int check_for_flag(char *str) //TODO-> muss noch für andere flags ausgebaut werden
+int check_for_flag(char *str, bool *flag) //TODO-> muss noch für andere flags ausgebaut werden
 {
 	int index;
 	
@@ -23,7 +23,10 @@ int check_for_flag(char *str) //TODO-> muss noch für andere flags ausgebaut wer
 		{
 			index++;
 			if (str[index] == 'n')
+			{
+				(*flag) = true;
 				return (1);
+			}
 			else
 				return (0);
 		}
@@ -50,10 +53,23 @@ int builtin_picker(t_package *package)
 	if (!package)
 		return (0);
 	// package = pipe_case(package); //*this is for when pipes appear
-	if (echo_variants(package->cmd_args[0], "echo", ft_strlen("echo")))
+	if (cmd_variants(package->cmd_args[0], "echo", ft_strlen("echo")))
     {
-		if (prep_echo(package))
+		if (prep_echo(package, flag))
+		{
+			printf("+++++++++++++BUTILT_IN PICKER COMPLETED FOR ECHO++++++++++++\n");
 			return (1);
+		}
     }
+	if (cmd_variants(package->cmd_args[0], "cd", ft_strlen("cd")))
+	{
+		if (prep_cd(package))
+		{
+			printf("+++++++++++++BUTILT_IN PICKER COMPLETED FOR CD++++++++++++\n");
+			return (1);
+		}
+	}
+
+	printf("+++++++++++++BUTILT_IN PICKER FAILED++++++++++++\n");
     return (0);
 }
