@@ -1,9 +1,9 @@
 
 #include "../minishell.h"
 
-//TODO: Pipes, ($) not finished
+//TODO: ($) not finished
 
-int echo_variants(char *str, const char *str2, unsigned int len)
+int cmd_variants(char *str, const char *str2, unsigned int len)
 {
 	unsigned int i;
 
@@ -27,9 +27,12 @@ int echo_variants(char *str, const char *str2, unsigned int len)
 void	ft_echo(char **output, bool flag, t_package *package)
 {
 	int i;
+	int len;
 	int ret;
 
 	i = 0;
+	len = ft_d_strlen(output);
+	printf("len; %d\n", len - 1);
 	ret = 0;
 	printf("\n==========ECHO STARTS=======================\n");
 	if (*package->out_redirection == 2)
@@ -48,66 +51,54 @@ void	ft_echo(char **output, bool flag, t_package *package)
 	while (output[i][0] != 10)
 	{	
 		ft_putstr_fd(output[i], ret);
-		if (ft_strncmp(output[i + 1], "\0", 1))
+		if (i < (len-2))
 			write(ret, " ", 1);
 		i++;
 	}
 	if (!flag)
 		write(1, "\n", 1);
-	printf("%d\n", i);
 	kill_d_str(output);
 }
 
-int prep_echo(t_package *package)
+t_package *echo_pipecase(t_package *package)
 {
-	bool	quots;
-	bool	flag;
+	if((package->pipe && package->next != NULL)
+		&& cmd_variants(package->next->cmd, "echo", ft_strlen("echo")))
+		package = package->next;
+	return (package);
+}
+
+int prep_echo(t_package *package, bool flag)
+{
+	char	**output;
 	int		i;
 	int		j;
-	char **output;
 
-	quots = false;
-	flag = false;
 	output = NULL;
 	i = 1;
 	j = 0;
-	printf("+++++++++++++BUTILT_IN PICKER RUNS++++++++++++\n");
-	if (!package)
+
+	package = echo_pipecase(package);
+	if (!package->cmd_args[i])
 		return (0);
-	// package = pipe_case(package); //*this is for when pipes appear
-	if (echo_variants(package->cmd_args[0], "echo", ft_strlen("echo")))
+	printf("\e[0;31m================ECHO is noted!======================\033[0m\n\e[0;34mcmd-> %s\033[0m\n", package->cmd_args[0]);
+	output = (char **)malloc(doublestr_len(package->cmd_args) * sizeof(char *));
+	if(!output)
+		return (0);
+	while (package->cmd_args[i])
 	{
-		printf("\e[0;31m================ECHO is noted!======================\033[0m\n\e[0;34mcmd-> %s\033[0m\n", package->cmd_args[0]);
-		output = (char **)malloc(doublestr_len(package->cmd_args) * sizeof(char *));
-		if(!output)
-			return (0);
 		if (!package->cmd_args[i])
 		{
-			free(output);
-			*output = 0;
 			printf("\n");
-			return (0);
+			return (1);
 		}
-		while (package->cmd_args[i])
-		{
-			if (!package->cmd_args[i])
-			{
-				printf("\n");
-				return (1);
-			}
-			while (check_for_flag(package->cmd_args[i]) && package->cmd_args[i] != NULL)
-			{
-				i++;
-				flag = true;
-			}
-			output[j] = handle_qouts(package->cmd_args, i);
-			j++;
+		while (check_for_flag(package->cmd_args[i], &flag) && package->cmd_args[i] != NULL)
 			i++;
-		}
-		output[j] = ft_strdup("\n");
-		ft_echo(output, flag, package);
-		printf("Pointer is freed\n");
-		return (1);
+		output[j] = handle_qouts(package->cmd_args, i);
+		j++;
+		i++;
 	}
-	return (0);
+	output[j] = ft_strdup("\n");
+	ft_echo(output, flag, package);
+	return (1);
 }

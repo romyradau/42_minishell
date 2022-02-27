@@ -1,6 +1,5 @@
 #include "../../minishell.h"
 
-
 int check_quot_sequence(char *str, char c, bool *q)
 {
     int i;
@@ -42,7 +41,8 @@ char *handle_qouts(char **cmd_arg, int index)
 
 	output = NULL;	
 	quots = false;
-	if (check_quot_sequence(cmd_arg[index], '"', &quots) || check_quot_sequence(cmd_arg[index], 39, &quots))
+	if (check_quot_sequence(cmd_arg[index], '"', &quots) 
+		|| check_quot_sequence(cmd_arg[index], 39, &quots))
 	{
 		if (check_quot_sequence(cmd_arg[index], 39, &quots))
 			output = cut_quot_sequence(cmd_arg[index], 39);
@@ -50,7 +50,8 @@ char *handle_qouts(char **cmd_arg, int index)
 			output = cut_quot_sequence(cmd_arg[index], '"');
 		quots = false;
 	}
-	else if (!check_quot_sequence(cmd_arg[index], '"', &quots) || check_quot_sequence(cmd_arg[index], 39, &quots))
+	else if (!check_quot_sequence(cmd_arg[index], '"', &quots) 
+		|| check_quot_sequence(cmd_arg[index], 39, &quots))
 	{
 		if (quots)
 		{
