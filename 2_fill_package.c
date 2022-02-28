@@ -92,7 +92,7 @@ void	fill_package(t_package **newNode, char *current_process)
 
 /*
 fill_package = speichert den command & seine cmd_args
-get_command = macht platz fur den command und die reds und fie files
+get_command = macht platz fur den command und die reds und die files
 manage_red_files = sucht nach der aktuellen red schickt weiter zu
 store_redirection = speichert die red an
 store_filename = speichert den dazugehörigen filename ab
