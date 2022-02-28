@@ -107,9 +107,10 @@ typedef struct s_data
 
 void	init_lex(char **input);
 char	*cut_quot_sequence(char *str, char c);
-int		builtin_picker(t_package *package);
+char	*get_path(char **env, const char *search_str);
+int		builtin_picker(t_package *package, t_builtin *builtin);
 void	btn_handler(int sig);
-int		prompt();
+int		prompt(t_data *data, t_builtin *builtin);
 char	**special_split(char const *s, char c);
 
 /*====================PARSING=========*/
@@ -117,7 +118,7 @@ char	**special_split(char const *s, char c);
 int		process_packages(t_data *data);
 // int		push_package(t_package **head, char *current_process);
 void	fill_package(t_package **newNode, char *current_process);
-void	print_package(t_package *head);
+void	print_package(t_package *head, t_builtin *builtin);
 void	print2Darray(char **split);
 
 
@@ -133,11 +134,12 @@ int		cmd_variants(char *str, const char *str2, unsigned int len);
 int		check_for_flag(char *str, bool *flag);
 void	ft_echo(char **output, bool flag, t_package *package);
 int 	prep_echo(t_package *package, bool flag);
-int 	prep_cd(t_package *package);
+int 	prep_cd(t_package *package, t_builtin *builtin);
+int		call_pwd(t_package *package, int fd);
 //====================PRINTING=========
 
 void	print2Darray(char **split);
-void	print_package(t_package *head);
+// void	print_package(t_package *head);
 
 /*====================CALCULATING=========*/
 
