@@ -30,7 +30,7 @@ int	empty_input(char *input)
 		return (0);
 }
 
-int	prompt(t_data *data)
+int	prompt(t_data *data, t_builtin *builtin)
 {
 	char	*input;
 	char	*user;
@@ -73,23 +73,27 @@ int	prompt(t_data *data)
 
 		/* start execution */
 		/* end execution */
-
-		print_package(data->head);
+		print_package(data->head, builtin);
 		add_history(input);
 		free(input);
 	}
 	return (0);
 }
 
-int	main(int argc, char **argv, char	**env)
+int	main(int argc, char **argv, char **envp)
 {
 	t_data		data;
-
+	t_builtin *builtin;
+		
+	builtin = (t_builtin *)malloc(sizeof(t_builtin));
+	if (!builtin)
+		return (0);	
 	(void) argc;
 	(void) argv;
 	ft_bzero(&data, sizeof(t_data));
-	data.env = env;
-	if (prompt(&data))
+	data.env = envp; //TODO-> maybe segfault.
+	builtin->home_path = get_path(data.env, "HOME");
+	if (prompt(&data, builtin))
 	{
 		//free
 		//correct error message

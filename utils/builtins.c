@@ -35,7 +35,7 @@ int check_for_flag(char *str, bool *flag) //TODO-> muss noch für andere flags a
 	return (0);
 }
 
-int builtin_picker(t_package *package)
+int builtin_picker(t_package *package, t_builtin *builtin)
 {
 
 	bool	quots;
@@ -49,7 +49,7 @@ int builtin_picker(t_package *package)
 	output = NULL;
 	i = 1;
 	j = 0;
-	printf("+++++++++++++BUTILT_IN PICKER RUNS++++++++++++\n");
+	// printf("+++++++++++++BUTILT_IN PICKER RUNS++++++++++++\n");
 	if (!package)
 		return (0);
 	// package = pipe_case(package); //*this is for when pipes appear
@@ -57,20 +57,28 @@ int builtin_picker(t_package *package)
     {
 		if (prep_echo(package, flag))
 		{
-			printf("+++++++++++++BUTILT_IN PICKER COMPLETED FOR ECHO++++++++++++\n");
+			// printf("+++++++++++++BUTILT_IN PICKER COMPLETED FOR ECHO++++++++++++\n");
 			return (1);
 		}
     }
 	if (cmd_variants(package->cmd_args[0], "cd", ft_strlen("cd")))
 	{
-		printf("\e[0;31m CD fialed here!\033[0m\n");
-		if (prep_cd(package))
+		// printf("\e[0;31m CD fialed here!\033[0m\n");
+		if (prep_cd(package, builtin))
 		{
-			printf("+++++++++++++BUTILT_IN PICKER COMPLETED FOR CD++++++++++++\n");
+			// printf("+++++++++++++BUTILT_IN PICKER COMPLETED FOR CD++++++++++++\n");
 			return (1);
 		}
 	}
-
-	printf("+++++++++++++BUTILT_IN PICKER FAILED++++++++++++\n");
+	if (cmd_variants(package->cmd_args[0], "pwd", ft_strlen("pwd")))
+	{
+		// printf("\e[0;31m CD fialed here!\033[0m\n");
+		if (call_pwd(package, 1))
+		{
+			// printf("+++++++++++++BUTILT_IN PICKER COMPLETED FOR CD++++++++++++\n");
+			return (1);
+		}
+	}
+	// printf("+++++++++++++BUTILT_IN PICKER FAILED++++++++++++\n");
     return (0);
 }

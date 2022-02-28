@@ -67,3 +67,29 @@ int ft_d_strlen(char **str)
 		i++;
 	return (i);
 }
+
+char *get_path(char **env, const char *search_str)
+{
+	int	start_len;
+	int	i;
+	char *path;
+
+
+	start_len = 0;
+	i = 0;
+	while(env[i] != NULL)
+	{
+		if(!ft_strncmp(env[i], search_str, ft_strlen(search_str)))
+		{
+			printf("env stirng[%d]: %s\n", i, &env[i][4]);
+			while (env[i][start_len] != '=')
+				start_len++;
+			start_len++;
+			path = ft_strdup(&env[i][start_len]);
+			printf("path: %s\n", path);
+			return (path);
+		}
+		i++;
+	}
+	return (NULL);
+}

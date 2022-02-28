@@ -43,7 +43,7 @@ void	ft_echo(char **output, bool flag, t_package *package)
 	// }	
 	// printf("len; %d\n", len - 1);
 	ret = 0;
-	printf("\n\e[0;33m================ECHO STARTS=======================\033[0m\n");
+	// printf("\n\e[0;33m================ECHO STARTS=======================\033[0m\n");
 	if (*package->out_redirection == 2)
 	{
 		printf("package has a redirection\n");
@@ -68,7 +68,7 @@ void	ft_echo(char **output, bool flag, t_package *package)
 		write(1, "\n", 1);
 
 	kill_d_str(output);
-	printf("\n\e[0;33m==================ECHO END=======================\033[0m\n");
+	// printf("\n\e[0;33m==================ECHO END=======================\033[0m\n");
 }
 
 t_package *echo_pipecase(t_package *package)
@@ -92,7 +92,7 @@ int prep_echo(t_package *package, bool flag)
 	package = echo_pipecase(package);
 	if (!package->cmd_args[i])
 		return (0);
-	printf("\e[0;31m================ECHO is noted!======================\033[0m\n\e[0;34mcmd-> %s\033[0m\n", package->cmd_args[0]);
+	// printf("\e[0;31m================ECHO is noted!======================\033[0m\n\e[0;34mcmd-> %s\033[0m\n", package->cmd_args[0]);
 	output = (char **)malloc(doublestr_len(package->cmd_args) * sizeof(char *));
 	if(!output)
 		return (0);

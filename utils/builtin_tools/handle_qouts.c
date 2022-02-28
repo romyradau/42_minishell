@@ -60,9 +60,9 @@ char *handle_qouts(char **cmd_arg, int index)
 		}
 		else
 		{
-			printf("\nin handle_qouts : the string is allocated\n");
+			// printf("\nin handle_qouts : the string is allocated\n");
 			output = ft_strdup(cmd_arg[index]);
-			printf(".....\nAllocation is finished!\n");
+			// printf(".....\nAllocation is finished!\n");
 		}
 
 	}
