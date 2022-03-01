@@ -73,7 +73,7 @@ int	prompt(t_data *data, t_builtin *builtin)
 
 		/* start execution */
 		/* end execution */
-		print_package(data->head, builtin);
+		print_package(data->head, builtin, data);
 		add_history(input);
 		free(input);
 	}

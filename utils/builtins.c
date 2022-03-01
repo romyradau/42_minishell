@@ -35,7 +35,7 @@ int check_for_flag(char *str, bool *flag) //TODO-> muss noch für andere flags a
 	return (0);
 }
 
-int builtin_picker(t_package *package, t_builtin *builtin)
+int builtin_picker(t_package *package, t_builtin *builtin, t_data *data)
 {
 
 	bool	quots;
@@ -73,12 +73,21 @@ int builtin_picker(t_package *package, t_builtin *builtin)
 	if (cmd_variants(package->cmd_args[0], "pwd", ft_strlen("pwd")))
 	{
 		// printf("\e[0;31m CD fialed here!\033[0m\n");
-		if (call_pwd(package, 1))
+		if (call_pwd(1))
 		{
 			// printf("+++++++++++++BUTILT_IN PICKER COMPLETED FOR CD++++++++++++\n");
 			return (1);
 		}
 	}
+	if (cmd_variants(package->cmd_args[0], "env", ft_strlen("env")))
+	{
+		if (print_env(data, 1))
+		{
+			return (1);
+		}
+	}
+	if (cmd_variants(package->cmd_args[0], "export", ft_strlen("export")))
+		return (EXPORT);
 	// printf("+++++++++++++BUTILT_IN PICKER FAILED++++++++++++\n");
     return (0);
 }
