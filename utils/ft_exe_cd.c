@@ -1,10 +1,10 @@
 
 #include "../minishell.h"
 
-int call_pwd(t_package *packages, int fd)
+int call_pwd(int fd)
 {
 	char cur_dir[10000];
-	(void)packages;
+
 	if (!getcwd(cur_dir, sizeof(cur_dir)))
 		return (0);	
 	ft_putstr_fd(cur_dir, fd);
@@ -33,9 +33,9 @@ int prep_cd(t_package *package, t_builtin *builtin)
 	{
 		if (chdir("..") != 0)
 			return (0);
-		// ft_strlcpy(lastdir, curdir, 100);
-		// printf("%s\n", call_pwd(package, builtin, 1));
+		printf("package->cmd_args[%d]: %s\n", i, package->cmd_args[i]);
 		free(package->cmd_args[i]);
+		// package->cmd_args[i] = 0;
 		return (1);
 	}
 	else if (ft_strncmp(package->cmd_args[i], "..", 2))
