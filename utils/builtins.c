@@ -35,7 +35,7 @@ int check_for_flag(char *str, bool *flag) //TODO-> muss noch für andere flags a
 	return (0);
 }
 
-int builtin_picker(t_package *package, t_builtin *builtin, t_data *data)
+int builtin_picker(t_package *package, t_builtin *builtin)
 {
 
 	bool	quots;
@@ -81,13 +81,22 @@ int builtin_picker(t_package *package, t_builtin *builtin, t_data *data)
 	}
 	if (cmd_variants(package->cmd_args[0], "env", ft_strlen("env")))
 	{
-		if (print_env(data, 1))
+		if (print_env(builtin))
 		{
 			return (1);
 		}
 	}
-	if (cmd_variants(package->cmd_args[0], "export", ft_strlen("export")))
-		return (EXPORT);
+	if (cmd_variants(package->cmd_args[0], "unset", ft_strlen("unset")))
+	{
+		printf("unset runs!\n");
+		if (package->cmd_args[1] == NULL)
+			return (0);
+		if (!ft_unset(&builtin->env_list, package->cmd_args[1]))
+			return (1);
+		else
+			return (0);
+	}
+
 	// printf("+++++++++++++BUTILT_IN PICKER FAILED++++++++++++\n");
     return (0);
 }

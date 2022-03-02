@@ -59,11 +59,19 @@ typedef struct s_red{
 	int		oR;
 }	t_red;
 
+typedef struct s_envlist
+{
+	char *content;
+	struct s_envlist *next;
+	struct s_envlist *prev;	
+} t_envlist;
+
 typedef struct s_builtin
 {
-	char	**echo_str;
+	char		**echo_str;
 	//env
-	char	*home_path;
+	char		*home_path;
+	t_envlist	*env_list;
 }	t_builtin;
 
 /*
@@ -110,7 +118,7 @@ typedef struct s_data
 void	init_lex(char **input);
 char	*cut_quot_sequence(char *str, char c);
 char	*get_path(char **env, const char *search_str);
-int		builtin_picker(t_package *package, t_builtin *builtin, t_data *data);
+int		builtin_picker(t_package *package, t_builtin *builtin);
 void	btn_handler(int sig);
 int		prompt(t_data *data, t_builtin *builtin);
 char	**special_split(char const *s, char c);
@@ -120,7 +128,7 @@ char	**special_split(char const *s, char c);
 int		process_packages(t_data *data);
 // int		push_package(t_package **head, char *current_process);
 void	fill_package(t_package **newNode, char *current_process);
-void	print_package(t_package *head, t_builtin *builtin, t_data *data);
+void	print_package(t_package *head, t_builtin *builtin);
 void	print2Darray(char **split);
 
 
@@ -138,7 +146,10 @@ void	ft_echo(char **output, bool flag, t_package *package);
 int 	prep_echo(t_package *package, bool flag);
 int 	prep_cd(t_package *package, t_builtin *builtin);
 int		call_pwd(int fd);
-int 	print_env(t_data *data, int fd);
+int		set_envlist(t_data *data, t_envlist **list);
+int 	print_env(t_builtin *builtin);
+int		ft_unset(t_envlist **list, const char *arg);
+char 	**cut_from_path(t_data *data, t_package *package);
 //====================PRINTING=========
 
 void	print2Darray(char **split);
