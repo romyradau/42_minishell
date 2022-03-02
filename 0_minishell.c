@@ -73,7 +73,7 @@ int	prompt(t_data *data, t_builtin *builtin)
 
 		/* start execution */
 		/* end execution */
-		print_package(data->head, builtin, data);
+		print_package(data->head, builtin);
 		add_history(input);
 		free(input);
 	}
@@ -84,15 +84,19 @@ int	main(int argc, char **argv, char **envp)
 {
 	t_data		data;
 	t_builtin *builtin;
-		
 	builtin = (t_builtin *)malloc(sizeof(t_builtin));
 	if (!builtin)
 		return (0);	
+	builtin->env_list = NULL;//(t_envlist *)malloc(sizeof(t_envlist));
+	// if (!builtin->env_list)
+	// 	return (0);
 	(void) argc;
 	(void) argv;
 	ft_bzero(&data, sizeof(t_data));
-	data.env = envp; //TODO-> maybe segfault.
-	builtin->home_path = get_path(data.env, "HOME");
+	// ft_bzero(&builtin->env_list, sizeof(t_envlist));
+	data.env = envp;
+	builtin->home_path = getenv("HOME");
+	set_envlist(&data, &builtin->env_list);
 	if (prompt(&data, builtin))
 	{
 		//free
