@@ -1,13 +1,13 @@
 
 NAME = minishell
 
-FILES = 0_minishell.c 1_push_package.c 2_fill_package.c 3_package_calculator.c special_split.c print_stuff.c ./utils/sig_handls.c ./utils/builtins.c ./utils/ft_echo.c ./utils/ft_exe_cd.c \
+FILES = 0_minishell.c 1_process_package.c 2_fill_package.c 3_package_calculator.c special_split.c print_stuff.c ./utils/sig_handls.c ./utils/builtins.c ./utils/ft_echo.c ./utils/ft_exe_cd.c \
 		./utils/builtin_tools/handle_qouts.c ./utils/builtin_tools/handle_string.c 
 
 LDFLAGS		= -L/Users/$(USER)/.brew/opt/readline/lib
 CPPFLAGS	= -I/Users/$(USER)/.brew/opt/readline/include
 
-CC = gcc
+CC = gcc 
 
 CFLAGS = $(LDFLAGS) $(CPPFLAGS) -Wall -Wextra -Werror -lreadline -g
 

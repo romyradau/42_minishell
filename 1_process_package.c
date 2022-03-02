@@ -1,5 +1,33 @@
 #include "minishell.h"
 
+
+void	fill_package(t_package **newNode, char *current_process)
+{
+	char	*full_cmd;
+
+	
+	// current_process = remove_quotes(&current_process);
+	//hier muss noch ne function druber laufen, die alle quotes von den tokens entfernt
+	//dann ist segfault maybe auch weg
+	//in der die env abspeichern
+	// 1 - quotes wegmachen
+	// 2 - env expanden
+	// 3 - neuen current_process.expanded anlegen
+	//hier muss nach quotes geguckt werden, 
+	full_cmd = ft_strtrim(get_command(newNode, current_process), " ");
+	printf("FULLCMD		%s\n", full_cmd);
+
+	(*newNode)->cmd_args = special_split(full_cmd, ' ');
+	//special split verkackt iwie bei 
+	(*newNode)->cmd = (*newNode)->cmd_args[0];
+
+	//hier muss noch ne function druber laufen, die alle quotes von den tokens entfernt
+	
+
+	// freen - aber spater dann beim listen leeren
+}
+
+
 int	push_package(t_package **head, char *current_process)
 {
 	t_package *newNode;
@@ -52,7 +80,7 @@ int process_packages(t_data *data)
 		}
 		i++;
 	}
-	printf("hallo2\n");
+	// printf("hallo2\n");
 	return (0);
 }
 /*

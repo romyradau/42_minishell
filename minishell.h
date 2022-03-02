@@ -55,6 +55,7 @@ typedef struct s_red{
 	char	*left_over;
 	int		iR;
 	int		oR;
+	
 }	t_red;
 
 typedef struct s_builtin
@@ -118,8 +119,13 @@ char	**special_split(char const *s, char c);
 int		process_packages(t_data *data);
 // int		push_package(t_package **head, char *current_process);
 void	fill_package(t_package **newNode, char *current_process);
+// void	print_package(t_package *head);
 void	print_package(t_package *head, t_builtin *builtin);
 void	print2Darray(char **split);
+char	*get_command(t_package **newNode, char *current_process);
+// char *spot_quotes(char *str, char **str_wo_quotes, bool &sq, bool &dq);
+
+
 
 
 //====================BUILTIN==========
@@ -145,7 +151,7 @@ void	print2Darray(char **split);
 
 void	allocate_redirections(t_package **newNode, char *current_process);
 bool	is_metachar(char c);
-int		char_compare(char *current_process, int *i);
+int		char_compare(char *current_process, t_red **red, int *i);
 
 
 #endif

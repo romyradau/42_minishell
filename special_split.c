@@ -79,6 +79,7 @@ char	**special_split(char const *s, char c)
 	start = 0;
 	i = 0;
 	int	numberStrings = ft_findW_count(s, c);
+
 	if (numberStrings == -1)
 		return (NULL);
 	result = (char **)malloc((numberStrings + 1) * sizeof(char *));

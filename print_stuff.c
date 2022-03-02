@@ -1,9 +1,9 @@
 
 #include "minishell.h"
 
-void	print_package(t_package *head)
+void	print_package(t_package *head, t_builtin *builtin)
 {
-
+	(void)builtin;
 	int x;
 	// system("clear");
 	printf("\n\n===============PRINT_PACKAGE=================\n\n");

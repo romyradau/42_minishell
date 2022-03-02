@@ -38,7 +38,7 @@ void	manage_red_files(t_package **newNode, char *current_process, t_red *red)
 	red->left_over_index = 0;
 	while (current_process[red->i])
 	{
-		red->operator = char_compare(current_process, &red->i);
+		red->operator = char_compare(current_process, &red, &red->i);
 		store_redirection(newNode, current_process, &red);
 		if (!is_metachar(current_process[red->i]))
 		{
@@ -63,6 +63,7 @@ char	*get_command(t_package **newNode, char *current_process)
 	red.left_over = ft_calloc(ft_strlen(current_process) + 1, sizeof(char));
 	allocate_redirections(newNode, current_process);
 	manage_red_files(newNode, current_process, &red);
+
 	(*newNode)->in_redirection[red.iR] = NOTHING;
 	(*newNode)->out_redirection[red.oR] = NOTHING;
 	(*newNode)->infiles[red.iR] = NULL;
@@ -71,24 +72,23 @@ char	*get_command(t_package **newNode, char *current_process)
 }
 
 
-void	fill_package(t_package **newNode, char *current_process)
-{
-	char	*full_cmd;
+// void	spot_quotes(char **string)
+// {
 
-	//hier muss noch ne function druber laufen, die alle quotes von den tokens entfernt
-	//dann ist segfault maybe auch weg
-	//in der die env abspeichern
-	// 1 - quotes wegmachen
-	// 2 - env expanden
-	// 3 - neuen current_process.expanded anlegen
-	full_cmd = ft_strtrim(get_command(newNode, current_process), " ");
-	(*newNode)->cmd_args = special_split(full_cmd, ' ');
-	(*newNode)->cmd = (*newNode)->cmd_args[0];
-	//hier muss noch ne function druber laufen, die alle quotes von den tokens entfernt
-	
+// }
 
-	// freen - aber spater dann beim listen leeren
-}
+// char	*remove_quotes(char **current_process)
+// {
+// 	char	*tmp;
+// 	char	*str_wo_quotes;
+// 	bool	sq;
+// 	bool	dq;
+
+// 	str_wo_quotes = ft_calloc(ft_strlen(*current_process) + 1, sizeof(char));
+// 	tmp  = *current_process;
+// 	free(*(current_process));
+// 	*current_process = spot_quotes(*current_process, &str_wo_quotes, &sq, &dq);
+// }
 
 /*
 fill_package = speichert den command & seine cmd_args
