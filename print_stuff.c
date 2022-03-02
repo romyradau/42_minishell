@@ -3,8 +3,8 @@
 
 void	print_package(t_package *head, t_builtin *builtin)
 {
-
-	//int x;
+	(void)builtin;
+	int x;
 	// system("clear");
 	printf("\n\n===============PRINT_PACKAGE START=================\n\n");
 	while (head->next != NULL)

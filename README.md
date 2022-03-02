@@ -29,4 +29,5 @@ this is a 42project
 	split fix fur cmd_args
 	pipe bool implemented;
 
-	 
+22nd day MO rules ddll export kinda done
+	quotes nachtraglich implementieren -_-

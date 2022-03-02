@@ -1,6 +1,52 @@
 
 #include "minishell.h"
 
+// int	amount_redirections(char *s)
+// {
+// 	int	i;
+// 	int	count;
+
+// 	i = 0;
+// 	count = 0;
+// 	while (s[i])
+// 	{
+// 		if (s[i] == '<' && s[i - 1] != '"')
+// 		//warum segfaultet das nicht bei <infile ??
+// 		{
+// 			if (s[i + 1] == '<' && s[i - 2] != '"')
+// 				i++;
+// 			count++;
+// 		}
+// 		else if (s[i] == '>' && s[i - 1] != '"')
+// 		{
+// 			if (s[i + 1] == '>' && s[i - 1] != '"')
+// 				i++;
+// 			count++;
+// 		}
+// 		i++;
+// 	}
+// 	return (count);
+// }
+void	skip_dq(char *s, int *i)
+{
+	if (s[(*i)] == '"')
+	{
+		while (s[(*i) + 1] != '"')
+			(*i)++;
+		(*i)++;
+	}
+}
+
+void	skip_sq(char *s, int *i)
+{
+	if (s[(*i)] == '\'')
+	{
+		while (s[(*i) + 1] != '\'')
+			(*i)++;
+		(*i)++;
+	}
+}
+
 int	amount_redirections(char *current_process)
 {
 	int	i;
@@ -10,6 +56,21 @@ int	amount_redirections(char *current_process)
 	count = 0;
 	while (current_process[i])
 	{
+		skip_dq(current_process, &i);
+		skip_sq(current_process, &i);
+		// if (current_process[i] == '"')
+		// {
+		// 	while (current_process[i + 1] != '"')
+		// 		i++;
+		// 	i++;
+		// }
+		// if (current_process[i] == '\'')
+		// {
+		// 	while (current_process[i + 1] != '\'')
+		// 		i++;
+		// 	i++;
+		// }
+		//skip alles bis zur nachsten quote
 		if (current_process[i] == '<')
 		{
 			if (current_process[i + 1] == '<')
@@ -26,9 +87,72 @@ int	amount_redirections(char *current_process)
 	}
 	return (count);
 }
+//real punkte merken und die direkt in die struct speichern
+//vlt das gleiche auf char _compare anweden
+		// if (current_process[i] == '"')
+		// {
+		// 	while (current_process[i + 1] != '"')
+		// 		i++;
+		// 	i++;
+		// }
+		// if (current_process[i] == '\'')
+		// {
+		// 	while (current_process[i + 1] != '\'')
+		// 		i++;
+		// 	i++;
+		// }
+//die auslagern und auch in char_compare rein
 
-int	char_compare(char *current_process, int *i)
+
+bool	double_quotes(char *s, t_red **red, int *i)
 {
+	if (s[(*i)] == '"')
+	{
+		while (s[(*i) + 1] != '"')
+		{
+			(*i)++;
+			(*red)->left_over[(*red)->left_over_index] = s[(*i)];
+			(*red)->left_over_index++;
+		}
+		(*i)++;
+		return true;
+	}
+	else
+		return false;
+}
+
+bool	single_quotes(char *s, t_red **red, int *i)
+{
+	if (s[(*i)] == '\'')
+	{
+		// (*red)->left_over[(*red)->left_over_index] = '*';
+			// (*red)->left_over_index++;
+
+		while (s[(*i) + 1] != '\'')
+		{
+			(*i)++;
+			// printf("character	%c\n", s[(*i)]);
+			(*red)->left_over[(*red)->left_over_index] = s[(*i)];
+			(*red)->left_over_index++;
+		}
+		(*i)++;
+		// printf("(*red)->left_over[(*red)->left_over_index]	%d\n", (*red)->left_over_index);
+		// (*red)->left_over[(*red)->left_over_index] = '*';
+		// //warum schreibt der den letzten assterix da nicht hin ?!
+		return true;
+	}
+	else
+		return false;
+}
+//left over index bool implementieren
+//auf den stellen der quotes ander zeichen rein hard coden und die dann in der split beachten s.o.
+
+int	char_compare(char *current_process, t_red **red, int *i)
+{
+	if (double_quotes(current_process, red, i))
+		(*i)++;
+	if (single_quotes(current_process, red, i))
+		(*i)++;
 	if (current_process[(*i)] == '<')
 	{
 		if (current_process[(*i) + 1] == '<')
