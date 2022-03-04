@@ -112,7 +112,9 @@ char	*get_path(char **env, const char *search_str);
 int		builtin_picker(t_package *package, t_builtin *builtin);
 void	btn_handler(int sig);
 int		prompt(t_data *data, t_builtin *builtin);
-char	**special_split(char const *s, char c);
+char	**special_pipe_split(char const *s, char c);
+char	**special_cmd_split(char const *s, char c);
+
 
 /*====================PARSING=========*/
 
@@ -124,6 +126,11 @@ void	print_package(t_package *head, t_builtin *builtin);
 void	print2Darray(char **split);
 char	*get_command(t_package **newNode, char *current_process);
 // char *spot_quotes(char *str, char **str_wo_quotes, bool &sq, bool &dq);
+bool	is_metachar(char c);
+bool	single_quotes(char *s, t_red **red, int *i);
+bool	double_quotes(char *s, t_red **red, int *i);
+void	skip_sq(char *s, int *i);
+void	skip_dq(char *s, int *i);
 
 
 

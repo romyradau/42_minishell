@@ -15,9 +15,10 @@ void	fill_package(t_package **newNode, char *current_process)
 	// 3 - neuen current_process.expanded anlegen
 	//hier muss nach quotes geguckt werden, 
 	full_cmd = ft_strtrim(get_command(newNode, current_process), " ");
-	printf("FULLCMD		%s\n", full_cmd);
 
-	(*newNode)->cmd_args = special_split(full_cmd, ' ');
+	printf("FULLCMD		%s\n", full_cmd);
+	(*newNode)->cmd_args = special_cmd_split(full_cmd, ' ');
+	printf("(*newNode)->cmd_args		%p\n",(*newNode)->cmd_args);
 	//special split verkackt iwie bei 
 	(*newNode)->cmd = (*newNode)->cmd_args[0];
 

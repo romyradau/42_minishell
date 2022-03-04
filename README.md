@@ -31,3 +31,5 @@ this is a 42project
 
 22nd day MO rules ddll export kinda done
 	quotes nachtraglich implementieren -_-
+23rd day muss den gequotetetn string iwie kennzeichnen
+24th day ist gekennzeichnet aber bringt glaub nix
