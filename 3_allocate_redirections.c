@@ -65,7 +65,7 @@ void	allocate_redirections(t_package **newNode, char *current_process)
 	int		amount_red;
 
 	amount_red = amount_redirections(current_process);
-	printf(" amount_red	%d\n", amount_red);
+	// printf(" amount_red	%d\n", amount_red);
 	(*newNode)->outfiles = malloc(sizeof(char *) * amount_red);
 	(*newNode)->infiles = malloc(sizeof(char *) * amount_red);
 	// muss hier plus eins hin, damit man das null setzt? wenn ja warum?

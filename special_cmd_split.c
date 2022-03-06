@@ -22,10 +22,7 @@ static int	ft_findW_count(char const *s, char c)
 			cnt++;
 	}
 	if (quotes == -1)
-	{
-		printf("SSS\n");
 		return (-1);
-	}
 	return (cnt);
 }
 
@@ -64,7 +61,7 @@ static int	ft_count_toNext(int cnt, char const *str, char c)
 	return (cnt);
 }
 
-// void	change_result(char **result)
+// void	change_result(char ***result)
 // {
 // 	int		i;
 // 	int		j;
@@ -73,19 +70,22 @@ static int	ft_count_toNext(int cnt, char const *str, char c)
 // 	i = 0;
 // 	j = 0;
 // 	tmp = NULL;
-// 	while (result[i])
+// 	while ((*result)[i])
 // 	{
-// 		if (result[i][j] == '@')
+// 		if ((*result)[i][j] == '@' && (*result)[i][j] != '\0')
 // 		{
-// 			printf("result  %s\n", result[i]);
-// 			tmp = result[i];
-// 			free(result[i]);
-// 			result[i] = ft_strtrim(tmp, "@");
+// 			printf("result  %s\n", (*result)[i]);
+// 			tmp = (*result)[i];
+// 			free((*result)[i]);
+// 			(*result)[i] = ft_strtrim(tmp, "@");
+// 			printf("new result  %s\n", (*result)[i]);
+
 // 			free(tmp);
 // 		}
 // 	i++;
 // 	}
-// 	result[i] = NULL;
+// 	i++;
+// 	(*result)[i] = NULL;
 // }
 //des in @ wird nicht mehr erkannt
 
@@ -115,7 +115,7 @@ char	**special_cmd_split(char const *s, char c)
 		i++;
 		start = end;
 	}
-	// change_result(result);
-	// result[i] = NULL;
+	// change_result(&result);
+	result[i] = NULL;
 	return (result);
 }

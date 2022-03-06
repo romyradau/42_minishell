@@ -41,6 +41,8 @@ bool	double_quotes(char *s, t_red **red, int *i)
 	else
 		return false;
 }
+//double quotes -2 ascii code
+//dann in special cmd split noch dazu fugen
 
 bool	single_quotes(char *s, t_red **red, int *i)
 {
@@ -57,14 +59,14 @@ bool	single_quotes(char *s, t_red **red, int *i)
 		(*i)++;
 		(*red)->left_over[(*red)->left_over_index] = '@';
 		(*red)->left_over_index++;
-		printf(":%s:\n", (*red)->left_over);
 		return true;
 	}
 	else
 		return false;
 }
-//left over index bool implementieren
-//auf den stellen der quotes ander zeichen rein hard coden und die dann in der split beachten s.o.
+//single quotes -1 ascii code
+//dann in special cmd split noch dazu fugen
+
 
 bool	is_metachar(char c)
 {
