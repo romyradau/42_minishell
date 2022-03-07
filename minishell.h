@@ -33,7 +33,9 @@ typedef enum {
 	TRUNCATE, //>
 	INFILE, //<
 	APPEND, //>>
-	HEREDOC //<<
+	HEREDOC, //<<
+	ENV, //path
+	EXPORT //builtin
 } meta;
 
 // typedef struct s_file{
@@ -58,11 +60,19 @@ typedef struct s_red{
 	
 }	t_red;
 
+typedef struct s_envlist
+{
+	char *content;
+	struct s_envlist *next;
+	struct s_envlist *prev;	
+} t_envlist;
+
 typedef struct s_builtin
 {
-	char	**echo_str;
+	char		**echo_str;
 	//env
-	char	*home_path;
+	char		*home_path;
+	t_envlist	*env_list;
 }	t_builtin;
 
 /*
@@ -148,7 +158,11 @@ int		check_for_flag(char *str, bool *flag);
 void	ft_echo(char **output, bool flag, t_package *package);
 int 	prep_echo(t_package *package, bool flag);
 int 	prep_cd(t_package *package, t_builtin *builtin);
-int		call_pwd(t_package *package, int fd);
+int		call_pwd(int fd);
+int		set_envlist(t_data *data, t_envlist **list);
+int 	print_env(t_builtin *builtin);
+int		ft_unset(t_envlist **list, const char *arg);
+char 	**cut_from_path(t_data *data, t_package *package);
 //====================PRINTING=========
 
 void	print2Darray(char **split);

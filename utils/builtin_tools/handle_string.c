@@ -93,3 +93,45 @@ char *get_path(char **env, const char *search_str)
 	}
 	return (NULL);
 }
+
+char **cut_from_path(t_data *data, t_package *package)
+{
+	int i;
+	int j;
+	char *tmp;
+
+	i = 0;
+	j = 0;
+	tmp = NULL;
+	while (data->env[i])
+	{
+		printf("cmd_arg[%d]:%s\n", 1, package->cmd_args[1]);
+		if (!ft_strncmp(data->env[i], package->cmd_args[1], ft_strlen(package->cmd_args[1])))
+		{
+			// int tmp_cnt = i;
+			printf("to cut %s, found: %s\n", package->cmd_args[1], data->env[i]);
+			while (data->env[i][j] == package->cmd_args[1][j])
+				j++;
+			printf("(new)data->env%d:%s\n", i, &data->env[i][j]);
+			if (ft_strlen(data->env[i]) == ft_strlen(package->cmd_args[1]))
+			{
+				int size = ft_d_strlen(data->env);
+				while (i < size)
+				{
+					data->env[i] = ft_strdup(data->env[i+1]);
+					i++;
+				}
+				return (data->env);
+			}
+			tmp = ft_strdup(&data->env[i][j]);
+			// free(data->env[i]);
+			// data->env[i] = 0;
+			data->env[i] = ft_strdup(tmp);
+			// free(tmp);
+			return (data->env);
+		}
+
+		i++;
+	}
+	return (NULL);
+}

@@ -73,12 +73,30 @@ int builtin_picker(t_package *package, t_builtin *builtin)
 	if (cmd_variants(package->cmd_args[0], "pwd", ft_strlen("pwd")))
 	{
 		// printf("\e[0;31m CD fialed here!\033[0m\n");
-		if (call_pwd(package, 1))
+		if (call_pwd(1))
 		{
 			// printf("+++++++++++++BUTILT_IN PICKER COMPLETED FOR CD++++++++++++\n");
 			return (1);
 		}
 	}
+	if (cmd_variants(package->cmd_args[0], "env", ft_strlen("env")))
+	{
+		if (print_env(builtin))
+		{
+			return (1);
+		}
+	}
+	if (cmd_variants(package->cmd_args[0], "unset", ft_strlen("unset")))
+	{
+		printf("unset runs!\n");
+		if (package->cmd_args[1] == NULL)
+			return (0);
+		if (!ft_unset(&builtin->env_list, package->cmd_args[1]))
+			return (1);
+		else
+			return (0);
+	}
+
 	// printf("+++++++++++++BUTILT_IN PICKER FAILED++++++++++++\n");
     return (0);
 }
