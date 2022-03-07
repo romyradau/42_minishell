@@ -54,7 +54,6 @@ int builtin_picker(t_package *package, t_builtin *builtin)
 		return (0);
 	while (package->next != NULL)
 		package = package->next;
-	printf("CMD===> %s", package->cmd);
 	if (cmd_variants(package->cmd_args[0], "echo", ft_strlen("echo")))
     {
 		if (prep_echo(package, flag))
@@ -97,6 +96,14 @@ int builtin_picker(t_package *package, t_builtin *builtin)
 			return (1);
 		else
 			return (0);
+	}
+	else if (cmd_variants(package->cmd_args[0], "export", ft_strlen("export")))
+	{
+		if (package->cmd_args[1] == NULL)
+			return (0);
+		else if (!ft_export(&builtin->env_list, package->cmd_args[1]))
+			return(0);
+		
 	}
     return (0);
 }

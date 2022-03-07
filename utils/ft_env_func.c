@@ -13,7 +13,7 @@ static t_envlist *creat_node(const char *src)
 	return (tmp);
 }
 
-static int add_node(t_envlist **head, const char *src)
+int add_node(t_envlist **head, const char *src)
 {
 	t_envlist *newnode;
 	
@@ -39,6 +39,27 @@ static int add_node(t_envlist **head, const char *src)
 
 }
 
+int reverse_envlist(t_envlist **list)
+{
+	t_envlist *tmp;
+	t_envlist *current;
+
+	tmp = NULL;
+	if (!(*list))
+		return (0);
+	current = *list;
+	while (current != NULL)
+	{
+		tmp = current->prev;
+		current->prev = current->next;
+		current->next = tmp;
+		current = current->prev;
+	}
+	if (tmp != NULL)
+		*list = tmp->prev;
+	return (1);
+}
+
 int set_envlist(t_data *data, t_envlist **list)
 {
 	int i;
@@ -49,8 +70,9 @@ int set_envlist(t_data *data, t_envlist **list)
 			return (0);
 		i++;
 	}
-	return (1);
-
+	if (reverse_envlist(list))
+		return (1);
+	return (0);
 }
 
 int print_env(t_builtin *builtin)
@@ -72,63 +94,42 @@ int print_env(t_builtin *builtin)
 	return (0);
 }
 
-
 int	ft_unset(t_envlist **list, const char *arg)
 {
 	printf("UNSET runs\n");
 	t_envlist	*tmp;
 	// t_envlist	*tmp2;
-	
+	int len;
+
 	tmp = *list;
+	len = 0;
 	while (tmp->next != NULL)
 	{
 		if (!ft_strncmp((const char *)tmp->content, arg, ft_strlen(arg)))
 		{
-			// tmp2 = tmp;
+			printf("len: %d\n", len);
+			if (len == 0)
+			{
+				*list = (*list)->next;
+				ft_bzero(tmp->content, ft_strlen(tmp->content));
+				free(tmp);
+				tmp = NULL;
+				if ((*list) != NULL)
+					(*list)->prev = NULL;
+				return (1);
+			}
 			tmp->prev->next = tmp->next;
 			tmp->next->prev = tmp->prev;
-			// free(tmp);
 			ft_bzero(tmp->content, ft_strlen(tmp->content));
 			free(tmp);
 			tmp = NULL;
 			return (1);
 		}
 		tmp = tmp->next;
+		len++;
 	}
 	return (0);
 }
-
-/**
- * void deleteNode(struct Node** head_ref, int key)
-{
-    // Store head node
-    struct Node *temp = *head_ref, *prev;
- 
-    // If head node itself holds the key to be deleted
-    if (temp != NULL && temp->data == key) {
-        *head_ref = temp->next; // Changed head
-        free(temp); // free old head
-        return;
-    }
- 
-    // Search for the key to be deleted, keep track of the
-    // previous node as we need to change 'prev->next'
-    while (temp != NULL && temp->data != key) {
-        prev = temp;
-        temp = temp->next;
-    }
- 
-    // If key was not present in linked list
-    if (temp == NULL)
-        return;
- 
-    // Unlink the node from linked list
-    prev->next = temp->next;
- 
-    free(temp); // Free memory
-}
-*/
-// int ft_export();
 
 /**
 USER - The current logged in user.
