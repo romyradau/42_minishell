@@ -58,7 +58,7 @@ int	prompt(t_data *data, t_builtin *builtin)
 		//freen?
 		if (!data->processes)
 		{
-			printf("error: unclosed quotes");
+			printf("error: unclosed quotes\n");
 			return 1;
 			//wie sieht error handling bei open quotes aus?
 			//soll da gleich in die neue prompt gegangen werden?
