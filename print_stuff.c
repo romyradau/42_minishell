@@ -1,12 +1,12 @@
 
 #include "minishell.h"
 
-void	print_package(t_package *head, t_builtin *builtin)
+t_package	*print_package_normal(t_package *head, t_builtin *builtin)
 {
 	(void)builtin;
 	int x;
 	// system("clear");
-	printf("\n\n===============PRINT_PACKAGE START=================\n\n");
+	printf("\n\n===============PRINT_PACKAGE_Normal START=================\n\n");
 	while (head != NULL)
 	{
 	 	printf("cmd:		%s\n", head->cmd);
@@ -28,7 +28,22 @@ void	print_package(t_package *head, t_builtin *builtin)
 		head = head->next;
 	}
 	// builtin_picker(head, builtin);
-	printf("===============PRINT_PACKAGE END=================\n\n");
+	printf("\n\n===============PRINT_PACKAGE_Normal END=================\n\n");
+	return (head);
+}
+
+t_package	*print_package_builtin(t_package *head, t_builtin *builtin)
+{
+	// (void)builtin;
+	// int x;
+	// system("clear");
+	printf("\n\n===============PRINT_PACKAGE_BUILTIN START=================\n\n");
+	if (!builtin_picker(head, builtin))
+		print_package_normal(head, builtin);
+	else
+		head = head->next;
+	printf("\n\n===============PRINT_PACKAGE_BUILTIN END=================\n\n");
+	return (head);
 }
 
 void	print2Darray(char **split)
