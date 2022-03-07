@@ -57,14 +57,13 @@ typedef struct s_red{
 	char	*left_over;
 	int		iR;
 	int		oR;
-	
 }	t_red;
 
 typedef struct s_envlist
 {
 	char *content;
 	struct s_envlist *next;
-	struct s_envlist *prev;	
+	struct s_envlist *prev;
 } t_envlist;
 
 typedef struct s_builtin
