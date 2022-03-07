@@ -1,29 +1,63 @@
 #include "minishell.h"
 
+void	change_result(char **result)
+{
+	int		i;
+	int		j;
+	char	*tmp;
+
+	i = 0;
+	j = 0;
+	tmp = NULL;
+	while (result[i])
+	{
+		if (result[i][j] == '@' && result[i][j] != '\0')
+		//|| result[i][j] == -1
+		{
+			tmp = result[i];
+			result[i] = ft_strtrim(tmp, "@");
+			//ist jetzt hier nicht nullterminiert etc
+			free(tmp);
+		}
+		// else if (result[i][j] == '@' && result[i][j] != '\0')
+		// //|| result[i][j] == -2
+		// {
+		// 	tmp = result[i];
+		// 	//pipe
+		// 	//jeden char ausser Anfang/Ende quote in die pipe
+		// 	//if $ dann expanden
+		// 	//bis zum ende des $strings und weiter in die pipe
+		// 	// result[i] = pipeinhalt;
+		// 	free(tmp);
+		// }
+		// else
+		// //wenn keine quotes gesetzt
+		// {
+		// 	tmp = result[i];
+		// 	//if $ dann expanden
+		// 	//bis zum ende des $strings und weiter in die pipe
+		// 	// result[i] = pipeinhalt;
+		// 	free(tmp);
+		// }
+
+		i++;
+	}
+	result[i] = NULL;
+}
 
 void	fill_package(t_package **newNode, char *current_process)
 {
 	char	*full_cmd;
 
-	
-	// current_process = remove_quotes(&current_process);
-	//hier muss noch ne function druber laufen, die alle quotes von den tokens entfernt
-	//dann ist segfault maybe auch weg
 	//in der die env abspeichern
 	// 1 - quotes wegmachen
 	// 2 - env expanden
 	// 3 - neuen current_process.expanded anlegen
 	//hier muss nach quotes geguckt werden, 
 	full_cmd = ft_strtrim(get_command(newNode, current_process), " ");
-	printf("FULLCMD		%s\n", full_cmd);
-
-	(*newNode)->cmd_args = special_split(full_cmd, ' ');
-	//special split verkackt iwie bei 
+	(*newNode)->cmd_args = special_cmd_split(full_cmd, ' ');
+	change_result((*newNode)->cmd_args);
 	(*newNode)->cmd = (*newNode)->cmd_args[0];
-
-	//hier muss noch ne function druber laufen, die alle quotes von den tokens entfernt
-	
-
 	// freen - aber spater dann beim listen leeren
 }
 
@@ -80,7 +114,6 @@ int process_packages(t_data *data)
 		}
 		i++;
 	}
-	// printf("hallo2\n");
 	return (0);
 }
 /*

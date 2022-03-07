@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-int	ft_findW_count(char const *s, char c)
+static int	ft_findW_count(char const *s, char c)
 {
 	int		i;
 	int	dq = 1;
@@ -67,7 +67,7 @@ static int	ft_count_toNext(int cnt, char const *str, char c)
 	return (cnt);
 }
 
-char	**special_split(char const *s, char c)
+char	**special_pipe_split(char const *s, char c)
 {
 	char	**result;
 	int		start;

@@ -54,7 +54,7 @@ int	prompt(t_data *data, t_builtin *builtin)
 			return (1);
 
 		/* start parsing */
-		data->processes = special_split(input, '|');
+		data->processes = special_pipe_split(input, '|');
 		//freen?
 		if (!data->processes)
 		{
