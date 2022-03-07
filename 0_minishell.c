@@ -27,6 +27,13 @@ int	empty_input(char *input)
 			write(1, "exit\n", 5);
 			return (1);
 		}
+		else if (input[0] == 0)
+		{
+			write(1, "no input\n", 10);
+			write(1, "fix inpiut handling\n", 21);
+
+			return (1);
+		}
 		return (0);
 }
 

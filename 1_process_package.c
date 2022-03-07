@@ -11,16 +11,14 @@ void	change_result(char **result)
 	tmp = NULL;
 	while (result[i])
 	{
-		if (result[i][j] == '@' && result[i][j] != '\0')
-		//|| result[i][j] == -1
+		if (result[i][j] == -1 && result[i][j] != '\0')
 		{
 			tmp = result[i];
-			result[i] = ft_strtrim(tmp, "@");
+			result[i] = ft_strtrim(tmp, "\xFF");
 			//ist jetzt hier nicht nullterminiert etc
 			free(tmp);
 		}
-		// else if (result[i][j] == '@' && result[i][j] != '\0')
-		// //|| result[i][j] == -2
+		// else if (result[i][j] == -2 && result[i][j] != '\0')
 		// {
 		// 	tmp = result[i];
 		// 	//pipe
@@ -28,7 +26,11 @@ void	change_result(char **result)
 		// 	//if $ dann expanden
 		// 	//bis zum ende des $strings und weiter in die pipe
 		// 	// result[i] = pipeinhalt;
-		// 	free(tmp);
+//        ssize_t read(int fd, void *buf, size_t count);
+// DESCRIPTION         top
+//        read() attempts to read up to count bytes from file descriptor fd
+//        into the buffer starting at buf.
+// 			free(tmp);
 		// }
 		// else
 		// //wenn keine quotes gesetzt
