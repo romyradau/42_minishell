@@ -163,6 +163,8 @@ int		set_envlist(t_data *data, t_envlist **list);
 int 	print_env(t_builtin *builtin);
 int		ft_unset(t_envlist **list, const char *arg);
 char 	**cut_from_path(t_data *data, t_package *package);
+int		add_node(t_envlist **head, const char *src);
+int		ft_export(t_envlist **head, char *src);
 //====================PRINTING=========
 
 void	print2Darray(char **split);
