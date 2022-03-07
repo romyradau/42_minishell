@@ -4,6 +4,7 @@ void	change_result(char **result)
 {
 	int		i;
 	int		j;
+	int		fd[2];
 	char	*tmp;
 
 	i = 0;
@@ -18,30 +19,56 @@ void	change_result(char **result)
 			//ist jetzt hier nicht nullterminiert etc
 			free(tmp);
 		}
-		// else if (result[i][j] == -2 && result[i][j] != '\0')
-		// {
-		// 	tmp = result[i];
-		// 	//pipe
-		// 	//jeden char ausser Anfang/Ende quote in die pipe
-		// 	//if $ dann expanden
-		// 	//bis zum ende des $strings und weiter in die pipe
-		// 	// result[i] = pipeinhalt;
+		else if (result[i][j] == -2 && result[i][j] != '\0')
+		{
+			tmp = result[i];
+			if (pipe(fd) == -1)
+				write(2, "Error: tmp_pipe creation unsuccessfull\n", 40);
+			j++;
+			while (result[i][j] != '\0')
+			{
+				//write in pipe[1] den char
+				if (result[i][j] == '$' && result[i][j + 1] != ' ')
+				{
+					//find right expandable
+					//write in pipe[1]
+					while (result[i][j] != ' ')
+						j++
+				}
+				//write normal cahr in pipe[1]
+				j++;
+			}
+			// result[i] = muss auf pipe[0] zeigen;
+			free(tmp);
 //        ssize_t read(int fd, void *buf, size_t count);
 // DESCRIPTION         top
 //        read() attempts to read up to count bytes from file descriptor fd
 //        into the buffer starting at buf.
-// 			free(tmp);
-		// }
-		// else
-		// //wenn keine quotes gesetzt
-		// {
-		// 	tmp = result[i];
-		// 	//if $ dann expanden
-		// 	//bis zum ende des $strings und weiter in die pipe
-		// 	// result[i] = pipeinhalt;
-		// 	free(tmp);
-		// }
+	   //ich kann da nicht result[i] als buf nehmen hat in split seine anzahl an chars bekommen
+		}
 
+		else
+		{
+			tmp = result[i];
+			if (pipe(fd) == -1)
+				write(2, "Error: tmp_pipe creation unsuccessfull\n", 40);
+			j++;
+			while (result[i][j] != '\0')
+			{
+				//write in pipe[1] den char
+				if (result[i][j] == '$' && result[i][j + 1] != ' ')
+				{
+					//find right expandable
+					//write in pipe[1]
+					while (result[i][j] != ' ')
+						j++
+				}
+				//write normal cahr in pipe[1]
+				j++;
+			}
+			// result[i] = muss auf pipe[0] zeigen;
+			free(tmp);
+		}
 		i++;
 	}
 	result[i] = NULL;

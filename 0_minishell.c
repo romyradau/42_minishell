@@ -29,8 +29,8 @@ int	empty_input(char *input)
 		}
 		else if (input[0] == 0)
 		{
-			write(1, "no input\n", 10);
-			write(1, "fix inpiut handling\n", 21);
+			write(2, "no input\n", 10);
+			write(2, "fix input handling\n", 21);
 
 			return (1);
 		}
