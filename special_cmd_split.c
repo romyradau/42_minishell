@@ -3,17 +3,20 @@
 static int	ft_findW_count(char const *s, char c)
 {
 	int		i;
-	int	quotes = 1;
+	int		dq = 1;
+	int		sq = 1;
 	int	cnt;
 
 	i = 0;
 	cnt = 1;
 	while (s[i] != '\0')
 	{
-		while ((s[i] != c || quotes == -1) && s[i] != '\0')
+		while ((s[i] != c || sq == -1 || dq == -1) && s[i] != '\0')
  		{
-			if (s[i] == '@')
-				quotes *= -1;
+			if (s[i] == -2 && sq == 1)
+				dq *= -1;
+			if (s[i] == -1 && dq == 1)
+				sq *= -1;
 			i++;
 		}
 		while (s[i] == c)
@@ -21,7 +24,7 @@ static int	ft_findW_count(char const *s, char c)
 		if (s[i] != '\0')
 			cnt++;
 	}
-	if (quotes == -1)
+	if (sq == -1 || dq == -1)
 		return (-1);
 	return (cnt);
 }
@@ -29,15 +32,17 @@ static int	ft_findW_count(char const *s, char c)
 static int	ft_count(int cnt, char const *str, char c)
 {
 	int	i;
-	int	quotes = 1;
+	int	dq = 1;
+	int	sq = 1;
 
 
 	i = cnt;
-	while ((str[i] == c) && (str[i] != '\0') && quotes == 1)
+	while ((str[i] == c) && (str[i] != '\0') && sq == 1 && dq == 1)
 	{
-
-		if (str[i] == '@')
-			quotes *= -1;
+		if (str[i] == -2 && sq == 1)
+			dq *= -1;
+		if (str[i] == -1 && dq == 1)
+			sq *= -1;
 		i++;
 	}
 	cnt = i;
@@ -47,48 +52,22 @@ static int	ft_count(int cnt, char const *str, char c)
 static int	ft_count_toNext(int cnt, char const *str, char c)
 {
 	int	i;
-	int	quotes = 1;
+	int	dq = 1;
+	int	sq = 1;
 
 
 	i = cnt;
-	while (((str[i] != c) && (str[i] != '\0')) || (quotes == -1))
+	while (((str[i] != c) && (str[i] != '\0')) || (sq == -1 || dq == -1))
 	{
-		if (str[i] == '@')
-			quotes *= -1;
+		if (str[i] == -2 && sq == 1)
+			dq *= -1;
+		if (str[i] == -1 && dq == 1)
+			sq *= -1;
 		i++;
 	}
 	cnt = i;
 	return (cnt);
 }
-
-// void	change_result(char ***result)
-// {
-// 	int		i;
-// 	int		j;
-// 	char	*tmp;
-
-// 	i = 0;
-// 	j = 0;
-// 	tmp = NULL;
-// 	while ((*result)[i])
-// 	{
-// 		if ((*result)[i][j] == '@' && (*result)[i][j] != '\0')
-// 		{
-// 			printf("result  %s\n", (*result)[i]);
-// 			tmp = (*result)[i];
-// 			free((*result)[i]);
-// 			(*result)[i] = ft_strtrim(tmp, "@");
-// 			printf("new result  %s\n", (*result)[i]);
-
-// 			free(tmp);
-// 		}
-// 	i++;
-// 	}
-// 	i++;
-// 	(*result)[i] = NULL;
-// }
-//des in @ wird nicht mehr erkannt
-
 
 char	**special_cmd_split(char const *s, char c)
 {
@@ -115,7 +94,6 @@ char	**special_cmd_split(char const *s, char c)
 		i++;
 		start = end;
 	}
-	// change_result(&result);
 	result[i] = NULL;
 	return (result);
 }

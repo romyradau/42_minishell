@@ -25,7 +25,7 @@ bool	double_quotes(char *s, t_red **red, int *i)
 {
 	if (s[(*i)] == '"')
 	{
-		(*red)->left_over[(*red)->left_over_index] = '@';
+		(*red)->left_over[(*red)->left_over_index] = -2;
 		(*red)->left_over_index++;
 		while (s[(*i) + 1] != '"')
 		{
@@ -34,7 +34,7 @@ bool	double_quotes(char *s, t_red **red, int *i)
 			(*red)->left_over_index++;
 		}
 		(*i)++;
-		(*red)->left_over[(*red)->left_over_index] = '@';
+		(*red)->left_over[(*red)->left_over_index] = -2;
 		(*red)->left_over_index++;
 		return true;
 	}
@@ -48,7 +48,7 @@ bool	single_quotes(char *s, t_red **red, int *i)
 {
 	if (s[(*i)] == '\'')
 	{
-		(*red)->left_over[(*red)->left_over_index] = '@';
+		(*red)->left_over[(*red)->left_over_index] = -1;
 		(*red)->left_over_index++;
 		while (s[(*i) + 1] != '\'')
 		{
@@ -57,7 +57,7 @@ bool	single_quotes(char *s, t_red **red, int *i)
 			(*red)->left_over_index++;
 		}
 		(*i)++;
-		(*red)->left_over[(*red)->left_over_index] = '@';
+		(*red)->left_over[(*red)->left_over_index] = -1;
 		(*red)->left_over_index++;
 		return true;
 	}
