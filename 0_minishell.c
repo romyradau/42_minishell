@@ -30,6 +30,20 @@ int	empty_input(char *input)
 		return (0);
 }
 
+int	execute_print(t_data *data)
+{
+	printf("execute print: cmd = %s\n", data->head->cmd);
+	if (cmd_variants(data->head->cmd, "echo", ft_strlen("echo"))
+		|| cmd_variants(data->head->cmd, "cd", ft_strlen("cd"))
+		|| cmd_variants(data->head->cmd, "pwd", ft_strlen("pwd"))
+		|| cmd_variants(data->head->cmd, "export", ft_strlen("export"))
+		|| cmd_variants(data->head->cmd, "unset", ft_strlen("unset"))
+		|| cmd_variants(data->head->cmd, "env", ft_strlen("env"))
+		|| cmd_variants(data->head->cmd, "exit", ft_strlen("exit")))
+		return (1);
+	return (0);
+}
+
 int	prompt(t_data *data, t_builtin *builtin)
 {
 	char	*input;
@@ -72,8 +86,11 @@ int	prompt(t_data *data, t_builtin *builtin)
 		/* end parsing */
 
 		/* start execution */
-		/* end execution */
-		print_package(data->head, builtin);
+		/* end execution and print the right stuff*/
+		if (execute_print(data))
+			data->head = print_package_builtin(data->head, builtin);
+		else
+			data->head =  print_package_normal(data->head, builtin);
 		add_history(input);
 		free(input);
 	}

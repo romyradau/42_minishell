@@ -90,8 +90,11 @@ int prep_echo(t_package *package, bool flag)
 	j = 0;
 
 	package = echo_pipecase(package);
-	if (!package->cmd_args[i])
+	if (package->cmd_args[i] == NULL)
+	{
+		printf("prep echo exits\n");
 		return (0);
+	}
 	// printf("\e[0;31m================ECHO is noted!======================\033[0m\n\e[0;34mcmd-> %s\033[0m\n", package->cmd_args[0]);
 	output = (char **)malloc(doublestr_len(package->cmd_args) * sizeof(char *));
 	if(!output)
