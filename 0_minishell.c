@@ -89,7 +89,7 @@ int	prompt(t_data *data, t_builtin *builtin)
 		data->processes = trim_spaces(data);
 		//protecten??
 		print2Darray(data->processes);
-		process_packages(data);
+		process_packages(data, builtin);
 		/* end parsing */
 
 		/* start execution */
