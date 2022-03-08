@@ -153,6 +153,8 @@ int expand_result_standart(char **res, t_builtin *builtin)
  			free(tmp);
 			if (pipe(fd) == -1)
 				write(2, "Error: tmp_pipe creation unsuccessfull\n", 40);
+			if (res[i][j] == '$' && res[i][j + 1] == '\0')
+				return (1);
 			while (res[i][j] != '\0' && res[i][j] != '$')
 			{
 				write(fd[1], &res[i][j], 1);
@@ -190,6 +192,8 @@ int expand_result_standart(char **res, t_builtin *builtin)
 		{
 			if (pipe(fd) == -1)
 				write(2, "Error: tmp_pipe creation unsuccessfull\n", 40);
+			if (res[i][j] == '$' && res[i][j + 1] == '\0')
+				return (1);
 			while (res[i][j] != '\0' && res[i][j] != '$')
 			{
 				write(fd[1], &res[i][j], 1);
@@ -222,6 +226,11 @@ int expand_result_standart(char **res, t_builtin *builtin)
 				}
 				tmp_list = tmp_list->next;
 			}
+			tmp = res[i];
+ 			res[i][0] = '\0';
+ 			// ist jetzt hier nicht nullterminiert etc
+ 			free(tmp);
+
 		}
 		i++;
 	}
