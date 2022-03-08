@@ -95,9 +95,10 @@ typedef struct s_package
 	// char				**env_var; //gibt vlt mehrere in einem package
 	char				*cmd;
 	char				**cmd_args;
+	char				*expanded;
 	// t_file				*redir;
 //man könnte auch alles in eine struct hauen
-	t_builtin			*builtin; //TODO ->new Mohan (27.02.22)
+	t_builtin			*builtin;
 	struct s_package	*next;
 }	t_package;
 
@@ -127,9 +128,9 @@ char	**special_cmd_split(char const *s, char c);
 
 /*====================PARSING=========*/
 
-int		process_packages(t_data *data);
+int		process_packages(t_data *data, t_builtin *builtin);
 // int		push_package(t_package **head, char *current_process);
-void	fill_package(t_package **newNode, char *current_process);
+void	fill_package(t_package **newNode, char *current_process, t_builtin *builtin);
 // void	print_package(t_package *head);
 t_package	*print_package_normal(t_package *head, t_builtin *builtin);
 t_package	*print_package_builtin(t_package *head, t_builtin *builtin);

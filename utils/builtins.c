@@ -53,7 +53,9 @@ int builtin_picker(t_package *package, t_builtin *builtin)
 	if (!package)
 		return (0);
 	while (package->next != NULL)
+	{
 		package = package->next;
+	}
 	if (cmd_variants(package->cmd_args[0], "echo", ft_strlen("echo")))
     {
 		if (prep_echo(package, flag))
@@ -101,7 +103,7 @@ int builtin_picker(t_package *package, t_builtin *builtin)
 	{
 		if (package->cmd_args[1] == NULL)
 			return (0);
-		else if (!ft_export(&builtin->env_list, package->cmd_args[1]))
+		else if (!ft_export(&builtin->env_list, package))
 			return(0);
 		
 	}
