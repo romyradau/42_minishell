@@ -130,6 +130,7 @@ int complex_expand(char **s,int *fd, int *count, t_envlist *tmp_list)
 	int				cnt;
 	int				tmp_i;
 	char			*expand_content;
+	char			*tmp;
 
 	newS = (char *)(*s);
 	cnt = 0;
@@ -149,8 +150,10 @@ int complex_expand(char **s,int *fd, int *count, t_envlist *tmp_list)
 		return (0);
 	}
 	while(newS[cnt] != '\0' && (ft_isalnum(newS[cnt]) || newS[cnt] == '_'))
+	{
+		printf("cnt: %d\n", cnt);
 		cnt++;
-
+	}
 	while (tmp_list != NULL)
 	{
 		if (!ft_strncmp(tmp_list->content, newS, cnt))//cnt//vlt problem weil er immer dass fd closed?
@@ -188,11 +191,16 @@ int complex_expand(char **s,int *fd, int *count, t_envlist *tmp_list)
 		cnt++;
 		(*count)++;
 	}
+	tmp = (*s);
+	printf("count: %d\n", (*count));
 	(*s) = ft_strcalloc((*count));
 	if (!(*s))
 		return (0);
 	if (read(fd[0], (*s), (*count)) == -1)
 		return (0);
+	printf("s: %s\n", (*s));
+	(*s)[(*count)] = '\0';
+	free(tmp);
 	close(fd[0]);
 	close(fd[1]);
 	return (1);
@@ -203,8 +211,6 @@ int complex_expand(char **s,int *fd, int *count, t_envlist *tmp_list)
 int expand_result_standart(char **res, t_builtin *builtin)
 {
 	t_envlist	*tmp_list;
-	char		*env_start;
-	char		*expand_content;
 	char		*tmp;
 	int			fd[2];
 	int			i;
@@ -235,6 +241,7 @@ int expand_result_standart(char **res, t_builtin *builtin)
  			free(tmp);
 			if (pipe(fd) == -1)
 				write(2, "Error: tmp_pipe creation unsuccessfull\n", 40);
+			printf("res[i]: %s\n", res[i]);
 			if (res[i][j] == '$' && res[i][j + 1] == '\0')
 				return (1);
 			while (res[i][j] != '\0' && res[i][j] != '$')
@@ -245,29 +252,26 @@ int expand_result_standart(char **res, t_builtin *builtin)
 				if (res[i][j] == '$')
 					break;
 			}
-			// env_start = ft_strdup(complex_expand(&res[i], fd , &count, tmp_list));
-			// if (!env_start)
-			// 	return (0);
-			while (tmp_list != NULL)
+			if (complex_expand(&res[i], fd, &count, tmp_list) == 0)
 			{
-				if (!ft_strncmp(tmp_list->content, env_start, cnt))
-				{
-						expand_content = ft_strdup(simple_expand(tmp_list->content, '='));
-						if (!expand_content)
-							return (0);
-						count += ft_strlen(expand_content);
-						free(res[i]);
-						ft_putstr_fd(expand_content,fd[1]);
-						res[i] = ft_strcalloc(count);
-						if (!res[i])
-							return (0);
-						if (read(fd[0], res[i], count) == -1)
-							return (0);
-						close(fd[0]);
-						close(fd[1]);
-						return (1);
-				}
-				tmp_list = tmp_list->next;
+				printf("Res[i][j]: %c\n", res[i][j]);
+				// while (res[i][j] != '\0')
+				// {
+				// 	write(fd[1], &res[i][j], 1);
+				// 	count++;
+				// 	j++;
+				// }
+				tmp = res[i];
+
+			// free(res[i]);
+				res[i] = ft_strcalloc(count);
+				if (read(fd[0], res[i], count) == -1)
+					return (0);
+				close(fd[0]);
+				close(fd[1]);
+ 				res[i][j] = '\0';
+ 				// ist jetzt hier nicht nullterminiert etc
+ 				free(tmp);
 			}
 		}
 		else if (ft_strchr(res[i], '$'))
@@ -309,8 +313,9 @@ int expand_result_standart(char **res, t_builtin *builtin)
  				// ist jetzt hier nicht nullterminiert etc
  				free(tmp);
 			}
-			printf("res[i]: %s\n", res[i]);
+ 			// res[i][j] = '\0';
 		}
+		printf("rEs[i]: %s\n", res[i]);
 		i++;
 	}
 	return (0);
