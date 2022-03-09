@@ -102,11 +102,12 @@ char	*valid_expand(const char *s, int c)
 {
 	char			ch;
 	char			*newS;
-	unsigned int	cnt;
+	unsigned int	cnt;//fur bis !alnum
 
 	cnt = 0;
 	ch = (char) c;
 	newS = (char *)s;
+	//hier while bis cnt auff !alnum ist
 	while (*newS != ch)
 	{
 		if (*newS == '\0')
@@ -115,6 +116,9 @@ char	*valid_expand(const char *s, int c)
 	}
 	if (*newS+1 != ' ')
 		return (newS+1);
+		//hier strncmp
+		//in die pipe scchreiben
+		//dann s[cnt] in die pipe schreiben
 	return (NULL);
 }
 
@@ -192,6 +196,7 @@ int expand_result_standart(char **res, t_builtin *builtin)
 		{
 			if (pipe(fd) == -1)
 				write(2, "Error: tmp_pipe creation unsuccessfull\n", 40);
+				//hier noch die dollar dollar billion scheisse einfugen
 			if (res[i][j] == '$' && res[i][j + 1] == '\0')
 				return (1);
 			while (res[i][j] != '\0' && res[i][j] != '$')
@@ -202,13 +207,15 @@ int expand_result_standart(char **res, t_builtin *builtin)
 				if (res[i][j] == '$')
 					break;
 			}
+			//part der alles vr $ in pipe schreibt
 			env_start = ft_strdup(valid_expand(res[i], '$'));
 			if (!env_start)
 				return (0);
 			while (tmp_list != NULL)
 			{
-				if (!ft_strncmp(tmp_list->content, env_start, ft_strlen(env_start)))
+				if (!ft_strncmp(tmp_list->content, env_start, ft_strlen(env_start)))//cnt//vlt problem weil er immer dass fd closed?
 				{
+					printf("hello\n");
 						expand_content = ft_strdup(valid_expand(tmp_list->content, '='));
 						if (!expand_content)
 							return (0);
@@ -227,9 +234,17 @@ int expand_result_standart(char **res, t_builtin *builtin)
 				tmp_list = tmp_list->next;
 			}
 			tmp = res[i];
- 			res[i][0] = '\0';
+			// free(res[i]);
+			res[i] = ft_strcalloc(count);
+			if (read(fd[0], res[i], count) == -1)
+				return (0);
+			close(fd[0]);
+			close(fd[1]);
+			printf("res[i][j]:				%c\n", res[i][j]);
+ 			res[i][j] = '\0';
  			// ist jetzt hier nicht nullterminiert etc
  			free(tmp);
+			printf("j	%d\n", j);
 
 		}
 		i++;
