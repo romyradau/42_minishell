@@ -25,7 +25,10 @@ static int	ft_findW_count(char const *s, char c)
 			cnt++;
 	}
 	if (sq == -1 || dq == -1)
+	{
+		printf("hallllooo\n");
 		return (-1);
+	}
 	return (cnt);
 }
 

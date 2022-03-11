@@ -28,7 +28,7 @@ t_package	*print_package_normal(t_package *head, t_builtin *builtin)
 		head = head->next;
 	}
 	// builtin_picker(head, builtin);
-	printf("\n\n===============PRINT_PACKAGE_Normal END=================\n\n");
+	printf("===============PRINT_PACKAGE_Normal END=================\n\n");
 	return (head);
 }
 
@@ -59,5 +59,3 @@ void	print2Darray(char **split)
 	}
 	printf("-------- pipe_package end --------\n\n");
 }
-
-

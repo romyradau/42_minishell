@@ -38,17 +38,17 @@ typedef enum {
 	EXPORT //builtin
 } meta;
 
-// typedef struct s_file{
-// 	int		in;
-// 	// data.in = open(package->in, O_RDONLY);
-// 	int		out;
-// 	// data.out = open(package->out, O_RDWR | O_CREAT | O_TRUNC, 0644);
-// 	int		heredoc;
-// 	char	*limiter;
-// 	int		fd[2];
-// 	int		tmp_fd;
-// 	pid_t	pid;
-// }	t_file;
+typedef struct s_file{
+	int		in;
+	// data.in = open(package->in, O_RDONLY);
+	int		out;
+	// data.out = open(package->out, O_RDWR | O_CREAT | O_TRUNC, 0644);
+	int		heredoc;
+	char	*limiter;
+	int		fd[2];
+	int		tmp_fd;
+	pid_t	pid;
+}	t_file;
 
 typedef struct s_red{
 	int		i;
@@ -96,7 +96,7 @@ typedef struct s_package
 	char				*cmd;
 	char				**cmd_args;
 	char				*expanded;
-	// t_file				*redir;
+	t_file				*redir;
 //man könnte auch alles in eine struct hauen
 	t_builtin			*builtin;
 	struct s_package	*next;
@@ -142,6 +142,10 @@ bool	single_quotes(char *s, t_red **red, int *i);
 bool	double_quotes(char *s, t_red **red, int *i);
 void	skip_sq(char *s, int *i);
 void	skip_dq(char *s, int *i);
+int		trim_and_expand(char **res, t_builtin *builtin);
+void	clean_expand(char	**origin, t_builtin *builtin);
+
+
 
 
 
