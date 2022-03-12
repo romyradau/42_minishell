@@ -88,6 +88,7 @@ int	prompt(t_data *data, t_builtin *builtin)
 		}
 		data->processes = trim_spaces(data);
 		//protecten??
+		//glaub das geschieht intern
 		print2Darray(data->processes);
 		process_packages(data, builtin);
 		/* end parsing */

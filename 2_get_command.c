@@ -32,6 +32,35 @@ void	store_redirection(t_package **newNode, char *current_process, t_red **red)
 	}
 }
 
+int		char_compare(char *current_process, t_red **red, int *i)
+{
+	if (double_quotes(current_process, red, i))
+		(*i)++;
+	if (single_quotes(current_process, red, i))
+		(*i)++;
+	if (current_process[(*i)] == '<')
+	{
+		if (current_process[(*i) + 1] == '<')
+		{
+			(*i)++;
+			return HEREDOC;
+
+		}
+		return INFILE;
+	}
+	else if (current_process[(*i)] == '>')
+	{
+		if (current_process[(*i) + 1] == '>')
+		{
+			(*i)++;
+			return APPEND;
+		}
+		return TRUNCATE;
+	}
+	else
+		return NOTHING;
+}
+
 void	manage_red_files(t_package **newNode, char *current_process, t_red *red)
 {
 	red->i = 0;

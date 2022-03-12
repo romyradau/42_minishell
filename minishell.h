@@ -59,6 +59,11 @@ typedef struct s_red{
 	int		oR;
 }	t_red;
 
+typedef struct s_expandables{
+	int		i;
+	int		fd[2];
+	int		len;
+}	t_exp;
 typedef struct s_envlist
 {
 	char *content;
@@ -170,6 +175,8 @@ int		ft_unset(t_envlist **list, const char *arg);
 char 	**cut_from_path(t_data *data, t_package *package);
 int		add_node(t_envlist **head, const char *src);
 int		ft_export(t_envlist **head, t_package *package);
+int		expand_function(char *str, t_exp *exp, t_builtin *builtin);
+
 //====================PRINTING=========
 
 void	print2Darray(char **split);
