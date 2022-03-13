@@ -20,22 +20,12 @@ int add_node(t_envlist **head, const char *src)
 	newnode = creat_node(src);
 	if (!newnode)
 		return (0);
-	// if (*head == NULL)
-	// {
-	// 	*head = newnode;
-	// 	(*head)->next = NULL;
-	// 	return (0);
-	// }
 	newnode->next = (*head);
 	newnode->prev = NULL;
 	if ((*head) != NULL)
 		(*head)->prev = newnode;
 	(*head) = newnode;
-	// while (last->next != NULL)
-	// 	last = last->next;
-	// last->next = newnode;
-	// newnode->next = NULL;
-	return (0);
+	return (1);
 
 }
 
@@ -66,13 +56,13 @@ int set_envlist(t_data *data, t_envlist **list)
 	i = 0;
 	while (data->env[i] != NULL)
 	{
-		if (add_node(list, data->env[i]))
+		if (!add_node(list, data->env[i]))
 			return (0);
 		i++;
 	}
-	if (reverse_envlist(list))
-		return (1);
-	return (0);
+	if (!reverse_envlist(list))
+		return (0);
+	return (1);
 }
 
 int print_env(t_builtin *builtin)
@@ -84,14 +74,14 @@ int print_env(t_builtin *builtin)
 	if (builtin->env_list == NULL)
 	{
 		printf("THis sheeet is\n");
-		return (1);
+		return (0);
 	}
 	while (tmp != NULL)
 	{
 		printf("%s\n", tmp->content);
 		tmp = tmp->next;
 	}
-	return (0);
+	return (1);
 }
 
 int	ft_unset(t_envlist **list, const char *arg)
@@ -130,15 +120,3 @@ int	ft_unset(t_envlist **list, const char *arg)
 	}
 	return (0);
 }
-
-/**
-USER - The current logged in user.
-HOME - The home directory of the current user.
-EDITOR - The default file editor to be used. This is the editor that will be used when you type edit in your terminal.
-SHELL - The path of the current user’s shell, such as bash or zsh.
-LOGNAME - The name of the current user.
-PATH - A list of directories to be searched when executing commands. When you run a command the system will search those directories in this order and use the first found executable.
-LANG - The current locales settings.
-TERM - The current terminal emulation.
-MAIL - Location of where the current user’s mail is stored.
-*/
