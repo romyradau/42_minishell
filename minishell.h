@@ -12,6 +12,7 @@
 # include <stdlib.h>
 # include <stdbool.h>
 # include <fcntl.h>
+# include <termios.h>
 # include <unistd.h>
 # include <signal.h>
 
@@ -27,6 +28,8 @@
 # define RESET		"\033[0m"
 //====================Sturcts==============================
 
+int g_exit_stat;
+
 typedef enum {
 	NOTHING,
 	PIPE,
@@ -37,6 +40,12 @@ typedef enum {
 	ENV, //path
 	EXPORT //builtin
 } meta;
+
+typedef struct s_expandables{
+	int		i;
+	int		fd[2];
+	int		len;
+}	t_exp;
 
 typedef struct s_file{
 	int		in;
@@ -112,10 +121,12 @@ typedef struct s_package
 */
 typedef struct s_data
 {
-	int				packages;
-	char			**processes;
-	char			**env;
-	t_package		*head;
+	int						packages;
+	char					**processes;
+	char					**env;
+	t_package				*head;
+	struct	sigaction 		sa;
+	struct	sigaction		cntrl_backslasch;
 }	t_data;
 
 
@@ -126,6 +137,7 @@ char	*cut_quot_sequence(char *str, char c);
 char	*get_path(char **env, const char *search_str);
 int		builtin_picker(t_package *package, t_builtin *builtin);
 void	btn_handler(int sig);
+int 	prep_signal(t_data *data);
 int		prompt(t_data *data, t_builtin *builtin);
 char	**special_pipe_split(char const *s, char c);
 char	**special_cmd_split(char const *s, char c);
