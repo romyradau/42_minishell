@@ -51,29 +51,69 @@ int	execute_print(t_data *data)
 	return (0);
 }
 
+	// int tcsetattr(int fd, int when, const struct termios *termptr);
+		/*changes the Attribute assiciated with the terminal*/
+	// int tcgetattr(int fildes, struct termios *termptr);
+		/*Gets a termios structure, which contains control information for a terminal associated with fildes.*/
+	// ECHOCTL is for the control chars.
+
+/*
+int
+set_istrip (int desc, int value)
+{
+  struct termios settings;
+  int result;
+
+  result = tcgetattr (desc, &settings);
+  if (result < 0)
+    {
+      perror ("error in tcgetattr");
+      return 0;
+    }
+  settings.c_iflag &= ~ISTRIP;
+  if (value)
+    settings.c_iflag |= ISTRIP;
+  result = tcsetattr (desc, TCSANOW, &settings);
+  if (result < 0)
+    {
+      perror ("error in tcgetattr");
+      return;
+   }
+  return 1;
+}
+*/
+
+
+
 int	prompt(t_data *data, t_builtin *builtin)
 {
 	char	*input;
 	char	*user;
-	struct	sigaction sa;
 
-	sa.sa_handler = btn_handler;
-	sigemptyset(&sa.sa_mask);
-	sa.sa_flags = SA_RESTART;
+	struct	termios termios_p;
+
+	sigemptyset(&data->sa.sa_mask);
+	data->sa.sa_flags = SA_RESTART;
+	data->sa.sa_handler = btn_handler;
 	//TODO eigene function
 
 	user = "\e[0;36mminishell@rschleic&mjeyavat\033[0m>";
 	while (1)
 	{
-		if (sigaction(SIGINT, &sa, NULL) == -1)
-			return (-1);
-		if (sigaction(SIGQUIT, &sa, NULL) == -1)
-			return (-1);
+		sigaction(SIGQUIT, &data->sa, NULL);
+		sigaction(SIGINT, &data->sa, NULL);
 		//TODO eigene function
 		input = readline(user);
+		if (tcgetattr(STDIN_FILENO, &termios_p) == -1)
+			return (-1);
+		termios_p.c_lflag &= ~(ECHOCTL); //this will hinder echoing controll chars beck to the terminal
+		if (tcsetattr(STDIN_FILENO, TCSANOW, &termios_p) == -1)
+			return (-1);
+
 		if (empty_input(input))
 			return (1);
-
+			printf("1\n");
+		// prep_signal(data);
 		/* start parsing */
 		data->processes = special_pipe_split(input, '|');
 		//freen?
@@ -90,6 +130,9 @@ int	prompt(t_data *data, t_builtin *builtin)
 		//protecten??
 		print2Darray(data->processes);
 		process_packages(data, builtin);
+		/* 
+			if ()
+		*/
 		/* end parsing */
 
 		/* start execution */
@@ -100,6 +143,9 @@ int	prompt(t_data *data, t_builtin *builtin)
 			data->head =  print_package_normal(data->head, builtin);
 		add_history(input);
 		free(input);
+		termios_p.c_lflag |= ECHOCTL;
+		if (tcsetattr(STDIN_FILENO, TCSANOW, &termios_p) == -1)
+			return (-1);
 	}
 	return (0);
 }
@@ -116,6 +162,7 @@ int	main(int argc, char **argv, char **envp)
 	// 	return (0);
 	(void) argc;
 	(void) argv;
+	g_exit_stat = 0;
 	ft_bzero(&data, sizeof(t_data));
 	// ft_bzero(&builtin->env_list, sizeof(t_envlist));
 	data.env = envp;
