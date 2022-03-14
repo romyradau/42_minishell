@@ -26,7 +26,10 @@ void	handle_dq(char *str, t_exp *exp, t_builtin *builtin)
 		if (str[exp->i] == '$')
 		{
 			if (expand_function(str, exp, builtin) == 1)
+			{
+				printf("hallo3\n");
 				write_in_pipe(str, exp);
+			}
 		}	
 	}
 	exp->i++;

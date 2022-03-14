@@ -27,12 +27,12 @@ int	do_the_expansion(t_envlist *tmp_list, t_exp *exp, int end_of_var)
 
 	expand_content = ft_strdup(simple_expand(tmp_list->content, '='));
 	if (!expand_content)
-		return (0);
+		return (1);
 	exp->len += ft_strlen(expand_content);
 	write(exp->fd[1], expand_content, ft_strlen(expand_content));
 	free(expand_content);
 	exp->i = end_of_var;
-	return (1);
+	return (0);
 }
 
 int complex_expand(char *str, t_exp *exp, t_envlist *tmp_list)
@@ -55,6 +55,7 @@ int complex_expand(char *str, t_exp *exp, t_envlist *tmp_list)
 	{
 		if (!ft_strncmp(tmp_list->content, &str[exp->i], count))
 		{
+
 			if (do_the_expansion(tmp_list, exp, end_of_var))
 				return (0);
 		}
@@ -62,6 +63,8 @@ int complex_expand(char *str, t_exp *exp, t_envlist *tmp_list)
 				//generell nochmal eror anschauen
 		tmp_list = tmp_list->next;
 	}
+
+	printf("return (1)		\n");
 	return (1);
 }
 
@@ -73,6 +76,9 @@ int		expand_function(char *str, t_exp *exp, t_builtin *builtin)
 	if (str[exp->i] == '$' && str[exp->i + 1] == '\0')
 		return (1);
 	if (complex_expand(str, exp, tmp_list) == 0)
+	{
+		printf("hallo 1		\n");
 		return (1);
+	}
 	return (0);
 }
