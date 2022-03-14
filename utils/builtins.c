@@ -59,45 +59,29 @@ int builtin_picker(t_package *package, t_builtin *builtin)
 	if (cmd_variants(package->cmd_args[0], "echo", ft_strlen("echo")))
     {
 		if (prep_echo(package, flag))
-		{
 			return (1);
-		}
-		
     }
 	else if (cmd_variants(package->cmd_args[0], "cd", ft_strlen("cd")))
 	{
-		// printf("\e[0;31m CD fialed here!\033[0m\n");
 		if (prep_cd(package, builtin))
-		{
-			// printf("+++++++++++++BUTILT_IN PICKER COMPLETED FOR CD++++++++++++\n");
 			return (1);
-		}
 	}
 	else if (cmd_variants(package->cmd_args[0], "pwd", ft_strlen("pwd")))
 	{
-		// printf("\e[0;31m CD fialed here!\033[0m\n");
 		if (call_pwd(1))
-		{
-			// printf("+++++++++++++BUTILT_IN PICKER COMPLETED FOR CD++++++++++++\n");
 			return (1);
-		}
 	}
 	else if (cmd_variants(package->cmd_args[0], "env", ft_strlen("env")))
 	{
 		if (print_env(builtin))
-		{
 			return (1);
-		}
 	}
 	else if (cmd_variants(package->cmd_args[0], "unset", ft_strlen("unset")))
 	{
-
 		if (package->cmd_args[1] == NULL)
 			return (0);
 		if (!ft_unset(&builtin->env_list, package->cmd_args[1]))
 			return (1);
-		else
-			return (0);
 	}
 	else if (cmd_variants(package->cmd_args[0], "export", ft_strlen("export")))
 	{
@@ -107,5 +91,12 @@ int builtin_picker(t_package *package, t_builtin *builtin)
 			return(0);
 		
 	}
+	else if (!ft_strncmp(package->cmd_args[0], "exit", ft_strlen("exit")))
+	{
+		if (package->cmd_args != NULL)
+			kill_d_str(package->cmd_args);
+		exit(0);
+	}
+	g_exit_stat = 127;
     return (0);
 }
