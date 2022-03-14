@@ -114,7 +114,8 @@ int	prompt(t_data *data, t_builtin *builtin)
 			data->head =  print_package_normal(data->head, builtin);
 		add_history(input);
 		free(input);
-		termios_p.c_lflag |= ECHOCTL;
+		if (termios_p.c_lflag & ECHOCTL)
+			termios_p.c_lflag |= ECHOCTL;
 		if (tcsetattr(STDIN_FILENO, TCSANOW, &termios_p) == -1)
 			return (-1);
 	}
