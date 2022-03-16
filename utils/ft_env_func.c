@@ -93,6 +93,11 @@ int	ft_unset(t_envlist **list, const char *arg)
 
 	tmp = *list;
 	len = 0;
+	if (arg == NULL)
+	{
+		g_exit_stat = 1;
+		return (0);
+	}
 	while (tmp->next != NULL)
 	{
 		if (!ft_strncmp((const char *)tmp->content, arg, ft_strlen(arg)))
