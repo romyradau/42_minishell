@@ -107,7 +107,7 @@ int	prompt(t_data *data, t_builtin *builtin)
 
 		    /* start execution */
 		    /* end execution and print the right stuff*/
-			  if (execute_print(data))
+			  if (execute_print(data->head))
 				  data->head = print_package_builtin(data->head, builtin);
 			  else
 				  data->head =  print_package_normal(data->head, builtin);
