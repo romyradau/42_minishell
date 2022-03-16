@@ -63,10 +63,8 @@ void	clean_expand(char	**origin, t_builtin *builtin)
 
 	i = 0;
 	ft_bzero(&exp, sizeof(t_exp));
-	printf("welcome to clean expand!\n");
 	while (origin[i] != NULL)
 	{
-		printf("1\n");
 		if (pipe(exp.fd) == -1)
 			write(2, "Error: tmp_pipe creation unsuccessfull\n", 40);
 		exp.i = 0;

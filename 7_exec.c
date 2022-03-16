@@ -52,7 +52,7 @@ void	open_heredoc(char *limiter)
 void	redirect_infiles(t_package *package, t_file *file)
 {
 	int	i;
-	int	temp;
+	// int	/temp;
 
 	i = 0;
 
@@ -61,35 +61,165 @@ void	redirect_infiles(t_package *package, t_file *file)
 	{
 		if (package->in_redirection[i] == 3)
 		{
-			temp = open(package->infiles[i], O_RDONLY);
-			if (temp == -1)
+			file->infile = open(package->infiles[i], O_RDONLY);
+			if (file->infile == -1)
 				perror("open fail");
 		}
-		if (package->in_redirection[i] == 5)
-		{
-			open_heredoc(package->infiles[i]);
-		}
+		// if (package->in_redirection[i] == 5)
+		// {
+		// 	open_heredoc(package->infiles[i]);
+		// }
 		printf("in_redirection:		%d\n", package->in_redirection[i]);
+		if (package->in_redirection[i + 1])
+			close(file->infile);
 		i++;
-
 	}
-	file->tmp_fd = dup(temp);
+	dup2(file->infile, file->tmp_fd);
+	close(file->infile);
 	printf("++++++++++++++++++++++++++++++++++++++++++++++\n");
 }
 
-void	execute_function(t_data *data)
+int		links(t_file *file, t_package *current)
 {
+	int error;
+
+	if (current->in_redirection[0])
+	{
+		redirect_infiles(current, file);
+	}
+	error = (
+			dup2(file->tmp_fd, STDIN_FILENO) == -1
+			|| close(file->tmp_fd) == -1
+	);
+	return (error);
+}
+
+
+int		rechts(t_file *file, t_package *current)
+{
+	int	error;
+	int	i;
+
+	if (current->pipe && current->out_redirection[0] == NOTHING)
+	{
+		error = (
+			dup2(file->fd[1], STDOUT_FILENO) == -1
+			// || close (file->fd[1]) == -1
+		);
+	}
+	else if (current->out_redirection[0] != NOTHING)
+	{
+		i = 0;
+
+		while (current->out_redirection[i])
+		{
+			if (current->out_redirection[i] == TRUNCATE)
+				file->outfile = open(current->outfiles[i], O_RDWR | O_CREAT | O_TRUNC, 0644);
+			else if (current->out_redirection[i] == APPEND)
+				file->outfile = open(current->outfiles[i], O_RDWR | O_CREAT | O_APPEND, 0644);
+			if (current->out_redirection[i + 1])
+				close(file->outfile);
+			i++;
+			// evtl muss bei error infiles geclosed werden
+			// evtl bei outfiles und pipe nochmal gucken ob die redirections passen
+		}
+		error = (
+				dup2(file->outfile, STDOUT_FILENO) == -1
+				|| close (file->outfile) == -1
+		);
+
+	}
+	else
+	{
+		error = (
+			dup2(file->out, STDOUT_FILENO) == -1
+			|| close (file->out) == -1
+		);
+	}
+	close (file->fd[1]);
+	return (error);
+}
+
+void	find_path(char **paths, t_package *current, char **envp)
+{
+	int		i;
+	char	*match;
+	char	*tmp_match;
+
+	i = 0;
+	while (paths && paths[i])
+	{
+		tmp_match = ft_strjoin(paths[i], "/");
+		match = ft_strjoin(tmp_match, current->cmd);
+		free(tmp_match);
+		//vlt noch access hier
+		if (access(match, F_OK) == 0)
+			execve(match, current->cmd_args, envp);
+		free(match);
+		i++;
+	}
+	//kein access weil sonst der error abgefangen wird?!
+		// execve(current->cmd, current->cmd_args, envp);
+}
+
+void	do_the_execution(t_package *current, char **envp)
+{
+
+	char	**paths;
+	int		i;
+
+	i = 0;
+	while (envp[i] && ft_strncmp(envp[i], "PATH=", 5))
+		i++;
+	paths = NULL;
+	if (envp[i])
+		paths = ft_split(envp[i] + 6, ':');
+	find_path(paths, current, envp);
+	free(paths);
+	//wenn das heir hin kommt, dann ist was schief gelaufen
+}
+
+int	redirect_parent(t_file *file, t_package *current)
+{
+	(void)current;
+	int error;
+
+	error = (
+			dup2(file->fd[0], file->tmp_fd) == -1
+			|| close(file->fd[0]) == -1
+	);
+	return (error);
+}
+
+
+void	execute_function(t_data *data, char **envp)
+{
+	(void)envp;
 	t_file	*file;
 
 	file = init_redirections();
 
-	printf("hali\n");
+	// printf("hali\n");
 	while (data->head)
 	{
-		redirect_infiles(data->head, file);
+		if (pipe(file->fd) == -1)
+			perror("pipe");
+		file->pid = fork();
+		if (file->pid == -1)
+			perror("fork");
+		if (file->pid == 0)
+		{
+			close(file->fd[0]);
+			links(file, data->head);
+			rechts(file, data->head);
+			do_the_execution(data->head, data->env);
+		}
+		waitpid(file->pid, NULL, 0);
+		close(file->fd[1]);
+		redirect_parent(file, data->head);
 		data->head = data->head->next;
 	}
-
+	close(file->tmp_fd);
 	free(file);
-
 }
+//ausser bei nur einem builtin, dann alles im parent!

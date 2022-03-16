@@ -59,6 +59,8 @@ typedef struct s_file{
 	int		in;
 	// data.in = open(package->in, O_RDONLY);
 	int		out;
+	int		outfile;
+	int		infile;
 	// data.out = open(package->out, O_RDWR | O_CREAT | O_TRUNC, 0644);
 	int		heredoc;
 	int		tmp_fd;
@@ -141,7 +143,7 @@ char	*get_path(char **env, const char *search_str);
 int		builtin_picker(t_package *package, t_builtin *builtin);
 void	btn_handler(int sig);
 int 	prep_signal(t_data *data);
-int		prompt(t_data *data, t_builtin *builtin);
+int		prompt(t_data *data, t_builtin *builtin, char	**envp);
 char	**special_pipe_split(char const *s, char c);
 char	**special_cmd_split(char const *s, char c);
 char	**kill_d_str(char **str);
@@ -196,7 +198,7 @@ int		expand_function(char *str, t_exp *exp, t_builtin *builtin);
 
 //====================EXECUTION=========
 
-void	execute_function(t_data *data);
+void	execute_function(t_data *data, char **envp);
 
 //====================PRINTING=========
 

@@ -53,13 +53,14 @@ int	execute_print(t_package *head)
 }
 
 
-int	prompt(t_data *data, t_builtin *builtin)
+int	prompt(t_data *data, t_builtin *builtin, char **envp)
 {
 	char	*input;
 	char	*user;
 	pid_t	pid;
 	struct	termios termios_p;
 
+	(void)envp;
 	sigemptyset(&data->sa.sa_mask);
 	data->sa.sa_flags = SA_RESTART;
 	data->sa.sa_handler = btn_handler;
@@ -82,44 +83,44 @@ int	prompt(t_data *data, t_builtin *builtin)
 		// prep_signal(data);
 		if (empty_input(input))
 		{
-			/* start parsing */
-			data->processes = special_pipe_split(input, '|');
-		//freen?
-		  if (!data->processes)
-		  {
-			  printf("error: unclosed quotes\n");
-			  return (1);
-			  //wie sieht error handling bei open quotes aus?
-			  //soll da gleich in die neue prompt gegangen werden?
-			  //nicht nur returnen sondern einfach mit nachster prompt weiter machen
-			  //TODO eigene function
-		  }
-		  data->processes = trim_spaces(data);
-		  //protecten??
-		  //glaub das geschieht intern
-		  print2Darray(data->processes);
-		  if (!process_packages(data, builtin))
-		  {
-		  /* 
-		  	if ()
-		  */
-		    /* end parsing */
+				/* start parsing */
+				data->processes = special_pipe_split(input, '|');
+			//freen?
+			if (!data->processes)
+			{
+				printf("error: unclosed quotes\n");
+				return (1);
+				//wie sieht error handling bei open quotes aus?
+				//soll da gleich in die neue prompt gegangen werden?
+				//nicht nur returnen sondern einfach mit nachster prompt weiter machen
+				//TODO eigene function
+			}
+			data->processes = trim_spaces(data);
+			//protecten??
+			//glaub das geschieht intern
+			print2Darray(data->processes);
+			if (!process_packages(data, builtin))
+			{
+			  /* 
+			  	if ()
+			  */
+			    /* end parsing */
 
-		    /* start execution */
-		    /* end execution and print the right stuff*/
-			  if (execute_print(data->head))
-				  data->head = print_package_builtin(data->head, builtin);
-			  else
-				  data->head =  print_package_normal(data->head, builtin);
-			  add_history(input);
-  		// execute_function(data);
-		  }
-		  else
-			  kill_d_str(data->processes);
-		  free(input);
-		  termios_p.c_lflag |= ECHOCTL;
-		  if (tcsetattr(STDIN_FILENO, TCSANOW, &termios_p) == -1)
-			  return (-1);
+			    /* start execution */
+			    /* end execution and print the right stuff*/
+				//   if (execute_print(data->head))
+				// 	  data->head = print_package_builtin(data->head, builtin);
+				//   else
+				// 	  data->head =  print_package_normal(data->head, builtin);
+				add_history(input);
+  				execute_function(data, envp);
+			}
+			else
+				kill_d_str(data->processes);
+			free(input);
+			termios_p.c_lflag |= ECHOCTL;
+			if (tcsetattr(STDIN_FILENO, TCSANOW, &termios_p) == -1)
+				return (-1);
 		}
 	}
 	return (0);
@@ -140,7 +141,7 @@ int	main(int argc, char **argv, char **envp)
 	data.env = envp;
 	builtin->home_path = getenv("HOME");
 	set_envlist(&data, &builtin->env_list);
-	if (prompt(&data, builtin))
+	if (prompt(&data, builtin, envp))
 		return(1);
 	return (0);
 }
