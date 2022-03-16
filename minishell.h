@@ -37,15 +37,7 @@ typedef enum {
 	INFILE, //<
 	APPEND, //>>
 	HEREDOC, //<<
-	ENV, //path
-	EXPORT //builtin
 } meta;
-
-typedef struct s_expandables{
-	int		i;
-	int		fd[2];
-	int		len;
-}	t_exp;
 
 typedef struct s_file{
 	int		in;
@@ -53,9 +45,9 @@ typedef struct s_file{
 	int		out;
 	// data.out = open(package->out, O_RDWR | O_CREAT | O_TRUNC, 0644);
 	int		heredoc;
+	int		tmp_fd;
 	char	*limiter;
 	int		fd[2];
-	int		tmp_fd;
 	pid_t	pid;
 }	t_file;
 
@@ -147,7 +139,7 @@ char	**special_cmd_split(char const *s, char c);
 
 int		process_packages(t_data *data, t_builtin *builtin);
 // int		push_package(t_package **head, char *current_process);
-void	fill_package(t_package **newNode, char *current_process, t_builtin *builtin);
+int	fill_package(t_package **newNode, char *current_process, t_builtin *builtin);
 // void	print_package(t_package *head);
 t_package	*print_package_normal(t_package *head, t_builtin *builtin);
 t_package	*print_package_builtin(t_package *head, t_builtin *builtin);
@@ -189,14 +181,20 @@ int		add_node(t_envlist **head, const char *src);
 int		ft_export(t_envlist **head, t_package *package);
 int		expand_function(char *str, t_exp *exp, t_builtin *builtin);
 
+
+//====================EXECUTION=========
+
+void	execute_function(t_data *data);
+
 //====================PRINTING=========
+
 
 void	print2Darray(char **split);
 // void	print_package(t_package *head);
 
 /*====================CALCULATING=========*/
 
-void	allocate_redirections(t_package **newNode, char *current_process);
+int		allocate_redirections(t_package **newNode, char *current_process);
 bool	is_metachar(char c);
 int		char_compare(char *current_process, t_red **red, int *i);
 

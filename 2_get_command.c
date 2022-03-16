@@ -43,6 +43,8 @@ int		char_compare(char *current_process, t_red **red, int *i)
 		if (current_process[(*i) + 1] == '<')
 		{
 			(*i)++;
+			if (current_process[(*i)] == '<' || current_process[(*i)] == '>')
+				return (-1);
 			return HEREDOC;
 
 		}
@@ -52,7 +54,10 @@ int		char_compare(char *current_process, t_red **red, int *i)
 	{
 		if (current_process[(*i) + 1] == '>')
 		{
+
 			(*i)++;
+			if (current_process[(*i)] == '>' || current_process[(*i)] == '<')
+				return (-1);
 			return APPEND;
 		}
 		return TRUNCATE;
@@ -92,14 +97,23 @@ char	*get_command(t_package **newNode, char *current_process)
 
 	ft_bzero(&red, sizeof(t_red));
 	red.left_over = ft_calloc(ft_strlen(current_process) + 1, sizeof(char));
-	allocate_redirections(newNode, current_process);
-	manage_red_files(newNode, current_process, &red);
+	//TODO: DIS in WHILe LOOP
+	if (allocate_redirections(newNode, current_process) == -1)
+	{
+		printf("works\n");
+		free(red.left_over);
+		//free alles was bis dahin allocated wurde
+		//dann soll eine neue prompt kommen
+		return (NULL);
+	}
 
+	manage_red_files(newNode, current_process, &red);
 	(*newNode)->in_redirection[red.iR] = NOTHING;
 	(*newNode)->out_redirection[red.oR] = NOTHING;
 	(*newNode)->infiles[red.iR] = NULL;
 	(*newNode)->outfiles[red.oR] = NULL;
 	return (red.left_over);
+	//kann das auch ein NULL sein, wenn in red.left_over nichts abgespeichert werden muss?
 }
 
 

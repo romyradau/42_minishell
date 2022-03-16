@@ -120,7 +120,7 @@ int	prompt(t_data *data, t_builtin *builtin)
 		if (!data->processes)
 		{
 			printf("error: unclosed quotes\n");
-			return 1;
+			return (1);
 			//wie sieht error handling bei open quotes aus?
 			//soll da gleich in die neue prompt gegangen werden?
 			//nicht nur returnen sondern einfach mit nachster prompt weiter machen
@@ -130,7 +130,8 @@ int	prompt(t_data *data, t_builtin *builtin)
 		//protecten??
 		//glaub das geschieht intern
 		print2Darray(data->processes);
-		process_packages(data, builtin);
+		if (!process_packages(data, builtin))
+		{
 		/* 
 			if ()
 		*/
@@ -138,11 +139,17 @@ int	prompt(t_data *data, t_builtin *builtin)
 
 		/* start execution */
 		/* end execution and print the right stuff*/
-		if (execute_print(data))
-			data->head = print_package_builtin(data->head, builtin);
+			if (execute_print(data))
+				data->head = print_package_builtin(data->head, builtin);
+			else
+				data->head =  print_package_normal(data->head, builtin);
+			add_history(input);
+
+			printf("halo");
+		// execute_function(data);
+		}
 		else
-			data->head =  print_package_normal(data->head, builtin);
-		add_history(input);
+			kill_d_str(data->processes);
 		free(input);
 		termios_p.c_lflag |= ECHOCTL;
 		if (tcsetattr(STDIN_FILENO, TCSANOW, &termios_p) == -1)
@@ -158,23 +165,17 @@ int	main(int argc, char **argv, char **envp)
 	builtin = (t_builtin *)malloc(sizeof(t_builtin));
 	if (!builtin)
 		return (0);	
-	builtin->env_list = NULL;//(t_envlist *)malloc(sizeof(t_envlist));
-	// if (!builtin->env_list)
-	// 	return (0);
+	builtin->env_list = NULL;
+
 	(void) argc;
 	(void) argv;
 	g_exit_stat = 0;
 	ft_bzero(&data, sizeof(t_data));
-	// ft_bzero(&builtin->env_list, sizeof(t_envlist));
 	data.env = envp;
 	builtin->home_path = getenv("HOME");
 	set_envlist(&data, &builtin->env_list);
 	if (prompt(&data, builtin))
-	{
-		//free
-		//correct error message
 		return(1);
-	}
 	return (0);
 }
 
