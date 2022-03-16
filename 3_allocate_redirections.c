@@ -16,12 +16,16 @@ int	amount_redirections(char *current_process)
 		{
 			if (current_process[i + 1] == '<')
 				i++;
+			if (current_process[i + 1] != '<' || current_process[i + 1] != '>')
+				return (-1);
 			count++;
 		}
 		else if (current_process[i] == '>')
 		{
 			if (current_process[i + 1] == '>')
 				i++;
+			if (current_process[i + 1] != '>' || current_process[i + 1] != '<')
+				return (-1);
 			count++;
 		}
 		i++;
@@ -29,7 +33,7 @@ int	amount_redirections(char *current_process)
 	return (count);
 }
 
-void	allocate_redirections(t_package **newNode, char *current_process)
+int	allocate_redirections(t_package **newNode, char *current_process)
 {
 
 	int		amount_red;
@@ -43,6 +47,7 @@ void	allocate_redirections(t_package **newNode, char *current_process)
 	// maybe use ft_calloc
 	(*newNode)->out_redirection = malloc(sizeof(int) * amount_red);
 	(*newNode)->in_redirection = malloc(sizeof(int) * amount_red);
+	return (amount_red);
 }
 
 /*
