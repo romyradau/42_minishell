@@ -33,24 +33,12 @@ void	ft_echo(char **output, bool flag, t_package *package)
 
 	i = 0;
 	len = ft_d_strlen(output);
-	// j = 0;
-	// package->builtin->echo_str = (char **)malloc(len + 1 * sizeof(char *));
-	// while (j < len)
-	// {
-	// 	package->builtin->echo_str[j] = ft_strdup(output[j]);
-	// 	// ft_strdup(output[]); //TODO ->kann evntl zu memleaks führen muss richting gemelloct werden
-	// 	j++;
-	// }	
-	// printf("len; %d\n", len - 1);
 	ret = 0;
-	// printf("\n\e[0;33m================ECHO STARTS=======================\033[0m\n");
 	if (*package->out_redirection == 2)
 	{
-		printf("package has a redirection\n");
 		ret = open(*package->outfiles, O_CREAT | O_WRONLY);
 		if (ret < 0)
 			return ;
-		printf("file has been created: %s\n", *package->outfiles);
 	}
 	if (!output[0])
 	{
@@ -68,15 +56,40 @@ void	ft_echo(char **output, bool flag, t_package *package)
 		write(1, "\n", 1);
 
 	kill_d_str(output);
-	// printf("\n\e[0;33m==================ECHO END=======================\033[0m\n");
 }
 
-t_package *echo_pipecase(t_package *package)
+t_package *echo_pipecase(t_package *package, bool *put_in_pipe)
 {
 	if((package->pipe && package->next != NULL)
 		&& cmd_variants(package->next->cmd, "echo", ft_strlen("echo")))
 		package = package->next;
+	else if (package->pipe && package->next != NULL
+		&& !execute_print(package))
+	{
+		(*put_in_pipe) = true;
+		return (package);
+	}
 	return (package);
+}
+
+int	write_to_pipe(t_package *package, char **output, bool flag)
+{
+	int j;
+
+	j = 0;
+	printf("the output will be wrote in to the pipe!\n");
+	if (pipe(package->redir->fd) == -1)
+		return (0);
+	while (output[j])
+	{
+		write(package->redir->fd[1], output[j], ft_strlen(output[j]));
+		j++;
+	}
+	if (!flag)
+		write(package->redir->fd[1], "\n", 1);
+	kill_d_str(output);
+	return (1);
+
 }
 
 int prep_echo(t_package *package, bool flag)
@@ -84,18 +97,19 @@ int prep_echo(t_package *package, bool flag)
 	char	**output;
 	int		i;
 	int		j;
+	bool	put_in_pipe;
 
 	output = NULL;
 	i = 1;
 	j = 0;
+	put_in_pipe = false;
 
-	package = echo_pipecase(package);
+	package = echo_pipecase(package, &put_in_pipe);
 	if (package->cmd_args[i] == NULL)
 	{
 		printf("prep echo exits\n");
 		return (0);
 	}
-	// printf("\e[0;31m================ECHO is noted!======================\033[0m\n\e[0;34mcmd-> %s\033[0m\n", package->cmd_args[0]);
 	output = (char **)malloc(doublestr_len(package->cmd_args) * sizeof(char *));
 	if(!output)
 		return (0);
@@ -108,11 +122,14 @@ int prep_echo(t_package *package, bool flag)
 		}
 		while (check_for_flag(package->cmd_args[i], &flag) && package->cmd_args[i] != NULL)
 			i++;
-		output[j] = handle_qouts(package->cmd_args, i);
+		output[j] = ft_strdup(package->cmd_args[i]);
 		j++;
 		i++;
 	}
 	output[j] = ft_strdup("\n");
-	ft_echo(output, flag, package);
+	if (put_in_pipe)
+		write_to_pipe(package, output, flag);
+	else
+		ft_echo(output, flag, package);
 	return (1);
 }

@@ -39,6 +39,22 @@ typedef enum {
 	HEREDOC, //<<
 } meta;
 
+typedef enum {
+	EHO,
+	CD,
+	PWD,
+	EXPORT,
+	UNSET,
+	ENV,
+	EXIT
+} builtin; 
+
+typedef struct s_expandables{
+	int		i;
+	int		fd[2];
+	int		len;
+}	t_exp;
+
 typedef struct s_file{
 	int		in;
 	// data.in = open(package->in, O_RDONLY);
@@ -60,11 +76,6 @@ typedef struct s_red{
 	int		oR;
 }	t_red;
 
-typedef struct s_expandables{
-	int		i;
-	int		fd[2];
-	int		len;
-}	t_exp;
 typedef struct s_envlist
 {
 	char *content;
@@ -133,7 +144,8 @@ int 	prep_signal(t_data *data);
 int		prompt(t_data *data, t_builtin *builtin);
 char	**special_pipe_split(char const *s, char c);
 char	**special_cmd_split(char const *s, char c);
-
+char	**kill_d_str(char **str);
+int		execute_print(t_package *package);
 
 /*====================PARSING=========*/
 
