@@ -15,12 +15,12 @@ t_file *init_redirections()
 	ret->fd[0] = -1;
 	ret->fd[1] = -1;
 	ret->pid = -1;
-
+//muss ich noch infile und outfile initialisieren?
 	return (ret);
 }
 
 
-void	open_heredoc(char *limiter)
+void	open_heredoc(char *limiter, t_file *file)
 {
 	char	*line;
 	char	*test;
@@ -28,16 +28,16 @@ void	open_heredoc(char *limiter)
 
 	if (pipe(fd) == -1)
 	{
-		perror("pipe fail");
+		perror("pipe");
 	}
-
 	while (1)
 	{
 		line = readline("> ");
 		if (!line)
-			perror("ERROR: missing here_doc input");
+			perror("readline");
 		test = ft_strtrim(line, "\n");
 		if (!ft_strncmp(test, limiter, ft_strlen(limiter) + 1))
+		//warum hier die plus 1?? fur die nullterminante??
 		{
 			free(test);
 			free(line);
@@ -47,29 +47,36 @@ void	open_heredoc(char *limiter)
 		free(test);
 		free(line);
 	}
+	fprintf(stderr, "infile	%d\n", file->infile);
+	fprintf(stderr, "fd[0]	%d\n", fd[0]);
+
+	file->infile = fd[0];
+	fprintf(stderr, "infile after dup	%d\n", file->infile);
+
+	//muss man dupen oder geht's auch ohne ?
+	// close(fd[0]);
+	close(fd[1]);
 }
 
 void	redirect_infiles(t_package *package, t_file *file)
 {
 	int	i;
-	// int	/temp;
 
 	i = 0;
 
 	printf("++++++++++++++++++++++++++++++++++++++++++++++\n");
 	while(package->in_redirection[i])
 	{
-		if (package->in_redirection[i] == 3)
+
+		if (package->in_redirection[i] == INFILE)
 		{
+
 			file->infile = open(package->infiles[i], O_RDONLY);
 			if (file->infile == -1)
 				perror("open fail");
 		}
-		// if (package->in_redirection[i] == 5)
-		// {
-		// 	open_heredoc(package->infiles[i]);
-		// }
-		printf("in_redirection:		%d\n", package->in_redirection[i]);
+		else if (package->in_redirection[i] == HEREDOC)
+			open_heredoc(package->infiles[i], file);
 		if (package->in_redirection[i + 1])
 			close(file->infile);
 		i++;
@@ -83,7 +90,7 @@ int		links(t_file *file, t_package *current)
 {
 	int error;
 
-	if (current->in_redirection[0])
+	if (current->in_redirection[0] != NOTHING)
 	{
 		redirect_infiles(current, file);
 	}
@@ -140,26 +147,45 @@ int		rechts(t_file *file, t_package *current)
 	return (error);
 }
 
-void	find_path(char **paths, t_package *current, char **envp)
+int	find_path(char **paths, t_package *current, char **envp)
 {
 	int		i;
 	char	*match;
 	char	*tmp_match;
+	struct stat s;
 
-	i = 0;
-	while (paths && paths[i])
+	if (ft_strchr(current->cmd, '/') || paths == NULL)
 	{
-		tmp_match = ft_strjoin(paths[i], "/");
-		match = ft_strjoin(tmp_match, current->cmd);
-		free(tmp_match);
-		//vlt noch access hier
-		if (access(match, F_OK) == 0)
-			execve(match, current->cmd_args, envp);
-		free(match);
-		i++;
+		execve(current->cmd, current->cmd_args, envp);
+		printf("minishell: %s: %s\n", current->cmd_args[0], strerror(errno)); //stderr
+		if (errno == ENOENT)
+			return (127);
+		else
+			return (126);
 	}
+	//hier hab ich keine Auswahlmoglichkeiten, deswegen soll direkt nach execve gechect werden
 	//kein access weil sonst der error abgefangen wird?!
-		// execve(current->cmd, current->cmd_args, envp);
+	else
+	{
+		i = 0;
+		while (paths && paths[i])
+		{
+			tmp_match = ft_strjoin(paths[i], "/");
+			match = ft_strjoin(tmp_match, current->cmd);
+			free(tmp_match);
+			//vlt noch access hier
+			if (access(match, F_OK) == 0 && (!stat(match, &s) && !S_ISDIR(s.st_mode))) // directory checken )
+			{
+				execve(match, current->cmd_args, envp);
+				printf("minishell: %s: %s\n", current->cmd_args[0], strerror(errno)); //stderr
+				return (126);
+			}
+			free(match);
+			i++;
+		}
+		printf("minishell: %s: command not found\n", current->cmd_args[0]); //stderr
+		return (127);
+	}
 }
 
 void	do_the_execution(t_package *current, char **envp)
@@ -167,6 +193,7 @@ void	do_the_execution(t_package *current, char **envp)
 
 	char	**paths;
 	int		i;
+	int		error;
 
 	i = 0;
 	while (envp[i] && ft_strncmp(envp[i], "PATH=", 5))
@@ -174,8 +201,11 @@ void	do_the_execution(t_package *current, char **envp)
 	paths = NULL;
 	if (envp[i])
 		paths = ft_split(envp[i] + 6, ':');
-	find_path(paths, current, envp);
+	error = find_path(paths, current, envp);
 	free(paths);
+	exit(error);
+	//theoretisch auch nocha lels andere freen
+	//eien free function
 	//wenn das heir hin kommt, dann ist was schief gelaufen
 }
 
@@ -194,6 +224,7 @@ int	redirect_parent(t_file *file, t_package *current)
 
 void	execute_function(t_data *data, char **envp)
 {
+	int status;
 	(void)envp;
 	t_file	*file;
 
@@ -202,7 +233,7 @@ void	execute_function(t_data *data, char **envp)
 	// printf("hali\n");
 	while (data->head)
 	{
-		if (pipe(file->fd) == -1)
+		if (pipe(file->fd) == -1) // data->head->next
 			perror("pipe");
 		file->pid = fork();
 		if (file->pid == -1)
@@ -210,16 +241,31 @@ void	execute_function(t_data *data, char **envp)
 		if (file->pid == 0)
 		{
 			close(file->fd[0]);
-			links(file, data->head);
-			rechts(file, data->head);
+			links(file, data->head); // war file oeffnen erfolgreich sonst exiten
+			rechts(file, data->head); // wenns schief lauft exiten mit passenden fehler codes
+			close(file->in); 
 			do_the_execution(data->head, data->env);
 		}
-		waitpid(file->pid, NULL, 0);
 		close(file->fd[1]);
 		redirect_parent(file, data->head);
 		data->head = data->head->next;
 	}
 	close(file->tmp_fd);
+	close(file->in);
+	close(file->out);
+	waitpid(file->pid, &status, 0); // exitstatus
+	//fur file->pid fragt er den exit status ab
+	while (wait(NULL) > 0);
+	if (WIFSIGNALED(status))
+	{
+		printf("%d\n", WTERMSIG(status) + 128);
+		g_exit_stat = WTERMSIG(status) + 128;
+	}
+	else
+	{
+		printf("%d\n", WEXITSTATUS(status));
+		g_exit_stat = WEXITSTATUS(status);
+	}
 	free(file);
 }
 //ausser bei nur einem builtin, dann alles im parent!

@@ -43,7 +43,7 @@ int		char_compare(char *current_process, t_red **red, int *i)
 		if (current_process[(*i) + 1] == '<')
 		{
 			(*i)++;
-			if (current_process[(*i)] == '<' || current_process[(*i)] == '>')
+			if (current_process[(*i) + 1] == '<' || current_process[(*i) + 1] == '>')
 				return (-1);
 			return HEREDOC;
 
@@ -54,9 +54,8 @@ int		char_compare(char *current_process, t_red **red, int *i)
 	{
 		if (current_process[(*i) + 1] == '>')
 		{
-
 			(*i)++;
-			if (current_process[(*i)] == '>' || current_process[(*i)] == '<')
+			if (current_process[(*i) + 1] == '>' || current_process[(*i) + 1] == '<')
 				return (-1);
 			return APPEND;
 		}

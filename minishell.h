@@ -15,6 +15,8 @@
 # include <termios.h>
 # include <unistd.h>
 # include <signal.h>
+# include <errno.h>
+#include <sys/stat.h>
 
 //===============COLOR CODE=================================//
 # define BLK		"\e[0;30m"

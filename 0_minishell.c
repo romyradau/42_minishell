@@ -90,15 +90,12 @@ int	prompt(t_data *data, t_builtin *builtin, char **envp)
 			{
 				printf("error: unclosed quotes\n");
 				return (1);
-				//wie sieht error handling bei open quotes aus?
-				//soll da gleich in die neue prompt gegangen werden?
-				//nicht nur returnen sondern einfach mit nachster prompt weiter machen
-				//TODO eigene function
+				//TODO: muss noch gehandelt werden, dass die message bei quit mit ctrl D weggeht
 			}
 			data->processes = trim_spaces(data);
 			//protecten??
 			//glaub das geschieht intern
-			print2Darray(data->processes);
+			// print2Darray(data->processes);
 			if (!process_packages(data, builtin))
 			{
 			  /* 

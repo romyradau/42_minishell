@@ -9,7 +9,7 @@ FILES = 0_minishell.c 1_process_package.c 2_get_command.c 3_allocate_redirection
 LDFLAGS		= -L/Users/$(USER)/.brew/opt/readline/lib
 CPPFLAGS	= -I/Users/$(USER)/.brew/opt/readline/include
 
-CC = gcc 
+CC = gcc
 
 CFLAGS = $(LDFLAGS) $(CPPFLAGS) -Wall -Wextra -Werror -lreadline -g
 
