@@ -27,7 +27,6 @@ void	handle_dq(char *str, t_exp *exp, t_builtin *builtin)
 		{
 			if (expand_function(str, exp, builtin) == 1)
 			{
-				printf("hallo3\n");
 				write_in_pipe(str, exp);
 			}
 		}	
@@ -45,7 +44,6 @@ void	search_for_dollar_quotes(char *str, t_exp *exp, t_builtin *builtin)
 			handle_dq(str, exp, builtin);
 		else if (str[exp->i] == '$')
 		{
-			printf("do you go in here\n");
 			if (expand_function(str, exp, builtin) == 1)
 				write_in_pipe(str, exp);
 		}

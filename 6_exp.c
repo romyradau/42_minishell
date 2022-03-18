@@ -63,8 +63,6 @@ int complex_expand(char *str, t_exp *exp, t_envlist *tmp_list)
 				//generell nochmal eror anschauen
 		tmp_list = tmp_list->next;
 	}
-
-	printf("return (1)		\n");
 	return (1);
 }
 
@@ -77,7 +75,6 @@ int		expand_function(char *str, t_exp *exp, t_builtin *builtin)
 		return (1);
 	if (complex_expand(str, exp, tmp_list) == 0)
 	{
-		printf("hallo 1		\n");
 		return (1);
 	}
 	return (0);
