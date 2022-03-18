@@ -32,9 +32,8 @@ int	empty_input(char *input)
 		return (1);
 }
 
-int	execute_print(t_package *head)
+int	check_if_builtin(t_package *head)
 {
-	printf("execute print: cmd = %s\n", head->cmd);
 	if (cmd_variants(head->cmd, "echo", ft_strlen("echo")))
 		return (1);
 	if (cmd_variants(head->cmd, "cd", ft_strlen("cd")))
@@ -98,19 +97,17 @@ int	prompt(t_data *data, t_builtin *builtin, char **envp)
 			// print2Darray(data->processes);
 			if (!process_packages(data, builtin))
 			{
-			  /* 
-			  	if ()
-			  */
-			    /* end parsing */
 
-			    /* start execution */
 			    /* end execution and print the right stuff*/
 				//   if (execute_print(data->head))
 				// 	  data->head = print_package_builtin(data->head, builtin);
 				//   else
 				// 	  data->head =  print_package_normal(data->head, builtin);
 				add_history(input);
-  				execute_function(data, envp);
+				if (check_if_builtin(data->head) && data->head->next == NULL)
+					builtin_picker(data->head, builtin);
+				else
+  					execute_function(data, envp, builtin);
 			}
 			else
 				kill_d_str(data->processes);

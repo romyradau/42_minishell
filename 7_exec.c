@@ -18,6 +18,7 @@ t_file *init_redirections()
 //muss ich noch infile und outfile initialisieren?
 	return (ret);
 }
+//file->in wird nicht benutzt
 
 
 void	open_heredoc(char *limiter, t_file *file)
@@ -47,11 +48,8 @@ void	open_heredoc(char *limiter, t_file *file)
 		free(test);
 		free(line);
 	}
-	fprintf(stderr, "infile	%d\n", file->infile);
-	fprintf(stderr, "fd[0]	%d\n", fd[0]);
 
 	file->infile = fd[0];
-	fprintf(stderr, "infile after dup	%d\n", file->infile);
 
 	//muss man dupen oder geht's auch ohne ?
 	// close(fd[0]);
@@ -64,7 +62,6 @@ void	redirect_infiles(t_package *package, t_file *file)
 
 	i = 0;
 
-	printf("++++++++++++++++++++++++++++++++++++++++++++++\n");
 	while(package->in_redirection[i])
 	{
 
@@ -83,7 +80,6 @@ void	redirect_infiles(t_package *package, t_file *file)
 	}
 	dup2(file->infile, file->tmp_fd);
 	close(file->infile);
-	printf("++++++++++++++++++++++++++++++++++++++++++++++\n");
 }
 
 int		links(t_file *file, t_package *current)
@@ -222,7 +218,7 @@ int	redirect_parent(t_file *file, t_package *current)
 }
 
 
-void	execute_function(t_data *data, char **envp)
+void	execute_function(t_data *data, char **envp, t_builtin *builtin)
 {
 	int status;
 	(void)envp;
@@ -230,7 +226,6 @@ void	execute_function(t_data *data, char **envp)
 
 	file = init_redirections();
 
-	// printf("hali\n");
 	while (data->head)
 	{
 		if (pipe(file->fd) == -1) // data->head->next
@@ -243,8 +238,11 @@ void	execute_function(t_data *data, char **envp)
 			close(file->fd[0]);
 			links(file, data->head); // war file oeffnen erfolgreich sonst exiten
 			rechts(file, data->head); // wenns schief lauft exiten mit passenden fehler codes
-			close(file->in); 
-			do_the_execution(data->head, data->env);
+			close(file->in);
+			if (check_if_builtin(data->head))
+				builtin_picker(data->head, builtin);
+			else
+				do_the_execution(data->head, data->env);
 		}
 		close(file->fd[1]);
 		redirect_parent(file, data->head);

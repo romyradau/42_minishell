@@ -99,7 +99,6 @@ char	*get_command(t_package **newNode, char *current_process)
 	//TODO: DIS in WHILe LOOP
 	if (allocate_redirections(newNode, current_process) == -1)
 	{
-		printf("works\n");
 		free(red.left_over);
 		//free alles was bis dahin allocated wurde
 		//dann soll eine neue prompt kommen
