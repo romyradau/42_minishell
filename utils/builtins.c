@@ -49,7 +49,10 @@ int builtin_picker(t_package *package, t_builtin *builtin)
 	while (package->next != NULL)
 		package = package->next;
 	if (cmd_variants(package->cmd_args[0], "echo", ft_strlen("echo")))
+	{
+		printf("works\n");
 		exit_state = prep_echo(package, flag);
+	}
 	else if (cmd_variants(package->cmd_args[0], "cd", ft_strlen("cd")))
 		exit_state = prep_cd(package, builtin);
 	else if (cmd_variants(package->cmd_args[0], "pwd", ft_strlen("pwd")))
