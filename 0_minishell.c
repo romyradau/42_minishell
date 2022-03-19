@@ -105,9 +105,16 @@ int	prompt(t_data *data, t_builtin *builtin, char **envp)
 				// 	  data->head =  print_package_normal(data->head, builtin);
 				add_history(input);
 				if (check_if_builtin(data->head) && data->head->next == NULL)
+				{
+					printf("next->package	%p\n", data->head->next);
+					printf("single builtin\n");
 					builtin_picker(data->head, builtin);
+				}
 				else
+				{
+					printf("not single builtin\n");
   					execute_function(data, envp, builtin);
+				}
 			}
 			else
 				kill_d_str(data->processes);

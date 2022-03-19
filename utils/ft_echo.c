@@ -64,7 +64,7 @@ t_package *echo_pipecase(t_package *package, bool *put_in_pipe)
 		&& cmd_variants(package->next->cmd, "echo", ft_strlen("echo")))
 		package = package->next;
 	else if (package->pipe && package->next != NULL
-		&& !execute_print(package))
+		&& !check_if_builtin(package))
 	{
 		(*put_in_pipe) = true;
 		return (package);

@@ -107,7 +107,6 @@ int		rechts(t_file *file, t_package *current)
 	{
 		error = (
 			dup2(file->fd[1], STDOUT_FILENO) == -1
-			// || close (file->fd[1]) == -1
 		);
 	}
 	else if (current->out_redirection[0] != NOTHING)
@@ -240,7 +239,10 @@ void	execute_function(t_data *data, char **envp, t_builtin *builtin)
 			rechts(file, data->head); // wenns schief lauft exiten mit passenden fehler codes
 			close(file->in);
 			if (check_if_builtin(data->head))
+			{
+				printf("executes builtin\n");
 				builtin_picker(data->head, builtin);
+			}
 			else
 				do_the_execution(data->head, data->env);
 		}

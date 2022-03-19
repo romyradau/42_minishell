@@ -149,7 +149,7 @@ int		prompt(t_data *data, t_builtin *builtin, char	**envp);
 char	**special_pipe_split(char const *s, char c);
 char	**special_cmd_split(char const *s, char c);
 char	**kill_d_str(char **str);
-int		execute_print(t_package *package);
+int		check_if_builtin(t_package *package);
 
 /*====================PARSING=========*/
 
@@ -200,7 +200,7 @@ int		expand_function(char *str, t_exp *exp, t_builtin *builtin);
 
 //====================EXECUTION=========
 
-void	execute_function(t_data *data, char **envp);
+void	execute_function(t_data *data, char **envp, t_builtin *builtin);
 
 //====================PRINTING=========
 
