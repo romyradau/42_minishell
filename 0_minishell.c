@@ -73,12 +73,13 @@ int	prompt(t_data *data, t_builtin *builtin, char **envp)
 		sigaction(SIGINT, &data->sa, NULL);
 		//TODO eigene function
 		input = readline(user);
+
 		if (tcgetattr(STDIN_FILENO, &termios_p) == -1)
 			return (-1);
 		termios_p.c_lflag &= ~(ECHOCTL); //this will enable echoing controll chars beck to the terminal
 		if (tcsetattr(STDIN_FILENO, TCSANOW, &termios_p) == -1)
 			return (-1);
-
+		errno = 0;
 		// prep_signal(data);
 		if (empty_input(input))
 		{
@@ -86,18 +87,13 @@ int	prompt(t_data *data, t_builtin *builtin, char **envp)
 				data->processes = special_pipe_split(input, '|');
 			//freen?
 			if (!data->processes)
-			{
-				printf("error: unclosed quotes\n");
 				return (1);
-				//TODO: muss noch gehandelt werden, dass die message bei quit mit ctrl D weggeht
-			}
 			data->processes = trim_spaces(data);
 			//protecten??
 			//glaub das geschieht intern
 			// print2Darray(data->processes);
 			if (!process_packages(data, builtin))
 			{
-
 			    /* end execution and print the right stuff*/
 				//   if (execute_print(data->head))
 				// 	  data->head = print_package_builtin(data->head, builtin);
@@ -106,7 +102,6 @@ int	prompt(t_data *data, t_builtin *builtin, char **envp)
 				add_history(input);
 				if (check_if_builtin(data->head) && data->head->next == NULL)
 				{
-					printf("next->package	%p\n", data->head->next);
 					printf("single builtin\n");
 					builtin_picker(data->head, builtin);
 				}
@@ -119,9 +114,14 @@ int	prompt(t_data *data, t_builtin *builtin, char **envp)
 			else
 				kill_d_str(data->processes);
 			free(input);
+			/* besser machen */
+			// free(data->head);
+			data->head = NULL;
+			/* besser machen */
 			termios_p.c_lflag |= ECHOCTL;
 			if (tcsetattr(STDIN_FILENO, TCSANOW, &termios_p) == -1)
 				return (-1);
+			
 		}
 	}
 	return (0);

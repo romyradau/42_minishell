@@ -4,11 +4,11 @@
 int call_pwd(int fd)
 {
 	char cur_dir[10000];
-
+	(void)fd;
 	if (!getcwd(cur_dir, sizeof(cur_dir)))
 		return (0);	
-	ft_putstr_fd(cur_dir, fd);
-	write(fd, "\n", 1);
+	ft_putstr_fd(cur_dir, STDOUT_FILENO);
+	write(STDOUT_FILENO, "\n", 1);
 	return (1);
 }
 

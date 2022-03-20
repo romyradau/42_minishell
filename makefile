@@ -1,4 +1,3 @@
-
 NAME = minishell
 
 FILES = 0_minishell.c 1_process_package.c 2_get_command.c 3_allocate_redirections.c 4_quote_rules.c 5_handle_quotes.c 6_exp.c 7_exec.c\
