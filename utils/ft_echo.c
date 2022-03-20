@@ -47,24 +47,24 @@ void	ft_echo(char **output, bool flag, t_package *package)
 	}
 	while (output[i][0] != 10)
 	{	
-		ft_putstr_fd(output[i], ret);
+		ft_putstr_fd(output[i], STDOUT_FILENO);
 		if (i < (len-2))
-			write(ret, " ", 1);
+			write(STDOUT_FILENO, " ", 1);
 		i++;
 	}
 	if (!flag)
-		write(1, "\n", 1);
+		write(STDOUT_FILENO, "\n", 1);
 
 	kill_d_str(output);
 }
 
 t_package *echo_pipecase(t_package *package, bool *put_in_pipe)
 {
+
 	if((package->pipe && package->next != NULL)
 		&& cmd_variants(package->next->cmd, "echo", ft_strlen("echo")))
 		package = package->next;
-	else if (package->pipe && package->next != NULL
-		&& !check_if_builtin(package))
+	else if (package->pipe && package->next != NULL)
 	{
 		(*put_in_pipe) = true;
 		return (package);
@@ -72,21 +72,21 @@ t_package *echo_pipecase(t_package *package, bool *put_in_pipe)
 	return (package);
 }
 
-int	write_to_pipe(t_package *package, char **output, bool flag)
+int	write_to_pipe(char **output, bool flag, t_file *file)
 {
 	int j;
 
 	j = 0;
-	printf("the output will be wrote in to the pipe!\n");
-	if (pipe(package->redir->fd) == -1)
-		return (0);
+	(void)file;
+	// if (pipe(file) == -1)
+	// 	return (0);
 	while (output[j])
 	{
-		write(package->redir->fd[1], output[j], ft_strlen(output[j]));
+		write(STDOUT_FILENO, output[j], ft_strlen(output[j]));
 		j++;
 	}
 	if (!flag)
-		write(package->redir->fd[1], "\n", 1);
+		write(STDOUT_FILENO, "\n", 1);
 	kill_d_str(output);
 	return (1);
 
@@ -103,13 +103,9 @@ int prep_echo(t_package *package, bool flag)
 	i = 1;
 	j = 0;
 	put_in_pipe = false;
-
 	package = echo_pipecase(package, &put_in_pipe);
 	if (package->cmd_args[i] == NULL)
-	{
-		printf("prep echo exits\n");
 		return (0);
-	}
 	output = (char **)malloc(doublestr_len(package->cmd_args) * sizeof(char *));
 	if(!output)
 		return (0);
@@ -117,7 +113,7 @@ int prep_echo(t_package *package, bool flag)
 	{
 		if (!package->cmd_args[i])
 		{
-			printf("\n");
+			printf("\n");//wird das benotigt?
 			return (1);
 		}
 		while (check_for_flag(package->cmd_args[i], &flag) && package->cmd_args[i] != NULL)
@@ -127,9 +123,6 @@ int prep_echo(t_package *package, bool flag)
 		i++;
 	}
 	output[j] = ft_strdup("\n");
-	if (put_in_pipe)
-		write_to_pipe(package, output, flag);
-	else
-		ft_echo(output, flag, package);
+	ft_echo(output, flag, package);
 	return (1);
 }

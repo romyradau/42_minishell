@@ -38,7 +38,7 @@ int check_for_flag(char *str, bool *flag) //TODO-> muss noch für andere flags a
 int builtin_picker(t_package *package, t_builtin *builtin)
 {
 	bool	flag;
-	char **output;
+	char	**output;
 	int		exit_state;
 
 	flag = false;
@@ -46,12 +46,12 @@ int builtin_picker(t_package *package, t_builtin *builtin)
 	exit_state = 0;
 	if (!package)
 		return (0);
-	while (package->next != NULL)
-		package = package->next;
+	ft_putendl_fd(package->cmd_args[0], 2);
+	
 	if (cmd_variants(package->cmd_args[0], "echo", ft_strlen("echo")))
 	{
-		printf("works\n");
 		exit_state = prep_echo(package, flag);
+		return (exit_state);
 	}
 	else if (cmd_variants(package->cmd_args[0], "cd", ft_strlen("cd")))
 		exit_state = prep_cd(package, builtin);

@@ -150,11 +150,13 @@ int	find_path(char **paths, t_package *current, char **envp)
 	struct stat s;
 
 	if (ft_strchr(current->cmd, '/') || paths == NULL)
+	//für welchen case ist das nochmal genau?
 	{
 		execve(current->cmd, current->cmd_args, envp);
 		printf("minishell: %s: %s\n", current->cmd_args[0], strerror(errno)); //stderr
 		if (errno == ENOENT)
 			return (127);
+			//???
 		else
 			return (126);
 	}
@@ -199,7 +201,7 @@ void	do_the_execution(t_package *current, char **envp)
 	error = find_path(paths, current, envp);
 	free(paths);
 	exit(error);
-	//theoretisch auch nocha lels andere freen
+	//theoretisch auch noch alles andere freen
 	//eien free function
 	//wenn das heir hin kommt, dann ist was schief gelaufen
 }
@@ -236,12 +238,15 @@ void	execute_function(t_data *data, char **envp, t_builtin *builtin)
 		{
 			close(file->fd[0]);
 			links(file, data->head); // war file oeffnen erfolgreich sonst exiten
+			// print_package_normal(data->head, builtin);
 			rechts(file, data->head); // wenns schief lauft exiten mit passenden fehler codes
+
 			close(file->in);
 			if (check_if_builtin(data->head))
 			{
-				printf("executes builtin\n");
+				perror(" ");//checkin where the invalid argument is
 				builtin_picker(data->head, builtin);
+				exit(0);
 			}
 			else
 				do_the_execution(data->head, data->env);
@@ -258,14 +263,13 @@ void	execute_function(t_data *data, char **envp, t_builtin *builtin)
 	while (wait(NULL) > 0);
 	if (WIFSIGNALED(status))
 	{
-		printf("%d\n", WTERMSIG(status) + 128);
+		printf("WIFSIGNALED %d\n", WTERMSIG(status) + 128);
 		g_exit_stat = WTERMSIG(status) + 128;
 	}
 	else
 	{
-		printf("%d\n", WEXITSTATUS(status));
+		printf("WEXITSTATUS %d\n", WEXITSTATUS(status));
 		g_exit_stat = WEXITSTATUS(status);
 	}
 	free(file);
 }
-//ausser bei nur einem builtin, dann alles im parent!
