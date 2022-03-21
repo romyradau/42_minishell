@@ -40,10 +40,17 @@ int complex_expand(char *str, t_exp *exp, t_envlist *tmp_list)
 	int		end_of_var;
 	int		count;
 
-	if (str[exp->i + 1] != ' ' && str[exp->i + 2] != 0)
+//da wurde etwas entfernt + 2 == nullterminante
+	if (str[exp->i + 1] != ' ')
 		exp->i++;
 	else
 		return (0);
+	printf("cahr %c\n", str[exp->i]);
+	if (str[exp->i] == '?' && str[exp->i + 1] == '\0')
+	{
+		ft_putnbr_fd(g_exit_stat, exp->fd[1]);
+		return (1);
+	}
 	count = 0;
 	end_of_var = exp->i;
 	while(str[end_of_var] != '\0' && (ft_isalnum(str[end_of_var]) || str[end_of_var] == '_'))
