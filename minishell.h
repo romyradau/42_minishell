@@ -16,7 +16,8 @@
 # include <unistd.h>
 # include <signal.h>
 # include <errno.h>
-#include <sys/stat.h>
+# include <sys/stat.h>
+# include <string.h>
 
 //===============COLOR CODE=================================//
 # define BLK		"\e[0;30m"
@@ -89,8 +90,6 @@ typedef struct s_envlist
 
 typedef struct s_builtin
 {
-	char		**echo_str;
-	//env
 	char		*home_path;
 	t_envlist	*env_list;
 }	t_builtin;
@@ -105,20 +104,16 @@ jetzt konnen solche redirections uberall stehen
 typedef struct s_package
 {
 	// infiles
-	int					*in_redirection;	// [<,      <<,       <]
-	char				**infiles;			// [ file1, heredoc, file2 ]
+	int					*in_redirection;	// [<,      <<,       <] // free
+	char				**infiles;			// [ file1, heredoc, file2 ] // free
 
 	// outfiles
-	int					*out_redirection;
-	char				**outfiles;
+	int					*out_redirection; //free
+	char				**outfiles; //free
 
 	bool				pipe;
-	// char				**env_var; //gibt vlt mehrere in einem package
 	char				*cmd;
 	char				**cmd_args;
-	char				*expanded;
-	t_file				*redir;
-//man könnte auch alles in eine struct hauen
 	t_builtin			*builtin;
 	struct s_package	*next;
 }	t_package;
@@ -169,12 +164,7 @@ void	skip_sq(char *s, int *i);
 void	skip_dq(char *s, int *i);
 int		trim_and_expand(char **res, t_builtin *builtin);
 void	clean_expand(char	**origin, t_builtin *builtin);
-
-
-
-
-
-
+void	ft_sigchild(int sig);
 //====================BUILTIN==========
 int		check_quot_sequence(char *str, char c, bool *q);
 char	*cut_quot_sequence(char *str, char c);
@@ -199,8 +189,13 @@ int		expand_function(char *str, t_exp *exp, t_builtin *builtin);
 
 
 //====================EXECUTION=========
-
-void	execute_function(t_data *data, char **envp, t_builtin *builtin);
+t_file 	*init_redirections();
+int		links(t_file *file, t_package *current);
+int		rechts(t_file *file, t_package *current);
+void	execute_function(t_data *data, char **envp, t_builtin *builtin, t_file *file);
+void 	sig_in_heredoc(int sig);
+void 	set_attr();
+void 	unset_attr();
 
 //====================PRINTING=========
 

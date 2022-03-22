@@ -26,6 +26,7 @@ void	open_heredoc(char *limiter, t_file *file)
 	char	*line;
 	char	*test;
 	int		fd[2];
+	
 
 	if (pipe(fd) == -1)
 	{
@@ -33,9 +34,10 @@ void	open_heredoc(char *limiter, t_file *file)
 	}
 	while (1)
 	{
+		signal(SIGINT, sig_in_heredoc);
 		line = readline("> ");
-		if (!line)
-			perror("readline");
+		// if (!line)
+			// perror("readline");
 		test = ft_strtrim(line, "\n");
 		if (!ft_strncmp(test, limiter, ft_strlen(limiter) + 1))
 		//warum hier die plus 1?? fur die nullterminante??
@@ -152,8 +154,10 @@ int	find_path(char **paths, t_package *current, char **envp)
 	if (ft_strchr(current->cmd, '/') || paths == NULL)
 	//für welchen case ist das nochmal genau?
 	{
+		// signal(SIGQUIT, SIG_DFL);
+		// signal(SIGINT, ft_sigchild);
 		execve(current->cmd, current->cmd_args, envp);
-		printf("minishell: %s: %s\n", current->cmd_args[0], strerror(errno)); //stderr
+		// printf("minishell: %s: %s\n", current->cmd_args[0], strerror(errno)); //stderr
 		if (errno == ENOENT)
 			return (127);
 			//???
@@ -173,8 +177,10 @@ int	find_path(char **paths, t_package *current, char **envp)
 			//vlt noch access hier
 			if (access(match, F_OK) == 0 && (!stat(match, &s) && !S_ISDIR(s.st_mode))) // directory checken )
 			{
+				// signal(SIGQUIT, SIG_DFL);
+				// signal(SIGINT, ft_sigchild);
 				execve(match, current->cmd_args, envp);
-				printf("minishell: %s: %s\n", current->cmd_args[0], strerror(errno)); //stderr
+				// printf("minishell: %s: %s\n", current->cmd_args[0], strerror(errno)); //stderr
 				return (126);
 			}
 			free(match);
@@ -219,14 +225,10 @@ int	redirect_parent(t_file *file, t_package *current)
 }
 
 
-void	execute_function(t_data *data, char **envp, t_builtin *builtin)
+void	execute_function(t_data *data, char **envp, t_builtin *builtin, t_file *file)
 {
 	int status;
 	(void)envp;
-	t_file	*file;
-
-	file = init_redirections();
-
 	while (data->head)
 	{
 		if (pipe(file->fd) == -1) // data->head->next
@@ -236,6 +238,8 @@ void	execute_function(t_data *data, char **envp, t_builtin *builtin)
 			perror("fork");
 		if (file->pid == 0)
 		{
+			signal(SIGQUIT, SIG_DFL);
+			signal(SIGINT, SIG_DFL);
 			close(file->fd[0]);
 			links(file, data->head); // war file oeffnen erfolgreich sonst exiten
 			// print_package_normal(data->head, builtin);
@@ -249,7 +253,9 @@ void	execute_function(t_data *data, char **envp, t_builtin *builtin)
 				exit(0);
 			}
 			else
+			{
 				do_the_execution(data->head, data->env);
+			}
 		}
 		close(file->fd[1]);
 		redirect_parent(file, data->head);
@@ -263,12 +269,12 @@ void	execute_function(t_data *data, char **envp, t_builtin *builtin)
 	while (wait(NULL) > 0);
 	if (WIFSIGNALED(status))
 	{
-		printf("WIFSIGNALED %d\n", WTERMSIG(status) + 128);
+		// printf("WIFSIGNALED %d\n", WTERMSIG(status) + 128);
 		g_exit_stat = WTERMSIG(status) + 128;
 	}
 	else
 	{
-		printf("WEXITSTATUS %d\n", WEXITSTATUS(status));
+		// printf("WEXITSTATUS %d\n", WEXITSTATUS(status));
 		g_exit_stat = WEXITSTATUS(status);
 	}
 	free(file);
