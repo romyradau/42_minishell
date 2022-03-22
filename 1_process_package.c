@@ -9,7 +9,7 @@ int	fill_package(t_package **newNode, char *current_process, t_builtin *builtin)
 		(*newNode)->cmd_args = special_cmd_split(full_cmd, ' ');
 		clean_expand((*newNode)->cmd_args, builtin);
 		(*newNode)->cmd = (*newNode)->cmd_args[0];
-		print_package_normal((*newNode), builtin);
+		free(full_cmd);
 		return (1);
 	}
 	else

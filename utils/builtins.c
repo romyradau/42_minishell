@@ -46,7 +46,6 @@ int builtin_picker(t_package *package, t_builtin *builtin)
 	exit_state = 0;
 	if (!package)
 		return (0);
-	ft_putendl_fd(package->cmd_args[0], 2);
 	
 	if (cmd_variants(package->cmd_args[0], "echo", ft_strlen("echo")))
 	{

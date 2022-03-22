@@ -52,39 +52,75 @@ int	check_if_builtin(t_package *head)
 }
 
 
+void	free_all_nodes(t_data *data)
+{
+	t_package *tmp;
+	int		i;
+
+	i = 0;
+	while (data->head != NULL)
+	{
+		tmp = data->head;
+		while (tmp->cmd_args && tmp->cmd_args[i] != NULL)
+		{
+			free(tmp->cmd_args[i]);
+			i++;
+		}
+		if (tmp->cmd_args)
+			free(tmp->cmd_args);
+		i = 0;
+		while (tmp->infiles && tmp->infiles[i] != NULL)
+		{
+
+			free(tmp->infiles[i]);
+			i++;
+		}
+		if (tmp->in_redirection)
+			free(tmp->in_redirection);
+		if (tmp->infiles)
+			free(tmp->infiles);
+		i = 0;
+		while (tmp->outfiles && tmp->outfiles[i] != NULL)
+		{
+			free(tmp->outfiles[i]);
+			i++;
+		}
+		if (tmp->out_redirection)
+			free(tmp->out_redirection);
+		if (tmp->out_redirection)
+			free(tmp->outfiles);
+		data->head = data->head->next;
+		free(tmp);
+	}
+}
+
 int	prompt(t_data *data, t_builtin *builtin, char **envp)
 {
-	char	*input;
+	
 	char	*user;
 	pid_t	pid;
-	struct	termios termios_p;
 
+	int opt;
+	t_file	*file;
+	char	*input;
 	(void)envp;
-	sigemptyset(&data->sa.sa_mask);
-	data->sa.sa_flags = SA_RESTART;
-	data->sa.sa_handler = btn_handler;
+
 	pid = getpid();
 	//TODO eigene function
-
+	opt = 0;
 	user = "\e[0;36mminishell@rschleic&mjeyavat\033[0m>";
+	signal(SIGQUIT, SIG_IGN);
 	while (1)
 	{
-		sigaction(SIGQUIT, &data->sa, NULL);
-		sigaction(SIGINT, &data->sa, NULL);
+		set_attr();
 		//TODO eigene function
 		input = readline(user);
-
-		if (tcgetattr(STDIN_FILENO, &termios_p) == -1)
-			return (-1);
-		termios_p.c_lflag &= ~(ECHOCTL); //this will enable echoing controll chars beck to the terminal
-		if (tcsetattr(STDIN_FILENO, TCSANOW, &termios_p) == -1)
-			return (-1);
 		errno = 0;
 		// prep_signal(data);
 		if (empty_input(input))
 		{
 				/* start parsing */
-				data->processes = special_pipe_split(input, '|');
+			data->processes = special_pipe_split(input, '|');
 			//freen?
 			if (!data->processes)
 				return (1);
@@ -94,33 +130,37 @@ int	prompt(t_data *data, t_builtin *builtin, char **envp)
 			// print2Darray(data->processes);
 			if (!process_packages(data, builtin))
 			{
+				unset_attr();
+				file = init_redirections();
 			    /* end execution and print the right stuff*/
-				//   if (execute_print(data->head))
-				// 	  data->head = print_package_builtin(data->head, builtin);
-				//   else
-				// 	  data->head =  print_package_normal(data->head, builtin);
 				add_history(input);
 				if (check_if_builtin(data->head) && data->head->next == NULL)
 				{
+
 					printf("single builtin\n");
+					rechts(file, data->head);
+					links(file, data->head);
 					builtin_picker(data->head, builtin);
+					dup2(file->out, 1);
+					dup2(file->in, 0);
+					close(file->tmp_fd);
+					close(file->in);
+					close(file->out);
 				}
 				else
-				{
-					printf("not single builtin\n");
-  					execute_function(data, envp, builtin);
-				}
+  					execute_function(data, envp, builtin, file);
+				
 			}
 			else
 				kill_d_str(data->processes);
-			free(input);
+			// free(input);
 			/* besser machen */
-			// free(data->head);
-			data->head = NULL;
-			/* besser machen */
-			termios_p.c_lflag |= ECHOCTL;
-			if (tcsetattr(STDIN_FILENO, TCSANOW, &termios_p) == -1)
-				return (-1);
+			// data->head = NULL;
+			free_all_nodes(data);
+			// if (termios_p.c_lflag & (ECHOCTL))/* besser machen */
+			// 	termios_p.c_lflag |= ~(ECHOCTL);
+			// if (tcsetattr(STDIN_FILENO, TCSANOW, &termios_p) == -1)
+				// return (-1);
 			
 		}
 	}
@@ -136,7 +176,7 @@ int	main(int argc, char **argv, char **envp)
 		return (0);	
 	builtin->env_list = NULL;
 	(void) argc;
-	(void) argv;
+	(void)argv;
 	g_exit_stat = 0;
 	ft_bzero(&data, sizeof(t_data));
 	data.env = envp;

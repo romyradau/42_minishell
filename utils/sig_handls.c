@@ -16,40 +16,58 @@ void close_herdoc(int sig)
 
 }
 
-int prep_signal(t_data *data)
+void set_attr()
 {
-	data->sa.sa_handler = sig_in_cmd;
-	if (sigaction(SIGINT, NULL, &data->sa) == -1)
-		return (-1);
-	data->cntrl_backslasch.sa_handler = sig_quit;
-	if (sigaction(SIGQUIT, &data->cntrl_backslasch, NULL) == -1)
-		return (-1);
-	return (0);
+	struct termios termios_p;
+	// fprintf(stderr, "SET_ATTR IS RUNNING\n");
+	if (tcgetattr(STDIN_FILENO, &termios_p) == -1)
+		return ;
+	termios_p.c_lflag &= ~(ECHOCTL);
+	if (tcsetattr(0, 0, &termios_p) == -1)
+		return ;
+	signal(SIGINT, btn_handler);
+	signal(SIGQUIT, SIG_IGN);
 }
 
-void sig_in_cmd(int sig)
+void unset_attr()
 {
-	write(1, "\n", 1);
-	g_exit_stat = 130;
-	(void) sig;
+	struct termios termios_p;
+
+	if (tcgetattr(1, &termios_p) == -1)
+		return ;
+	termios_p.c_lflag |= (ECHOCTL);
+	if (tcsetattr(1, 0, &termios_p) == -1)
+		return ;
+	signal(SIGINT, ft_sigchild);
+}
+
+void sig_in_heredoc(int sig)
+{
+	if (SIGINT == sig)
+	{
+		set_attr();
+		close(STDIN_FILENO);
+		g_exit_stat = 130;
+	}
+	return ;
 }
 
 void	btn_handler(int sig)
 {
-
+	
 	if (sig == SIGINT)
 	{
 		write(1, "\n", 1);
-		rl_replace_line("", 0);
 		rl_on_new_line();
+		rl_replace_line("", 0);
 		rl_redisplay();
 	}
-	if (sig == SIGQUIT)
-	{
-		rl_replace_line("", 0);
-		rl_on_new_line();
-		rl_redisplay();
-	}
+}
+
+void	ft_sigchild(int sig)
+{
+	if (sig == SIGINT)
+		write(1, "\n", 1);
 }
 
 void	sig_quit(int sig)
