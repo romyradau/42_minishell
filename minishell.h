@@ -169,6 +169,7 @@ void	skip_sq(char *s, int *i);
 void	skip_dq(char *s, int *i);
 int		trim_and_expand(char **res, t_builtin *builtin);
 void	clean_expand(char	**origin, t_builtin *builtin);
+void	get_exit_status(int n, int fd, t_exp *exp);
 
 
 
