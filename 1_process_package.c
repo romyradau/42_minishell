@@ -14,10 +14,6 @@ int	fill_package(t_package **newNode, char *current_process, t_builtin *builtin)
 	}
 	else
 		return (0);
-		// free(full_cmd);
-		//muss man NULL pointer returnen ?
-
-	// freen - aber spater dann beim listen leeren
 }
 
 

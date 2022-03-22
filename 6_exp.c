@@ -1,5 +1,28 @@
 #include "minishell.h"
 
+void	get_exit_status(int n, int fd, t_exp *exp)
+{
+	char	c;
+
+	if (n < 0)
+	{
+		n = n * (-1);
+		write(fd, "-", 1);
+		if (n == -2147483648)
+		{
+			write(fd, "2", 1);
+			n = 147483648;
+		}
+	}
+	if (n / 10 > 0)
+	{
+		get_exit_status((n / 10), fd, exp);
+		exp->len++;
+	}
+	c = (n % 10) + '0';
+	write(fd, &c, 1);
+}
+
 char	*simple_expand(const char *s, int c)
 {
 	char			ch;
@@ -45,10 +68,10 @@ int complex_expand(char *str, t_exp *exp, t_envlist *tmp_list)
 		exp->i++;
 	else
 		return (0);
-	printf("cahr %c\n", str[exp->i]);
 	if (str[exp->i] == '?' && str[exp->i + 1] == '\0')
 	{
-		ft_putnbr_fd(g_exit_stat, exp->fd[1]);
+		printf("exit: %d\n", g_exit_stat);
+		get_exit_status(g_exit_stat, exp->fd[1], exp);
 		return (1);
 	}
 	count = 0;
