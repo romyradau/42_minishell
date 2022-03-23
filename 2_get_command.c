@@ -8,28 +8,32 @@ char	*store_filename(char *current_process, int *end)
 	while (current_process[*end] == ' ')
 		(*end)++;
 	start = *end;
-	while (current_process[*end] && !is_metachar(current_process[*end]))
+	while (current_process[*end] && !is_metachar(current_process[*end]) && current_process[*end] != '\0')
 		(*end)++;
 	char *ret = ft_substr(current_process, start, (*end) - start);
-
+	printf("filename	%s\n", ret);
 	return (ret);
 }
 
-
-void	store_redirection(t_package **newNode, char *current_process, t_red **red)
+int	store_redirection(t_package **newNode, char *current_process, t_red **red)
 {
 	if ((*red)->operator == INFILE || (*red)->operator == HEREDOC)
 	{
 		(*newNode)->in_redirection[(*red)->iR] = (*red)->operator;
 		(*newNode)->infiles[(*red)->iR] = store_filename(current_process, &(*red)->i);
+		if ((*newNode)->infiles[(*red)->iR] == NULL)
+			return (0);
 		(*red)->iR++;
 	}
 	else if ((*red)->operator == TRUNCATE || (*red)->operator == APPEND)
 	{
 		(*newNode)->out_redirection[(*red)->oR] = (*red)->operator;
 		(*newNode)->outfiles[(*red)->oR] = store_filename(current_process, &(*red)->i);
+		if ((*newNode)->outfiles[(*red)->oR] == NULL)
+			return (0);
 		(*red)->oR++;
 	}
+	return (1);
 }
 
 int		char_compare(char *current_process, t_red **red, int *i)
@@ -65,14 +69,15 @@ int		char_compare(char *current_process, t_red **red, int *i)
 		return NOTHING;
 }
 
-void	manage_red_files(t_package **newNode, char *current_process, t_red *red)
+int	manage_red_files(t_package **newNode, char *current_process, t_red *red)
 {
 	red->i = 0;
 	red->left_over_index = 0;
 	while (current_process[red->i])
 	{
 		red->operator = char_compare(current_process, &red, &red->i);
-		store_redirection(newNode, current_process, &red);
+		if (store_redirection(newNode, current_process, &red) == 0)
+			return (0);
 		if (!is_metachar(current_process[red->i]) && current_process[red->i] != '"'
 			&& current_process[red->i] != '\'')
 		{
@@ -88,6 +93,7 @@ void	manage_red_files(t_package **newNode, char *current_process, t_red *red)
 			&& current_process[red->i] != '"' && current_process[red->i] != '\'')
 			red->i++;
 	}
+	return (1);
 }
 
 char	*get_command(t_package **newNode, char *current_process)
@@ -100,38 +106,19 @@ char	*get_command(t_package **newNode, char *current_process)
 	if (allocate_redirections(newNode, current_process) == -1)
 	{
 		free(red.left_over);
-		//free alles was bis dahin allocated wurde
-		//dann soll eine neue prompt kommen
 		return (NULL);
 	}
-
-	manage_red_files(newNode, current_process, &red);
+	if (manage_red_files(newNode, current_process, &red) == 0)
+	{
+		free(red.left_over);
+		return (NULL);
+	}
 	(*newNode)->in_redirection[red.iR] = NOTHING;
 	(*newNode)->out_redirection[red.oR] = NOTHING;
 	(*newNode)->infiles[red.iR] = NULL;
 	(*newNode)->outfiles[red.oR] = NULL;
 	return (red.left_over);
-	//kann das auch ein NULL sein, wenn in red.left_over nichts abgespeichert werden muss?
 }
-
-
-// void	spot_quotes(char **string)
-// {
-
-// }
-
-// char	*remove_quotes(char **current_process)
-// {
-// 	char	*tmp;
-// 	char	*str_wo_quotes;
-// 	bool	sq;
-// 	bool	dq;
-
-// 	str_wo_quotes = ft_calloc(ft_strlen(*current_process) + 1, sizeof(char));
-// 	tmp  = *current_process;
-// 	free(*(current_process));
-// 	*current_process = spot_quotes(*current_process, &str_wo_quotes, &sq, &dq);
-// }
 
 /*
 fill_package = speichert den command & seine cmd_args

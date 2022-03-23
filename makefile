@@ -10,7 +10,7 @@ CPPFLAGS	= -I/Users/$(USER)/.brew/opt/readline/include
 
 CC = gcc
 
-CFLAGS = $(LDFLAGS) $(CPPFLAGS) -Wall -Wextra -Werror -lreadline -g 
+CFLAGS = $(LDFLAGS) $(CPPFLAGS) -Wall -Wextra -Werror -lreadline -g
 
 OBJ := $(FILES:.c=.o)
 

@@ -97,7 +97,7 @@ char *input_checker(char *str)
 					return (str);
 				}
 				free (anws);
-				printf("export: %s: not a valid identifier", str);
+				printf("export: %s: not a valid identifier\n", str);
 				g_exit_stat = 1;
 				return (NULL);
 			}
@@ -106,14 +106,14 @@ char *input_checker(char *str)
 		}
 		return (anws);
 	}
-	printf("export: %s: not a valid identifier", str);
+	printf("export: %s: not a valid identifier\n", str);
+	g_exit_stat = 1;
 	return (NULL);
 }
 
 int ft_export(t_envlist **head, t_package *package)
 {
 	char *str;
-	printf("export is running\n");
 	str = input_checker(package->cmd_args[1]);
 	if (str == NULL)
 		return (0);
@@ -121,8 +121,10 @@ int ft_export(t_envlist **head, t_package *package)
 			return (1);
 	if (ft_isdigit(package->cmd_args[1][0]))
 	{
-		printf("bash: export: %s: not a valid identifier", package->cmd_args[1]);
+		//TODO: in write
+		printf("bash: export: %s: not a valid identifier\n", package->cmd_args[1]);
 		g_exit_stat = 1;
+		return (g_exit_stat);
 	}
 	else if (!ft_strchr(package->cmd_args[1], '='))
 		return (1);

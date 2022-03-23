@@ -1,17 +1,5 @@
 #include "../minishell.h"
 
-/*
-◦ echo with option -n
-◦ cd with only a relative or absolute path
-◦ pwd with no options
-◦ unset with no options
-◦ export with no options
-◦ env with no options or arguments - getenv
-◦ exit with no options - exit
-*/
-
-
-
 int check_for_flag(char *str, bool *flag) //TODO-> muss noch für andere flags ausgebaut werden
 {
 	int index;
@@ -68,18 +56,26 @@ int builtin_picker(t_package *package, t_builtin *builtin)
 	}
 	else if (!ft_strncmp(package->cmd_args[0], "exit", ft_strlen("exit")))
 	{
-		if (package->cmd_args != NULL)
-			kill_d_str(package->cmd_args);
-		else if (package->cmd_args[2])
+		int i;
+
+		i = 0;
+		while (package->cmd_args[i] != NULL)
+			i++;
+		if (package->cmd_args[1] == NULL)
+			exit(0);
+		else if (package->cmd_args[2] == NULL)
+			exit(ft_atoi(package->cmd_args[1]));
+		else if (package->cmd_args[2] != NULL)
 		{
-			printf("bash: exit: too many arguments\n");
+			fprintf(stderr ,"bash: exit: too many arguments\n");
 			g_exit_stat = 1;
 			return (0);
 		}
-		exit(0);
 	}
 	if (exit_state == 1)
-		return (1);
-	g_exit_stat = 127;
+		g_exit_stat = 0;
+	else
+		g_exit_stat = 1;
+	printf("exit_state %d\n", exit_state);
     return (0);
 }
