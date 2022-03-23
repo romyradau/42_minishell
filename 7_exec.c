@@ -10,12 +10,13 @@ t_file *init_redirections()
 	ret->in = dup(STDIN_FILENO);
 	ret->out = dup(STDOUT_FILENO);
 	ret->tmp_fd = dup(STDIN_FILENO);
+	ret->infile = -1;
+	ret->outfile = -1;
 	ret->heredoc = -1;
 	ret->limiter = NULL;
 	ret->fd[0] = -1;
 	ret->fd[1] = -1;
 	ret->pid = -1;
-//muss ich noch infile und outfile initialisieren?
 	return (ret);
 }
 //file->in wird nicht benutzt
@@ -27,20 +28,24 @@ void	open_heredoc(char *limiter, t_file *file)
 	char	*test;
 	int		fd[2];
 	
-
 	if (pipe(fd) == -1)
-	{
-		perror("pipe");
-	}
+		perror("pipe: ");
 	while (1)
 	{
 		signal(SIGINT, sig_in_heredoc);
 		line = readline("> ");
-		// if (!line)
-			// perror("readline");
+		if (line == NULL)
+		{
+			free(line);
+			break ;
+		}
 		test = ft_strtrim(line, "\n");
+		if (test == NULL)
+		{
+			free(line);
+			break;
+		}
 		if (!ft_strncmp(test, limiter, ft_strlen(limiter) + 1))
-		//warum hier die plus 1?? fur die nullterminante??
 		{
 			free(test);
 			free(line);
@@ -52,82 +57,87 @@ void	open_heredoc(char *limiter, t_file *file)
 	}
 
 	file->infile = fd[0];
-
-	//muss man dupen oder geht's auch ohne ?
-	// close(fd[0]);
-	close(fd[1]);
+	if (close(fd[1]) == -1)
+		perror("pipe: ");
 }
 
-void	redirect_infiles(t_package *package, t_file *file)
+int	redirect_infiles(t_package *package, t_file *file)
 {
 	int	i;
 
 	i = 0;
-
-	while(package->in_redirection[i])
+	while (package->in_redirection[i])
 	{
-
 		if (package->in_redirection[i] == INFILE)
 		{
-
 			file->infile = open(package->infiles[i], O_RDONLY);
 			if (file->infile == -1)
-				perror("open fail");
+			{
+				fprintf(stderr,"minshell: %s: No such file or directory\n", package->infiles[i]);
+				g_exit_stat = 1;
+				return (g_exit_stat = 1);
+			}
 		}
 		else if (package->in_redirection[i] == HEREDOC)
 			open_heredoc(package->infiles[i], file);
 		if (package->in_redirection[i + 1])
-			close(file->infile);
+			if (close(file->infile) == -1)
+				g_exit_stat = 1;
 		i++;
 	}
-	dup2(file->infile, file->tmp_fd);
-	close(file->infile);
+	g_exit_stat = (
+			dup2(file->infile, file->tmp_fd) == -1
+			|| close(file->infile) == -1
+			);
+	return (g_exit_stat);
 }
 
-int		links(t_file *file, t_package *current)
+int	links(t_file *file, t_package *current)
 {
-	int error;
-
+	
 	if (current->in_redirection[0] != NOTHING)
 	{
-		redirect_infiles(current, file);
+		if (redirect_infiles(current, file) == 1)
+			return (1);
 	}
-	error = (
+	g_exit_stat = (
 			dup2(file->tmp_fd, STDIN_FILENO) == -1
 			|| close(file->tmp_fd) == -1
-	);
-	return (error);
+			);
+	return (g_exit_stat);
 }
-
 
 int		rechts(t_file *file, t_package *current)
 {
-	int	error;
 	int	i;
 
 	if (current->pipe && current->out_redirection[0] == NOTHING)
 	{
-		error = (
+		g_exit_stat = (
 			dup2(file->fd[1], STDOUT_FILENO) == -1
 		);
 	}
 	else if (current->out_redirection[0] != NOTHING)
 	{
 		i = 0;
-
 		while (current->out_redirection[i])
 		{
 			if (current->out_redirection[i] == TRUNCATE)
 				file->outfile = open(current->outfiles[i], O_RDWR | O_CREAT | O_TRUNC, 0644);
 			else if (current->out_redirection[i] == APPEND)
 				file->outfile = open(current->outfiles[i], O_RDWR | O_CREAT | O_APPEND, 0644);
+			if (file->outfile == -1) {
+				perror(current->outfiles[i]);
+				g_exit_stat = 1;
+			}
 			if (current->out_redirection[i + 1])
-				close(file->outfile);
+				if (close(file->outfile) == -1)
+					g_exit_stat = 1;
 			i++;
 			// evtl muss bei error infiles geclosed werden
 			// evtl bei outfiles und pipe nochmal gucken ob die redirections passen
 		}
-		error = (
+		g_exit_stat = (
 				dup2(file->outfile, STDOUT_FILENO) == -1
 				|| close (file->outfile) == -1
 		);
@@ -135,13 +145,12 @@ int		rechts(t_file *file, t_package *current)
 	}
 	else
 	{
-		error = (
+		g_exit_stat = (
 			dup2(file->out, STDOUT_FILENO) == -1
 			|| close (file->out) == -1
 		);
 	}
-	close (file->fd[1]);
-	return (error);
+	return (g_exit_stat);
 }
 
 int	find_path(char **paths, t_package *current, char **envp)
@@ -152,20 +161,16 @@ int	find_path(char **paths, t_package *current, char **envp)
 	struct stat s;
 
 	if (ft_strchr(current->cmd, '/') || paths == NULL)
-	//für welchen case ist das nochmal genau?
+	//für welchen case ist das nochmal genau? wgen / im input
 	{
-		// signal(SIGQUIT, SIG_DFL);
-		// signal(SIGINT, ft_sigchild);
 		execve(current->cmd, current->cmd_args, envp);
-		// printf("minishell: %s: %s\n", current->cmd_args[0], strerror(errno)); //stderr
+		printf("minishell: %s: %s\n", current->cmd_args[0], strerror(errno)); //stderr
 		if (errno == ENOENT)
 			return (127);
-			//???
+			//error no entry
 		else
 			return (126);
 	}
-	//hier hab ich keine Auswahlmoglichkeiten, deswegen soll direkt nach execve gechect werden
-	//kein access weil sonst der error abgefangen wird?!
 	else
 	{
 		i = 0;
@@ -173,14 +178,14 @@ int	find_path(char **paths, t_package *current, char **envp)
 		{
 			tmp_match = ft_strjoin(paths[i], "/");
 			match = ft_strjoin(tmp_match, current->cmd);
+			if (!tmp_match || !match)
+				return (1);
 			free(tmp_match);
 			//vlt noch access hier
 			if (access(match, F_OK) == 0 && (!stat(match, &s) && !S_ISDIR(s.st_mode))) // directory checken )
 			{
-				// signal(SIGQUIT, SIG_DFL);
-				// signal(SIGINT, ft_sigchild);
 				execve(match, current->cmd_args, envp);
-				// printf("minishell: %s: %s\n", current->cmd_args[0], strerror(errno)); //stderr
+				printf("minishell: %s: %s\n", current->cmd_args[0], strerror(errno)); //TODO:error funtion
 				return (126);
 			}
 			free(match);
@@ -203,7 +208,7 @@ void	do_the_execution(t_package *current, char **envp)
 		i++;
 	paths = NULL;
 	if (envp[i])
-		paths = ft_split(envp[i] + 6, ':');
+		paths = ft_split(envp[i] + 6, ':');//evtl protecten
 	error = find_path(paths, current, envp);
 	free(paths);
 	exit(error);
@@ -223,6 +228,7 @@ int	redirect_parent(t_file *file, t_package *current)
 	);
 	return (error);
 }
+//was wenn das schief schlagt?
 
 
 void	execute_function(t_data *data, char **envp, t_builtin *builtin, t_file *file)
@@ -231,7 +237,7 @@ void	execute_function(t_data *data, char **envp, t_builtin *builtin, t_file *fil
 	(void)envp;
 	while (data->head)
 	{
-		if (pipe(file->fd) == -1) // data->head->next
+		if (pipe(file->fd) == -1)
 			perror("pipe");
 		file->pid = fork();
 		if (file->pid == -1)
@@ -240,33 +246,34 @@ void	execute_function(t_data *data, char **envp, t_builtin *builtin, t_file *fil
 		{
 			signal(SIGQUIT, SIG_DFL);
 			signal(SIGINT, SIG_DFL);
-			close(file->fd[0]);
-			links(file, data->head); // war file oeffnen erfolgreich sonst exiten
-			// print_package_normal(data->head, builtin);
-			rechts(file, data->head); // wenns schief lauft exiten mit passenden fehler codes
-
-			close(file->in);
+			close(file->fd[0]);//TODO:protect
+			if (links(file, data->head) == 1)
+				exit(1);// war file oeffnen erfolgreich sonst exiten
+			if (rechts(file, data->head) == 1) // wenns schief lauft exiten mit passenden fehler codes
+			//TODO:wann perror
+			//wann exit
+			//wann printf??
+				exit(1);
+			close (file->fd[1]);//TODO:protect
+			close(file->in);//TODO:protect
 			if (check_if_builtin(data->head))
 			{
-				perror(" ");//checkin where the invalid argument is
 				builtin_picker(data->head, builtin);
 				exit(0);
 			}
 			else
-			{
 				do_the_execution(data->head, data->env);
-			}
 		}
-		close(file->fd[1]);
+		close(file->fd[1]);//TODO:protect
 		redirect_parent(file, data->head);
+			//TODO:was wenn das schief schlagt!!!???
 		data->head = data->head->next;
 	}
-	close(file->tmp_fd);
-	close(file->in);
-	close(file->out);
-	waitpid(file->pid, &status, 0); // exitstatus
-	//fur file->pid fragt er den exit status ab
-	while (wait(NULL) > 0);
+	close(file->tmp_fd);//TODO:protect
+	close(file->in);//TODO:protect
+	close(file->out);//TODO:protect
+	waitpid(file->pid, &status, 0);//wartet auf alle
+	while (wait(NULL) > 0);//wartet auf jeden einzelnen
 	if (WIFSIGNALED(status))
 	{
 		// printf("WIFSIGNALED %d\n", WTERMSIG(status) + 128);
@@ -279,3 +286,13 @@ void	execute_function(t_data *data, char **envp, t_builtin *builtin, t_file *fil
 	}
 	free(file);
 }
+
+
+/*wie soll man die ganzen 
+dup
+close
+pipe 
+errors handlen??
+*/
+
+

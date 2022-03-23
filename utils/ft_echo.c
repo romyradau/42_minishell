@@ -47,6 +47,7 @@ void	ft_echo(char **output, bool flag, t_package *package)
 	}
 	if (!flag)
 		write(STDOUT_FILENO, "\n", 1);
+	g_exit_stat = 0;
 	kill_d_str(output);
 }
 

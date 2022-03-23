@@ -71,7 +71,6 @@ void	free_all_nodes(t_data *data)
 		i = 0;
 		while (tmp->infiles && tmp->infiles[i] != NULL)
 		{
-
 			free(tmp->infiles[i]);
 			i++;
 		}
@@ -80,17 +79,17 @@ void	free_all_nodes(t_data *data)
 		if (tmp->infiles)
 			free(tmp->infiles);
 		i = 0;
-		while (tmp->outfiles && tmp->outfiles[i] != NULL)
+		while (tmp->outfiles && tmp->outfiles[i] != NULL && tmp->outfiles[i][0] != '\0')
 		{
 			free(tmp->outfiles[i]);
 			i++;
 		}
 		if (tmp->out_redirection)
 			free(tmp->out_redirection);
-		if (tmp->out_redirection)
+		if (tmp->outfiles)
 			free(tmp->outfiles);
-		data->head = data->head->next;
 		free(tmp);
+		data->head = data->head->next;
 	}
 }
 
@@ -100,14 +99,12 @@ int	prompt(t_data *data, t_builtin *builtin, char **envp)
 	char	*user;
 	pid_t	pid;
 
-	int opt;
 	t_file	*file;
 	char	*input;
 	(void)envp;
 
 	pid = getpid();
 	//TODO eigene function
-	opt = 0;
 	user = "\e[0;36mminishell@rschleic&mjeyavat\033[0m>";
 	signal(SIGQUIT, SIG_IGN);
 	while (1)
@@ -137,9 +134,11 @@ int	prompt(t_data *data, t_builtin *builtin, char **envp)
 				if (check_if_builtin(data->head) && data->head->next == NULL)
 				{
 
-					printf("single builtin\n");
+					perror("GENARAL1: ");
 					rechts(file, data->head);
+					perror("GENARAL2: ");
 					links(file, data->head);
+					perror("GENARAL3: ");
 					builtin_picker(data->head, builtin);
 					dup2(file->out, 1);
 					dup2(file->in, 0);
