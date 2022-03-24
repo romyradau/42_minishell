@@ -139,12 +139,15 @@ char	*cut_quot_sequence(char *str, char c);
 char	*get_path(char **env, const char *search_str);
 int		builtin_picker(t_package *package, t_builtin *builtin);
 void	btn_handler(int sig);
-int 	prep_signal(t_data *data);
-int		prompt(t_data *data, t_builtin *builtin, char	**envp);
+int		prep_signal(t_data *data);
+int		handle_input(t_data *data, t_builtin *builtin, char	**envp);
 char	**special_pipe_split(char const *s, char c);
 char	**special_cmd_split(char const *s, char c);
 char	**kill_d_str(char **str);
 int		check_if_builtin(t_package *package);
+void	free_packages(t_data *data);
+int		prepare_packages(t_data *data, char *input);
+
 
 /*====================PARSING=========*/
 
@@ -164,9 +167,7 @@ void	skip_sq(char *s, int *i);
 void	skip_dq(char *s, int *i);
 int		trim_and_expand(char **res, t_builtin *builtin);
 void	clean_expand(char	**origin, t_builtin *builtin);
-
 void	get_exit_status(int n, int fd, t_exp *exp);
-
 void	ft_sigchild(int sig);
 
 //====================BUILTIN==========
@@ -194,13 +195,18 @@ int		expand_function(char *str, t_exp *exp, t_builtin *builtin);
 
 
 //====================EXECUTION=========
-t_file 	*init_redirections();
+
+t_file	*init_redirections();
 int		links(t_file *file, t_package *current);
 int		rechts(t_file *file, t_package *current);
 void	execute_function(t_data *data, char **envp, t_builtin *builtin, t_file *file);
-void 	sig_in_heredoc(int sig);
-void 	set_attr();
-void 	unset_attr();
+void	sig_in_heredoc(int sig);
+void	set_attr();
+void	unset_attr();
+void	execute_packages(char *input, t_data * data, t_builtin *builtin, char **envp);
+int		redirect_parent(t_file *file, t_package *current);
+void	do_the_execution(t_package *current, char **envp);
+
 
 //====================PRINTING=========
 

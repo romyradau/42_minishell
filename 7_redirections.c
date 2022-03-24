@@ -1,12 +1,12 @@
 #include "minishell.h"
 
-t_file *init_redirections()
+t_file *init_redirections(void)
 {
 	t_file	*ret;
 
 	ret = malloc(sizeof(t_file));
 	if (ret == NULL)
-		return NULL;
+		return (NULL);
 	ret->in = dup(STDIN_FILENO);
 	ret->out = dup(STDOUT_FILENO);
 	ret->tmp_fd = dup(STDIN_FILENO);
@@ -19,15 +19,13 @@ t_file *init_redirections()
 	ret->pid = -1;
 	return (ret);
 }
-//file->in wird nicht benutzt
-
 
 void	open_heredoc(char *limiter, t_file *file)
 {
 	char	*line;
 	char	*test;
 	int		fd[2];
-	
+
 	if (pipe(fd) == -1)
 		perror("pipe: ");
 	while (1)
@@ -43,7 +41,7 @@ void	open_heredoc(char *limiter, t_file *file)
 		if (test == NULL)
 		{
 			free(line);
-			break;
+			break ;
 		}
 		if (!ft_strncmp(test, limiter, ft_strlen(limiter) + 1))
 		{
@@ -55,7 +53,6 @@ void	open_heredoc(char *limiter, t_file *file)
 		free(test);
 		free(line);
 	}
-
 	file->infile = fd[0];
 	if (close(fd[1]) == -1)
 		perror("pipe: ");
@@ -94,7 +91,6 @@ int	redirect_infiles(t_package *package, t_file *file)
 
 int	links(t_file *file, t_package *current)
 {
-	
 	if (current->in_redirection[0] != NOTHING)
 	{
 		if (redirect_infiles(current, file) == 1)
@@ -107,15 +103,15 @@ int	links(t_file *file, t_package *current)
 	return (g_exit_stat);
 }
 
-int		rechts(t_file *file, t_package *current)
+int	rechts(t_file *file, t_package *current)
 {
 	int	i;
 
 	if (current->pipe && current->out_redirection[0] == NOTHING)
 	{
 		g_exit_stat = (
-			dup2(file->fd[1], STDOUT_FILENO) == -1
-		);
+				dup2(file->fd[1], STDOUT_FILENO) == -1
+				);
 	}
 	else if (current->out_redirection[0] != NOTHING)
 	{
@@ -126,7 +122,8 @@ int		rechts(t_file *file, t_package *current)
 				file->outfile = open(current->outfiles[i], O_RDWR | O_CREAT | O_TRUNC, 0644);
 			else if (current->out_redirection[i] == APPEND)
 				file->outfile = open(current->outfiles[i], O_RDWR | O_CREAT | O_APPEND, 0644);
-			if (file->outfile == -1) {
+			if (file->outfile == -1)
+			{
 				perror(current->outfiles[i]);
 				g_exit_stat = 1;
 			}
@@ -135,20 +132,18 @@ int		rechts(t_file *file, t_package *current)
 					g_exit_stat = 1;
 			i++;
 			// evtl muss bei error infiles geclosed werden
-			// evtl bei outfiles und pipe nochmal gucken ob die redirections passen
 		}
 		g_exit_stat = (
 				dup2(file->outfile, STDOUT_FILENO) == -1
 				|| close (file->outfile) == -1
-		);
-
+				);
 	}
 	else
 	{
 		g_exit_stat = (
-			dup2(file->out, STDOUT_FILENO) == -1
-			|| close (file->out) == -1
-		);
+				dup2(file->out, STDOUT_FILENO) == -1
+				|| close (file->out) == -1
+				);
 	}
 	return (g_exit_stat);
 }
@@ -198,7 +193,6 @@ int	find_path(char **paths, t_package *current, char **envp)
 
 void	do_the_execution(t_package *current, char **envp)
 {
-
 	char	**paths;
 	int		i;
 	int		error;
@@ -208,91 +202,25 @@ void	do_the_execution(t_package *current, char **envp)
 		i++;
 	paths = NULL;
 	if (envp[i])
-		paths = ft_split(envp[i] + 6, ':');//evtl protecten
+		paths = ft_split(envp[i] + 6, ':');
 	error = find_path(paths, current, envp);
 	free(paths);
 	exit(error);
-	//theoretisch auch noch alles andere freen
-	//eien free function
-	//wenn das heir hin kommt, dann ist was schief gelaufen
 }
+	/*
+	theoretisch auch noch alles andere freen
+	eine free function
+	wenn das heir hin kommt, dann ist was schief gelaufen 
+	*/
 
-int	redirect_parent(t_file *file, t_package *current)
+int	redirect_parent(t_file *file)
 {
-	(void)current;
-	int error;
+	int	error;
 
 	error = (
 			dup2(file->fd[0], file->tmp_fd) == -1
 			|| close(file->fd[0]) == -1
-	);
+			);
 	return (error);
 }
 //was wenn das schief schlagt?
-
-
-void	execute_function(t_data *data, char **envp, t_builtin *builtin, t_file *file)
-{
-	int status;
-	(void)envp;
-	while (data->head)
-	{
-		if (pipe(file->fd) == -1)
-			perror("pipe");
-		file->pid = fork();
-		if (file->pid == -1)
-			perror("fork");
-		if (file->pid == 0)
-		{
-			signal(SIGQUIT, SIG_DFL);
-			signal(SIGINT, SIG_DFL);
-			close(file->fd[0]);//TODO:protect
-			if (links(file, data->head) == 1)
-				exit(1);// war file oeffnen erfolgreich sonst exiten
-			if (rechts(file, data->head) == 1) // wenns schief lauft exiten mit passenden fehler codes
-			//TODO:wann perror
-			//wann exit
-			//wann printf??
-				exit(1);
-			close (file->fd[1]);//TODO:protect
-			close(file->in);//TODO:protect
-			if (check_if_builtin(data->head))
-			{
-				builtin_picker(data->head, builtin);
-				exit(0);
-			}
-			else
-				do_the_execution(data->head, data->env);
-		}
-		close(file->fd[1]);//TODO:protect
-		redirect_parent(file, data->head);
-			//TODO:was wenn das schief schlagt!!!???
-		data->head = data->head->next;
-	}
-	close(file->tmp_fd);//TODO:protect
-	close(file->in);//TODO:protect
-	close(file->out);//TODO:protect
-	waitpid(file->pid, &status, 0);//wartet auf alle
-	while (wait(NULL) > 0);//wartet auf jeden einzelnen
-	if (WIFSIGNALED(status))
-	{
-		// printf("WIFSIGNALED %d\n", WTERMSIG(status) + 128);
-		g_exit_stat = WTERMSIG(status) + 128;
-	}
-	else
-	{
-		// printf("WEXITSTATUS %d\n", WEXITSTATUS(status));
-		g_exit_stat = WEXITSTATUS(status);
-	}
-	free(file);
-}
-
-
-/*wie soll man die ganzen 
-dup
-close
-pipe 
-errors handlen??
-*/
-
-
