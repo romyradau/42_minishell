@@ -26,21 +26,20 @@ void	get_exit_status(int n, int fd, t_exp *exp)
 char	*simple_expand(const char *s, int c)
 {
 	char			ch;
-	char			*newS;
+	char			*str;
 	unsigned int	cnt;
 
 	cnt = 0;
 	ch = (char) c;
-	newS = (char *)s;
-	while (*newS != ch)
+	str = (char *)s;
+	while (*str != ch)
 	{
-		if (*newS == '\0')
+		if (*str == '\0')
 			return (0);
-		newS++;
+		str++;
 	}
-	if (*newS+1 != ' ')
-		return (newS+1);
-		//warum gucken wir hier ob nach dem = auch kein ws kommt?
+	if (*str + 1 != ' ')
+		return (str + 1);
 	return (NULL);
 }
 
@@ -58,12 +57,11 @@ int	do_the_expansion(t_envlist *tmp_list, t_exp *exp, int end_of_var)
 	return (0);
 }
 
-int complex_expand(char *str, t_exp *exp, t_envlist *tmp_list)
+int	complex_expand(char *str, t_exp *exp, t_envlist *tmp_list)
 {
 	int		end_of_var;
 	int		count;
 
-//da wurde etwas entfernt + 2 == nullterminante
 	if (str[exp->i + 1] != ' ')
 		exp->i++;
 	else
@@ -76,7 +74,8 @@ int complex_expand(char *str, t_exp *exp, t_envlist *tmp_list)
 	}
 	count = 0;
 	end_of_var = exp->i;
-	while(str[end_of_var] != '\0' && (ft_isalnum(str[end_of_var]) || str[end_of_var] == '_'))
+	while (str[end_of_var] != '\0' 
+		&& (ft_isalnum(str[end_of_var]) || str[end_of_var] == '_'))
 	{
 		end_of_var++;
 		count++;
@@ -85,18 +84,15 @@ int complex_expand(char *str, t_exp *exp, t_envlist *tmp_list)
 	{
 		if (!ft_strncmp(tmp_list->content, &str[exp->i], count))
 		{
-
 			if (do_the_expansion(tmp_list, exp, end_of_var))
 				return (0);
 		}
-				//hier brauchs ne ander fehlermeldung das ist fur wenn strdup fehlschlagt
-				//generell nochmal eror anschauen
 		tmp_list = tmp_list->next;
 	}
 	return (1);
 }
 
-int		expand_function(char *str, t_exp *exp, t_builtin *builtin)
+int	expand_function(char *str, t_exp *exp, t_builtin *builtin)
 {
 	t_envlist	*tmp_list;
 

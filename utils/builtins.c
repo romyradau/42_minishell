@@ -23,6 +23,25 @@ int check_for_flag(char *str, bool *flag) //TODO-> muss noch für andere flags a
 	return (0);
 }
 
+int		check_if_builtin(t_package *head)
+{
+	if (cmd_variants(head->cmd, "echo", ft_strlen("echo")))
+		return (1);
+	if (cmd_variants(head->cmd, "cd", ft_strlen("cd")))
+		return (1);
+	else if (cmd_variants(head->cmd, "pwd", ft_strlen("pwd")))
+		return (1);
+	else if (cmd_variants(head->cmd, "export", ft_strlen("export")))
+		return (1);
+	else if (cmd_variants(head->cmd, "unset", ft_strlen("unset")))
+		return (1);
+	else if (cmd_variants(head->cmd, "env", ft_strlen("env")))
+		return (1);
+	else if (!ft_strncmp(head->cmd, "exit", ft_strlen("exit")))
+		return (1);
+	return (0);
+}
+
 int builtin_picker(t_package *package, t_builtin *builtin)
 {
 	bool	flag;

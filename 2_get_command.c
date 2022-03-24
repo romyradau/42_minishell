@@ -1,26 +1,28 @@
 #include "minishell.h"
 
-char	*store_filename(char *current_process, int *end)
+char	*filename(char *current, int *end)
 {
-	int	start;
-	
+	int		start;
+	char	*filename;
+
 	(*end)++;
-	while (current_process[*end] == ' ')
+	while (current[*end] == ' ')
 		(*end)++;
 	start = *end;
-	while (current_process[*end] && !is_metachar(current_process[*end]) && current_process[*end] != '\0')
+	while (current[*end] && !is_metachar(current[*end])
+		&& current[*end] != '\0')
 		(*end)++;
-	char *ret = ft_substr(current_process, start, (*end) - start);
-	printf("filename	%s\n", ret);
-	return (ret);
+	filename = ft_substr(current, start, (*end) - start);
+	printf("filename	%s\n", filename);
+	return (filename);
 }
 
-int	store_redirection(t_package **newNode, char *current_process, t_red **red)
+int	store_redirection(t_package **newNode, char *current, t_red **red)
 {
 	if ((*red)->operator == INFILE || (*red)->operator == HEREDOC)
 	{
 		(*newNode)->in_redirection[(*red)->iR] = (*red)->operator;
-		(*newNode)->infiles[(*red)->iR] = store_filename(current_process, &(*red)->i);
+		(*newNode)->infiles[(*red)->iR] = filename(current, &(*red)->i);
 		if ((*newNode)->infiles[(*red)->iR] == NULL)
 			return (0);
 		(*red)->iR++;
@@ -28,7 +30,7 @@ int	store_redirection(t_package **newNode, char *current_process, t_red **red)
 	else if ((*red)->operator == TRUNCATE || (*red)->operator == APPEND)
 	{
 		(*newNode)->out_redirection[(*red)->oR] = (*red)->operator;
-		(*newNode)->outfiles[(*red)->oR] = store_filename(current_process, &(*red)->i);
+		(*newNode)->outfiles[(*red)->oR] = filename(current, &(*red)->i);
 		if ((*newNode)->outfiles[(*red)->oR] == NULL)
 			return (0);
 		(*red)->oR++;
@@ -36,90 +38,69 @@ int	store_redirection(t_package **newNode, char *current_process, t_red **red)
 	return (1);
 }
 
-int		char_compare(char *current_process, t_red **red, int *i)
+int		in_or_out(char *current, int *i)
 {
-	if (double_quotes(current_process, red, i))
-		(*i)++;
-	if (single_quotes(current_process, red, i))
-		(*i)++;
-	if (current_process[(*i)] == '<')
+	if (current[(*i)] == '<')
 	{
-		if (current_process[(*i) + 1] == '<')
+		if (current[(*i) + 1] == '<')
 		{
 			(*i)++;
-			if (current_process[(*i) + 1] == '<' || current_process[(*i) + 1] == '>')
+			if (current[(*i) + 1] == '<' || current[(*i) + 1] == '>')
 				return (-1);
-			return HEREDOC;
-
+			return (HEREDOC);
 		}
-		return INFILE;
+		return (INFILE);
 	}
-	else if (current_process[(*i)] == '>')
+	else if (current[(*i)] == '>')
 	{
-		if (current_process[(*i) + 1] == '>')
+		if (current[(*i) + 1] == '>')
 		{
 			(*i)++;
-			if (current_process[(*i) + 1] == '>' || current_process[(*i) + 1] == '<')
+			if (current[(*i) + 1] == '>' || current[(*i) + 1] == '<')
 				return (-1);
-			return APPEND;
+			return (APPEND);
 		}
-		return TRUNCATE;
+		return (TRUNCATE);
 	}
 	else
-		return NOTHING;
+		return (NOTHING);
 }
 
-int	manage_red_files(t_package **newNode, char *current_process, t_red *red)
+int	char_compare(char *current, t_red **red, int *i)
+{
+	if (double_quotes(current, red, i))
+		(*i)++;
+	if (single_quotes(current, red, i))
+		(*i)++;
+	return (in_or_out(current, i));
+}
+
+int	manage_red_files(t_package **newNode, char *current, t_red *red)
 {
 	red->i = 0;
 	red->left_over_index = 0;
-	while (current_process[red->i])
+	while (current[red->i])
 	{
-		red->operator = char_compare(current_process, &red, &red->i);
-		if (store_redirection(newNode, current_process, &red) == 0)
+		red->operator = char_compare(current, &red, &red->i);
+		if (store_redirection(newNode, current, &red) == 0)
 			return (0);
-		if (!is_metachar(current_process[red->i]) && current_process[red->i] != '"'
-			&& current_process[red->i] != '\'')
+		if (!is_metachar(current[red->i]) && current[red->i] != '"'
+			&& current[red->i] != '\'')
 		{
-			red->left_over[red->left_over_index] = current_process[red->i];
+			red->left_over[red->left_over_index] = current[red->i];
 			red->left_over_index++;
 		}
-		else if (current_process[red->i] != '"' && current_process[red->i] != '\'')
+		else if (current[red->i] != '"' && current[red->i] != '\'')
 		{
 			red->left_over[red->left_over_index] = ' ';
 			red->left_over_index++;
 		}
-		if (current_process[red->i] != '<' && current_process[red->i] != '>'
-			&& current_process[red->i] != '"' && current_process[red->i] != '\'')
+		if (current[red->i] != '<' && current[red->i] != '>'
+			&& current[red->i] != '"' && current[red->i] != '\'')
 			red->i++;
 	}
 	return (1);
 }
-
-char	*get_command(t_package **newNode, char *current_process)
-{
-	t_red	red;
-
-	ft_bzero(&red, sizeof(t_red));
-	red.left_over = ft_calloc(ft_strlen(current_process) + 1, sizeof(char));
-	//TODO: DIS in WHILe LOOP
-	if (allocate_redirections(newNode, current_process) == -1)
-	{
-		free(red.left_over);
-		return (NULL);
-	}
-	if (manage_red_files(newNode, current_process, &red) == 0)
-	{
-		free(red.left_over);
-		return (NULL);
-	}
-	(*newNode)->in_redirection[red.iR] = NOTHING;
-	(*newNode)->out_redirection[red.oR] = NOTHING;
-	(*newNode)->infiles[red.iR] = NULL;
-	(*newNode)->outfiles[red.oR] = NULL;
-	return (red.left_over);
-}
-
 /*
 fill_package = speichert den command & seine cmd_args
 get_command = macht platz fur den command und die reds und die files
@@ -127,4 +108,3 @@ manage_red_files = sucht nach der aktuellen red schickt weiter zu
 store_redirection = speichert die red an
 store_filename = speichert den dazugehörigen filename ab
 */
-

@@ -21,6 +21,14 @@ void	skip_sq(char *s, int *i)
 	}
 }
 
+bool	is_metachar(char c)
+{
+	if (c == '<' || c == '>' || c == ' ')
+		return (true);
+	else
+		return (false);
+}
+
 bool	double_quotes(char *s, t_red **red, int *i)
 {
 	if (s[(*i)] == '"')
@@ -36,13 +44,11 @@ bool	double_quotes(char *s, t_red **red, int *i)
 		(*i)++;
 		(*red)->left_over[(*red)->left_over_index] = -2;
 		(*red)->left_over_index++;
-		return true;
+		return (true);
 	}
 	else
-		return false;
+		return (false);
 }
-//double quotes -2 ascii code
-//dann in special cmd split noch dazu fugen
 
 bool	single_quotes(char *s, t_red **red, int *i)
 {
@@ -59,19 +65,8 @@ bool	single_quotes(char *s, t_red **red, int *i)
 		(*i)++;
 		(*red)->left_over[(*red)->left_over_index] = -1;
 		(*red)->left_over_index++;
-		return true;
+		return (true);
 	}
 	else
-		return false;
-}
-//single quotes -1 ascii code
-//dann in special cmd split noch dazu fugen
-
-
-bool	is_metachar(char c)
-{
-	if (c == '<' || c == '>' || c == ' ')
-		return true;
-	else
-		return false;
+		return (false);
 }

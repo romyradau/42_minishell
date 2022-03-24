@@ -1,6 +1,5 @@
 #include "minishell.h"
 
-
 void	write_in_pipe(char *str, t_exp *exp)
 {
 	write(exp->fd[1], &str[exp->i], 1);
@@ -52,7 +51,6 @@ void	search_for_dollar_quotes(char *str, t_exp *exp, t_builtin *builtin)
 	}
 }
 
-
 void	clean_expand(char	**origin, t_builtin *builtin)
 {
 	int		i;
@@ -78,7 +76,4 @@ void	clean_expand(char	**origin, t_builtin *builtin)
 		i++;
 	}
 }
-
 //theoretisch kann man noch $$ als ID handlen...
-
-//fsanitize=address problems!
