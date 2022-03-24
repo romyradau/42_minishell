@@ -169,6 +169,8 @@ int		trim_and_expand(char **res, t_builtin *builtin);
 void	clean_expand(char	**origin, t_builtin *builtin);
 void	get_exit_status(int n, int fd, t_exp *exp);
 void	ft_sigchild(int sig);
+int		manage_red_files(t_package **newNode, char *current, t_red *red);
+
 
 //====================BUILTIN==========
 
@@ -204,7 +206,7 @@ void	sig_in_heredoc(int sig);
 void	set_attr();
 void	unset_attr();
 void	execute_packages(char *input, t_data * data, t_builtin *builtin, char **envp);
-int		redirect_parent(t_file *file, t_package *current);
+int		redirect_parent(t_file *file);
 void	do_the_execution(t_package *current, char **envp);
 
 

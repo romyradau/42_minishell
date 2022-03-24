@@ -34,7 +34,7 @@ void	execute_function(t_data *data, char **envp, t_builtin *builtin, t_file *fil
 				do_the_execution(data->head, data->env);
 		}
 		close(file->fd[1]);//TODO:protect
-		redirect_parent(file, data->head);
+		redirect_parent(file);
 			//TODO:was wenn das schief schlagt!!!???
 		data->head = data->head->next;
 	}
