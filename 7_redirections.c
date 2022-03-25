@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-t_file *init_redirections(void)
+t_file	*init_redirections(void)
 {
 	t_file	*ret;
 
@@ -20,10 +20,34 @@ t_file *init_redirections(void)
 	return (ret);
 }
 
+int	handle_heredoc(char *line, char *limiter)
+{
+	char	*test;
+
+	if (line == NULL)
+	{
+		free(line);
+		return (1);
+	}
+	test = ft_strtrim(line, "\n");
+	if (test == NULL)
+	{
+		free(line);
+		return (1);
+	}
+	if (!ft_strncmp(test, limiter, ft_strlen(limiter) + 1))
+	{
+		free(test);
+		free(line);
+		return (1);
+	}
+	free (test);
+	return (0);
+}
+
 void	open_heredoc(char *limiter, t_file *file)
 {
 	char	*line;
-	char	*test;
 	int		fd[2];
 
 	if (pipe(fd) == -1)
@@ -32,25 +56,9 @@ void	open_heredoc(char *limiter, t_file *file)
 	{
 		signal(SIGINT, sig_in_heredoc);
 		line = readline("> ");
-		if (line == NULL)
-		{
-			free(line);
+		if (handle_heredoc(line, limiter))
 			break ;
-		}
-		test = ft_strtrim(line, "\n");
-		if (test == NULL)
-		{
-			free(line);
-			break ;
-		}
-		if (!ft_strncmp(test, limiter, ft_strlen(limiter) + 1))
-		{
-			free(test);
-			free(line);
-			break ;
-		}
 		ft_putendl_fd(line, fd[1]);
-		free(test);
 		free(line);
 	}
 	file->infile = fd[0];

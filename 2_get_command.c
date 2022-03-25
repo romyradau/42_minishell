@@ -30,7 +30,6 @@ int	store_redirection(t_package **newNode, char *current, t_red **red)
 	{
 		(*newNode)->out_redirection[(*red)->oR] = (*red)->operator;
 		(*newNode)->outfiles[(*red)->oR] = filename(current, red);
-
 		if ((*newNode)->outfiles[(*red)->oR] == NULL)
 			return (0);
 		(*red)->oR++;
@@ -103,6 +102,7 @@ int	manage_red_files(t_package **newNode, char *current, t_red *red)
 	}
 	return (1);
 }
+
 /*
 fill_package = speichert den command & seine cmd_args
 get_command = macht platz fur den command und die reds und die files
