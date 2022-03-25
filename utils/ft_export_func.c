@@ -46,7 +46,6 @@ static char *exp_special_case(char *str, int end)
 	{
 		pipe(fd);
 		tmp = ft_strtrim(str, ft_strchr(str, '+'));
-		printf("tmp: %s\n", tmp);
 		if (!simple_check(tmp))
 			return (NULL);
 		index += ft_strlen(tmp);
@@ -55,13 +54,11 @@ static char *exp_special_case(char *str, int end)
 	}
 	if (tmp != NULL)
 	{
-		printf("specail case has been found\n");
 		free(tmp);
 		tmp = 0;
 		tmp = ft_strdup(ft_strchr(str, '='));
 		index += ft_strlen(tmp);
 		write(fd[1], tmp, ft_strlen(tmp));
-		printf("tmp: %s\n", tmp);
 		str_final = ft_strcalloc(index);
 		if (read(fd[0], str_final, index) == -1)
 			perror("failed");
@@ -69,7 +66,6 @@ static char *exp_special_case(char *str, int end)
 		close(fd[1]);
 		close(fd[0]);
 	}
-	printf("tmp_final: %s\n", str_final);
 	return(str_final);
 }
 
@@ -80,9 +76,9 @@ char *input_checker(char *str)
 
 	anws = NULL;
 	end = 0;
+
 	if ((ft_isalpha(str[0]) || str[0] == '_') && ft_strchr(str, '='))
 	{
-		printf("input checker is running\n");
 		while (str[end] != '=' && str[end] != '\0')
 			end++;
 		anws = exp_special_case(str, end);
@@ -97,7 +93,7 @@ char *input_checker(char *str)
 					return (str);
 				}
 				free (anws);
-				printf("export: %s: not a valid identifier\n", str);
+				fprintf(stderr ,"export: %s: not a valid identifier\n", str);
 				g_exit_stat = 1;
 				return (NULL);
 			}
@@ -106,15 +102,63 @@ char *input_checker(char *str)
 		}
 		return (anws);
 	}
-	printf("export: %s: not a valid identifier\n", str);
+	else if ((ft_isalpha(str[0]) || str[0] == '_') && !ft_strchr(str, '='))
+		return (str);
+	fprintf(stderr, "export: %s: not a valid identifier\n", str);
 	g_exit_stat = 1;
 	return (NULL);
+}
+
+int ft_change_var(char **str1, char *str2)
+{
+	char		*tmp;
+	
+	tmp = (*str1);
+	(*str1) = ft_strdup(str2);
+	free(tmp);
+	return (1);
+}
+
+
+bool check_same_var(t_envlist **head, char *str)
+{
+	bool	same;
+	t_envlist *tmp_list;
+	int			i;
+	char *test_str;
+
+	same = false;
+	tmp_list = (*head);
+	i = 0;
+	if (!str)
+		return (same);
+	while (str[i] != '\0' && str[i] != '=')
+		i++;
+	test_str = ft_strcalloc(i+2);
+	ft_strlcpy(test_str, str, i+1);
+	while (tmp_list != NULL)
+	{
+		if (!ft_strncmp(tmp_list->content, test_str, ft_strlen(test_str)) && tmp_list->content[ft_strlen(test_str)] == '=')
+		{
+			same = true;
+			printf("FOUND : %s\n",test_str);
+			printf("CONTENT: %s\n", tmp_list->content);
+			ft_change_var(&tmp_list->content, str);
+			printf("CONTENT: %s\n", tmp_list->content);
+			return (same);
+		}
+		tmp_list = tmp_list->next;
+	}
+	return (same);
 }
 
 int ft_export(t_envlist **head, t_package *package)
 {
 	char *str;
+
 	str = input_checker(package->cmd_args[1]);
+	if (check_same_var(head, str))
+		return (1);
 	if (str == NULL)
 		return (0);
 	if (add_node(head, str))
@@ -130,3 +174,40 @@ int ft_export(t_envlist **head, t_package *package)
 		return (1);
 	return (0);
 }
+
+int print_export(t_builtin *builtin)
+{
+	t_envlist *tmp;
+	if (builtin->env_list == NULL)
+	{
+		fprintf(stderr, "HERE!\n");
+		return (0);
+	}
+	tmp = builtin->env_list;
+	while(tmp != NULL)
+	{
+		write(1, "declare -x ", 12);
+		ft_putstr_fd(tmp->content, 1);
+		write(1, "\n", 1);
+		tmp = tmp->next;
+	}
+	return (1);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

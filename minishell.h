@@ -84,6 +84,7 @@ typedef struct s_red{
 typedef struct s_envlist
 {
 	char *content;
+	bool hiden;
 	struct s_envlist *next;
 	struct s_envlist *prev;
 } t_envlist;
@@ -194,6 +195,9 @@ char 	**cut_from_path(t_data *data, t_package *package);
 int		add_node(t_envlist **head, const char *src);
 int		ft_export(t_envlist **head, t_package *package);
 int		expand_function(char *str, t_exp *exp, t_builtin *builtin);
+int		print_export(t_builtin *builtin);
+
+
 
 
 //====================EXECUTION=========

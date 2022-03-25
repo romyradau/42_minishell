@@ -9,6 +9,10 @@ static t_envlist *creat_node(const char *src)
 	if (!tmp)
 		return (NULL);
 	tmp->content = ft_strdup(src);
+	if (!ft_strchr(src, '='))
+		tmp->hiden = true;
+	else
+		tmp->hiden = false;
 	tmp->next = NULL;
 	return (tmp);
 }
@@ -67,18 +71,17 @@ int set_envlist(t_data *data, t_envlist **list)
 
 int print_env(t_builtin *builtin)
 {
-	printf("print env is called\n");
 	t_envlist *tmp;
 
 	tmp = builtin->env_list;
 	if (builtin->env_list == NULL)
-	{
-		printf("THis sheeet is\n");
 		return (0);
-	}
 	while (tmp != NULL)
 	{
-		printf("%s\n", tmp->content);
+		if (tmp->next != NULL && tmp->hiden == true)
+			tmp = tmp->next;
+		else
+			printf("%s\n", tmp->content);
 		tmp = tmp->next;
 	}
 	return (1);
@@ -102,7 +105,6 @@ int	ft_unset(t_envlist **list, const char *arg)
 	{
 		if (!ft_strncmp((const char *)tmp->content, arg, ft_strlen(arg)))
 		{
-			printf("len: %d\n", len);
 			if (len == 0)
 			{
 				*list = (*list)->next;
