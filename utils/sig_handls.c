@@ -1,9 +1,5 @@
 #include "../minishell.h"
 
-/**
- * SIGINT	= CTRL+C signal
-*/
-
 void sig_in_cmd(int sig);
 void sig_quit(int sig);
 
@@ -39,6 +35,7 @@ void unset_attr()
 	if (tcsetattr(1, 0, &termios_p) == -1)
 		return ;
 	signal(SIGINT, ft_sigchild);
+	signal(SIGQUIT, sig_quit);
 }
 
 void sig_in_heredoc(int sig)
@@ -72,7 +69,6 @@ void	ft_sigchild(int sig)
 
 void	sig_quit(int sig)
 {
-	write(2, "Quit: 3\n", 8);
-	g_exit_stat = 131;
-	(void) sig;
+	if (sig == SIGQUIT)
+		write(2, "Quit: 3\n", 8);
 }

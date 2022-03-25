@@ -1,8 +1,6 @@
 
 #include "../minishell.h"
 
-//TODO: ($) not finished
-
 int cmd_variants(char *str, const char *str2, unsigned int len)
 {
 	unsigned int i;
@@ -33,15 +31,18 @@ void	ft_echo(char **output, bool flag, t_package *package)
 	(void) package;
 	i = 0;
 	len = ft_d_strlen(output);
+	// printf("OUTPUT in FT_ECHO: %s\n", output[0]);
+	// printf("OUTPUT in FT_ECHO: %s\n", output[0]);
 	if (!output[0])
 	{
-		printf("%s", "error");
 		return ;
 	}
-	while (output[i][0] != 10)
+	while (output[i] && output[i][0] != 10)
 	{	
+
+		// printf("OUTPUT in FT_ECHO: %s\n", output[i]);
 		ft_putstr_fd(output[i], STDOUT_FILENO);
-		if (i < (len-2))
+		if (output[i+1] != NULL)
 			write(STDOUT_FILENO, " ", 1);
 		i++;
 	}
@@ -49,15 +50,6 @@ void	ft_echo(char **output, bool flag, t_package *package)
 		write(STDOUT_FILENO, "\n", 1);
 	g_exit_stat = 0;
 	kill_d_str(output);
-}
-
-t_package *echo_pipecase(t_package *package)
-{
-
-	if((package->pipe && package->next != NULL)
-		&& cmd_variants(package->next->cmd, "echo", ft_strlen("echo")))
-		package = package->next;
-	return (package);
 }
 
 int	write_to_pipe(char **output, bool flag, t_file *file)
@@ -91,26 +83,35 @@ int prep_echo(t_package *package, bool flag)
 	i = 1;
 	j = 0;
 	put_in_pipe = false;
-	package = echo_pipecase(package);
+	// package = echo_pipecase(package);
 	if (package->cmd_args[i] == NULL)
+	{
+		write(STDOUT_FILENO, "\n", 1);
 		return (0);
-	output = (char **)malloc(doublestr_len(package->cmd_args) * sizeof(char *));
+	}
+	output = (char **)malloc(doublestr_len(package->cmd_args) + 1 * sizeof(char *));
 	if(!output)
 		return (0);
-	while (package->cmd_args[i])
+	while (package->cmd_args[i] != NULL && check_for_flag(package->cmd_args[i], &flag))
+		i++;
+	while (package->cmd_args[i] != NULL)
 	{
+		// printf("HERE!\n");
 		if (!package->cmd_args[i])
 		{
+			// printf("HERE IF!\n");
 			printf("\n");//wird das benotigt?
 			return (1);
 		}
-		while (check_for_flag(package->cmd_args[i], &flag) && package->cmd_args[i] != NULL)
-			i++;
+		// printf("i: %d\n",i);
 		output[j] = ft_strdup(package->cmd_args[i]);
 		// fprintf(stderr, "output: %s\n", output[j]);
+		// printf("i: %d\n",i);
+		// printf("j: %d\n", j);
 		j++;
 		i++;
 	}
+	// printf("OUT OF LOOP!\n");
 	if (!flag)
 		output[j] = ft_strdup("\n");
 	ft_echo(output, flag, package);

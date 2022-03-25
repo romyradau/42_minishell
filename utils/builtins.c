@@ -1,29 +1,6 @@
 #include "../minishell.h"
 
-int check_for_flag(char *str, bool *flag) //TODO-> muss noch für andere flags ausgebaut werden
-{
-	int index;
-	
-	index = 0;
-	while (str[index] != '\0')
-	{
-		if (str[index] == '-')
-		{
-			index++;
-			if (str[index] == 'n')
-			{
-				(*flag) = true;
-				return (1);
-			}
-			else
-				return (0);
-		}
-		index++;
-	}
-	return (0);
-}
-
-int		check_if_builtin(t_package *head)
+int	check_if_builtin(t_package *head)
 {
 	if (cmd_variants(head->cmd, "echo", ft_strlen("echo")))
 		return (1);
@@ -39,6 +16,31 @@ int		check_if_builtin(t_package *head)
 		return (1);
 	else if (!ft_strncmp(head->cmd, "exit", ft_strlen("exit")))
 		return (1);
+	return (0);
+}
+
+int check_for_flag(char *str, bool *flag) //TODO-> muss noch für andere flags ausgebaut werden
+{
+	int index;
+	
+	// printf("CHECKING FOR FLAGS!\n");
+	// printf("STRING: %s\n", str);
+	index = 0;
+	while (str[index] != '\0')
+	{
+		if (str[index] == '-')
+		{
+			index++;
+			if ((str[index] == 'n' && str[index+1] == 'n') || str[index + 1] == '\0')
+			{
+				(*flag) = true;
+				return (1);
+			}
+			else
+				return (0);
+		}
+		index++;
+	}
 	return (0);
 }
 
@@ -70,7 +72,10 @@ int builtin_picker(t_package *package, t_builtin *builtin)
 	else if (cmd_variants(package->cmd_args[0], "export", ft_strlen("export")))
 	{
 		if (package->cmd_args[1] == NULL)
-			return (0);
+		{
+			print_export(builtin);
+			return (1);
+		}
 		exit_state = ft_export(&builtin->env_list, package);
 	}
 	else if (!ft_strncmp(package->cmd_args[0], "exit", ft_strlen("exit")))
