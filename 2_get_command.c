@@ -20,19 +20,19 @@ int	store_redirection(t_package **newNode, char *current, t_red **red)
 {
 	if ((*red)->operator == INFILE || (*red)->operator == HEREDOC)
 	{
-		(*newNode)->in_redirection[(*red)->iR] = (*red)->operator;
-		(*newNode)->infiles[(*red)->iR] = filename(current, red);
-		if ((*newNode)->infiles[(*red)->iR] == NULL)
+		(*newNode)->in_redirection[(*red)->in] = (*red)->operator;
+		(*newNode)->infiles[(*red)->in] = filename(current, red);
+		if ((*newNode)->infiles[(*red)->in] == NULL)
 			return (0);
-		(*red)->iR++;
+		(*red)->in++;
 	}
 	else if ((*red)->operator == TRUNCATE || (*red)->operator == APPEND)
 	{
-		(*newNode)->out_redirection[(*red)->oR] = (*red)->operator;
-		(*newNode)->outfiles[(*red)->oR] = filename(current, red);
-		if ((*newNode)->outfiles[(*red)->oR] == NULL)
+		(*newNode)->out_redirection[(*red)->out] = (*red)->operator;
+		(*newNode)->outfiles[(*red)->out] = filename(current, red);
+		if ((*newNode)->outfiles[(*red)->out] == NULL)
 			return (0);
-		(*red)->oR++;
+		(*red)->out++;
 	}
 	return (1);
 }

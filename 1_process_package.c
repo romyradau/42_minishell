@@ -16,18 +16,18 @@ char	*get_command(t_package **newNode, char *current)
 		free(red.left_over);
 		return (NULL);
 	}
-	(*newNode)->in_redirection[red.iR] = NOTHING;
-	(*newNode)->out_redirection[red.oR] = NOTHING;
-	(*newNode)->infiles[red.iR] = NULL;
-	(*newNode)->outfiles[red.oR] = NULL;
+	(*newNode)->in_redirection[red.in] = NOTHING;
+	(*newNode)->out_redirection[red.out] = NOTHING;
+	(*newNode)->infiles[red.in] = NULL;
+	(*newNode)->outfiles[red.out] = NULL;
 	return (red.left_over);
 }
 
-int	fill_package(t_package **new, char *current_process, t_builtin *builtin)
+int	fill_package(t_package **new, char *current, t_builtin *builtin)
 {
 	char	*full_cmd;
 
-	full_cmd = ft_strtrim(get_command(new, current_process), " ");
+	full_cmd = ft_strtrim(get_command(new, current), " ");
 	if (full_cmd != NULL)
 	{
 		(*new)->cmd_args = special_cmd_split(full_cmd, ' ');
