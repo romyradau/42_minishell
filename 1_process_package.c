@@ -11,7 +11,6 @@ char	*get_command(t_package **newNode, char *current)
 		free(red.left_over);
 		return (NULL);
 	}
-
 	if (manage_red_files(newNode, current, &red) == 0)
 	{
 		free(red.left_over);

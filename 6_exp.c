@@ -57,6 +57,17 @@ int	do_the_expansion(t_envlist *tmp_list, t_exp *exp, int end_of_var)
 	return (0);
 }
 
+int str_envlen(char *str, unsigned char c)
+{
+	int i;
+
+	i = 0;
+	while (str && str[i] != c)
+		i++;
+	return i;
+}
+
+
 int	complex_expand(char *str, t_exp *exp, t_envlist *tmp_list)
 {
 	int		end_of_var;
@@ -82,13 +93,15 @@ int	complex_expand(char *str, t_exp *exp, t_envlist *tmp_list)
 	}	
 	while (tmp_list != NULL && count)
 	{
-		if (!ft_strncmp(tmp_list->content, &str[exp->i], count))
+		if (!ft_strncmp(tmp_list->content, &str[exp->i], str_envlen(tmp_list->content, '=')) 
+			&& (str_envlen(tmp_list->content, '=') == count))
 		{
-			if (do_the_expansion(tmp_list, exp, end_of_var))
+			if (!do_the_expansion(tmp_list, exp, end_of_var))
 				return (0);
 		}
 		tmp_list = tmp_list->next;
 	}
+	exp->i += count;
 	return (1);
 }
 
