@@ -1,19 +1,18 @@
 #include "minishell.h"
 
-char	*filename(char *current, int *end)
+char	*filename(char *current, t_red **red)
 {
 	int		start;
 	char	*filename;
 
-	(*end)++;
-	while (current[*end] == ' ')
-		(*end)++;
-	start = *end;
-	while (current[*end] && !is_metachar(current[*end])
-		&& current[*end] != '\0')
-		(*end)++;
-	filename = ft_substr(current, start, (*end) - start);
-	printf("filename	%s\n", filename);
+	(*red)->i++;
+	while (current[(*red)->i] == ' ')
+		(*red)->i++;
+	start = (*red)->i;
+	while (current[(*red)->i] && !is_metachar(current[(*red)->i])
+		&& current[(*red)->i] != '\0')
+		(*red)->i++;
+	filename = ft_substr(current, start, (*red)->i - start);
 	return (filename);
 }
 
@@ -22,7 +21,7 @@ int	store_redirection(t_package **newNode, char *current, t_red **red)
 	if ((*red)->operator == INFILE || (*red)->operator == HEREDOC)
 	{
 		(*newNode)->in_redirection[(*red)->iR] = (*red)->operator;
-		(*newNode)->infiles[(*red)->iR] = filename(current, &(*red)->i);
+		(*newNode)->infiles[(*red)->iR] = filename(current, red);
 		if ((*newNode)->infiles[(*red)->iR] == NULL)
 			return (0);
 		(*red)->iR++;
@@ -30,7 +29,8 @@ int	store_redirection(t_package **newNode, char *current, t_red **red)
 	else if ((*red)->operator == TRUNCATE || (*red)->operator == APPEND)
 	{
 		(*newNode)->out_redirection[(*red)->oR] = (*red)->operator;
-		(*newNode)->outfiles[(*red)->oR] = filename(current, &(*red)->i);
+		(*newNode)->outfiles[(*red)->oR] = filename(current, red);
+
 		if ((*newNode)->outfiles[(*red)->oR] == NULL)
 			return (0);
 		(*red)->oR++;
@@ -38,7 +38,7 @@ int	store_redirection(t_package **newNode, char *current, t_red **red)
 	return (1);
 }
 
-int		in_or_out(char *current, int *i)
+int	in_or_out(char *current, int *i)
 {
 	if (current[(*i)] == '<')
 	{
@@ -79,7 +79,7 @@ int	manage_red_files(t_package **newNode, char *current, t_red *red)
 {
 	red->i = 0;
 	red->left_over_index = 0;
-	while (current[red->i])
+	while (current[red->i] != '\0')
 	{
 		red->operator = char_compare(current, &red, &red->i);
 		if (store_redirection(newNode, current, &red) == 0)
@@ -95,6 +95,8 @@ int	manage_red_files(t_package **newNode, char *current, t_red *red)
 			red->left_over[red->left_over_index] = ' ';
 			red->left_over_index++;
 		}
+		if (current[red->i] == '\0')
+			break ;
 		if (current[red->i] != '<' && current[red->i] != '>'
 			&& current[red->i] != '"' && current[red->i] != '\'')
 			red->i++;
