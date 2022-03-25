@@ -1,10 +1,6 @@
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
-#ifndef BUFF
-# define BUFF 200
-#endif
-
 # include <stdio.h>
 # include <readline/readline.h>
 # include <readline/history.h>
@@ -20,6 +16,7 @@
 # include <string.h>
 
 //===============COLOR CODE=================================//
+
 # define BLK		"\e[0;30m"
 # define RED		"\e[0;31m"
 # define GRN		"\e[0;32m"
@@ -29,28 +26,19 @@
 # define CYN		"\e[0;36m"
 # define WHT		"\e[0;37m"
 # define RESET		"\033[0m"
+
 //====================Sturcts==============================
 
-int g_exit_stat;
+int	g_exit_stat;
 
-typedef enum {
+typedef enum meta{
 	NOTHING,
 	PIPE,
-	TRUNCATE, //>
-	INFILE, //<
-	APPEND, //>>
-	HEREDOC, //<<
-} meta;
-
-typedef enum {
-	EHO,
-	CD,
-	PWD,
-	EXPORT,
-	UNSET,
-	ENV,
-	EXIT
-} builtin; 
+	TRUNCATE,
+	INFILE,
+	APPEND,
+	HEREDOC,
+}	t_meta;
 
 typedef struct s_expandables{
 	int		i;
@@ -60,11 +48,9 @@ typedef struct s_expandables{
 
 typedef struct s_file{
 	int		in;
-	// data.in = open(package->in, O_RDONLY);
 	int		out;
-	int		outfile;
+	int		of;
 	int		infile;
-	// data.out = open(package->out, O_RDWR | O_CREAT | O_TRUNC, 0644);
 	int		heredoc;
 	int		tmp_fd;
 	char	*limiter;
@@ -77,17 +63,17 @@ typedef struct s_red{
 	int		operator;
 	int		left_over_index;
 	char	*left_over;
-	int		iR;
-	int		oR;
+	int		in;
+	int		out;
 }	t_red;
 
 typedef struct s_envlist
 {
-	char *content;
-	bool hiden;
-	struct s_envlist *next;
-	struct s_envlist *prev;
-} t_envlist;
+	char				*content;
+	bool				hiden;
+	struct s_envlist	*next;
+	struct s_envlist	*prev;
+}	t_envlist;
 
 typedef struct s_builtin
 {
@@ -95,23 +81,12 @@ typedef struct s_builtin
 	t_envlist	*env_list;
 }	t_builtin;
 
-/*
-wie man multiple redirections in der pipex struktur andert 
-muss ich noch nachschauen
-bis jetzt war es so anfang kann in oder herdoc sein udn ende das oufile
-jetzt konnen solche redirections uberall stehen
-*/
-
 typedef struct s_package
 {
-	// infiles
-	int					*in_redirection;	// [<,      <<,       <] // free
-	char				**infiles;			// [ file1, heredoc, file2 ] // free
-
-	// outfiles
-	int					*out_redirection; //free
-	char				**outfiles; //free
-
+	int					*in_redirection;
+	char				**infiles;
+	int					*out_redirection;
+	char				**outfiles;
 	bool				pipe;
 	char				*cmd;
 	char				**cmd_args;
@@ -119,112 +94,94 @@ typedef struct s_package
 	struct s_package	*next;
 }	t_package;
 
-/**
- * this is our linked list 
-*/
 typedef struct s_data
 {
-	int						packages;
-	char					**processes;
-	char					**env;
-	t_package				*head;
-	struct	sigaction 		sa;
-	struct	sigaction		cntrl_backslasch;
+	int					packages;
+	char				**processes;
+	char				**env;
+	t_package			*head;
 }	t_data;
-
 
 /*====================FUNCTIONS=========*/
 
-void	init_lex(char **input);
-char	*cut_quot_sequence(char *str, char c);
-char	*get_path(char **env, const char *search_str);
-int		builtin_picker(t_package *package, t_builtin *builtin);
-void	btn_handler(int sig);
-int		prep_signal(t_data *data);
-int		handle_input(t_data *data, t_builtin *builtin, char	**envp);
-char	**special_pipe_split(char const *s, char c);
-char	**special_cmd_split(char const *s, char c);
-char	**kill_d_str(char **str);
-int		check_if_builtin(t_package *package);
-void	free_packages(t_data *data);
-int		prepare_packages(t_data *data, char *input);
-
+void		init_lex(char **input);
+char		*cut_quot_sequence(char *str, char c);
+char		*get_path(char **env, const char *search_str);
+int			builtin_picker(t_package *package, t_builtin *builtin);
+void		btn_handler(int sig);
+int			prep_signal(t_data *data);
+int			handle_input(t_data *data, t_builtin *builtin);
+char		**special_pipe_split(char const *s, char c);
+char		**special_cmd_split(char const *s, char c);
+char		**kill_d_str(char **str);
+int			check_if_builtin(t_package *package);
+void		free_packages(t_data *data);
+int			prepare_packages(t_data *data, char *input);
 
 /*====================PARSING=========*/
 
-int		process_packages(t_data *data, t_builtin *builtin);
-// int		push_package(t_package **head, char *current_process);
-int	fill_package(t_package **newNode, char *current_process, t_builtin *builtin);
-// void	print_package(t_package *head);
+int			process_packages(t_data *data, t_builtin *builtin);
+int			fill_package(t_package **new, char *current, t_builtin *builtin);
 t_package	*print_package_normal(t_package *head, t_builtin *builtin);
 t_package	*print_package_builtin(t_package *head, t_builtin *builtin);
-void	print2Darray(char **split);
-char	*get_command(t_package **newNode, char *current_process);
-// char *spot_quotes(char *str, char **str_wo_quotes, bool &sq, bool &dq);
-bool	is_metachar(char c);
-bool	single_quotes(char *s, t_red **red, int *i);
-bool	double_quotes(char *s, t_red **red, int *i);
-void	skip_sq(char *s, int *i);
-void	skip_dq(char *s, int *i);
-int		trim_and_expand(char **res, t_builtin *builtin);
-void	clean_expand(char	**origin, t_builtin *builtin);
-void	get_exit_status(int n, int fd, t_exp *exp);
-void	ft_sigchild(int sig);
-int		manage_red_files(t_package **newNode, char *current, t_red *red);
+void		print2Darray(char **split);
+char		*get_command(t_package **newNode, char *current_process);
+bool		is_metachar(char c);
+bool		single_quotes(char *s, t_red **red, int *i);
+bool		double_quotes(char *s, t_red **red, int *i);
+void		skip_sq(char *s, int *i);
+void		skip_dq(char *s, int *i);
+int			trim_and_expand(char **res, t_builtin *builtin);
+void		clean_expand(char	**origin, t_builtin *builtin);
+void		get_exit_status(int n, int fd, t_exp *exp);
+void		ft_sigchild(int sig);
+int			manage_red_files(t_package **newNode, char *current, t_red *red);
+int			complex_expand(char *str, t_exp *exp, t_envlist *tmp_list);
+int			end_of_env_var(t_exp *exp, char *str, int *count, int *end_of_var);
 
+/*====================BUILTIN==========*/
 
-//====================BUILTIN==========
+int			check_quot_sequence(char *str, char c, bool *q);
+char		*cut_quot_sequence(char *str, char c);
+char		*handle_qouts(char **cmd_arg, int index);
+char		*ft_strcalloc(int size);
+int			doublestr_len(char **cmd_arg);
+int			ft_d_strlen(char **str);
+char		**kill_d_str(char **str);
+int			cmd_variants(char *str, const char *str2, unsigned int len);
+int			check_for_flag(char *str, bool *flag);
+void		ft_echo(char **output, bool flag, t_package *package);
+int			prep_echo(t_package *package, bool flag);
+int			prep_cd(t_package *package, t_builtin *builtin);
+int			call_pwd(int fd);
+int			set_envlist(t_data *data, t_envlist **list);
+int			print_env(t_builtin *builtin);
+int			ft_unset(t_envlist **list, const char *arg);
+char		**cut_from_path(t_data *data, t_package *package);
+int			add_node(t_envlist **head, const char *src);
+int			ft_export(t_envlist **head, t_package *package);
+int			expand_function(char *str, t_exp *exp, t_builtin *builtin);
+int			print_export(t_builtin *builtin);
 
-int		check_quot_sequence(char *str, char c, bool *q);
-char	*cut_quot_sequence(char *str, char c);
-char	*handle_qouts(char **cmd_arg, int index);
-char	*ft_strcalloc(int size);
-int		doublestr_len(char **cmd_arg);
-int 	ft_d_strlen(char **str);
-char	**kill_d_str(char **str);
-int		cmd_variants(char *str, const char *str2, unsigned int len);
-int		check_for_flag(char *str, bool *flag);
-void	ft_echo(char **output, bool flag, t_package *package);
-int 	prep_echo(t_package *package, bool flag);
-int 	prep_cd(t_package *package, t_builtin *builtin);
-int		call_pwd(int fd);
-int		set_envlist(t_data *data, t_envlist **list);
-int 	print_env(t_builtin *builtin);
-int		ft_unset(t_envlist **list, const char *arg);
-char 	**cut_from_path(t_data *data, t_package *package);
-int		add_node(t_envlist **head, const char *src);
-int		ft_export(t_envlist **head, t_package *package);
-int		expand_function(char *str, t_exp *exp, t_builtin *builtin);
-int		print_export(t_builtin *builtin);
+/*====================EXECUTION=========*/
 
-
-
-
-//====================EXECUTION=========
-
-t_file	*init_redirections();
-int		links(t_file *file, t_package *current);
-int		rechts(t_file *file, t_package *current);
-void	execute_function(t_data *data, char **envp, t_builtin *builtin, t_file *file);
-void	sig_in_heredoc(int sig);
-void	set_attr();
-void	unset_attr();
-void	execute_packages(char *input, t_data * data, t_builtin *builtin, char **envp);
-int		redirect_parent(t_file *file);
-void	do_the_execution(t_package *current, char **envp);
-
-
-//====================PRINTING=========
-
-
-void	print2Darray(char **split);
-// void	print_package(t_package *head);
+t_file		*init_redirections(void);
+int			links(t_file *file, t_package *current);
+int			rechts(t_file *file, t_package *current);
+void		execute_function(t_data *data, t_builtin *builtin, t_file *file);
+void		sig_in_heredoc(int sig);
+void		set_attr(void);
+void		unset_attr(void);
+void		execute_packages(char *input, t_data *data, t_builtin *builtin);
+int			redirect_parent(t_file *file);
+void		do_the_execution(t_package *current, char **envp);
+void		open_heredoc(char *limiter, t_file *file);
+void		dup2_protection(int *fd, int aim);
 
 /*====================CALCULATING=========*/
 
-int		allocate_redirections(t_package **newNode, char *current_process);
-bool	is_metachar(char c);
-int		char_compare(char *current_process, t_red **red, int *i);
-
+int			allocate_redirections(t_package **newNode, char *current_process);
+bool		is_metachar(char c);
+int			char_compare(char *current_process, t_red **red, int *i);
 
 #endif

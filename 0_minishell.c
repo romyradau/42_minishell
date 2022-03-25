@@ -1,4 +1,3 @@
-//testing out readline functon
 
 #include "minishell.h"
 
@@ -39,7 +38,7 @@ int	prepare_packages(t_data *data, char *input)
 	return (0);
 }
 
-int	handle_input(t_data *data, t_builtin *builtin, char **envp)
+int	handle_input(t_data *data, t_builtin *builtin)
 {
 	char	*user;
 	char	*input;
@@ -58,7 +57,7 @@ int	handle_input(t_data *data, t_builtin *builtin, char **envp)
 			if (!process_packages(data, builtin))
 			{
 				unset_attr();
-				execute_packages(input, data, builtin, envp);
+				execute_packages(input, data, builtin);
 			}
 			kill_d_str(data->processes);
 			free_packages(data);
@@ -83,7 +82,7 @@ int	main(int argc, char **argv, char **envp)
 	data.env = envp;
 	builtin->home_path = getenv("HOME");
 	set_envlist(&data, &builtin->env_list);
-	if (handle_input(&data, builtin, envp))
+	if (handle_input(&data, builtin))
 		return (1);
 	return (0);
 }
