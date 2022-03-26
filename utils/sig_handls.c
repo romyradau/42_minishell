@@ -25,7 +25,7 @@ void set_attr()
 	signal(SIGQUIT, SIG_IGN);
 }
 
-void unset_attr()
+void unset_attr(t_package *package)
 {
 	struct termios termios_p;
 
@@ -34,8 +34,30 @@ void unset_attr()
 	termios_p.c_lflag |= (ECHOCTL);
 	if (tcsetattr(1, 0, &termios_p) == -1)
 		return ;
+	if (package->in_redirection[0] == HEREDOC)
+	{
+		printf("HERE!\n");
+		signal(SIGQUIT, SIG_IGN);
+	}
+	else
+	{
+
+		printf("here!\n");
+		signal(SIGQUIT, SIG_DFL);
+		signal(SIGQUIT, sig_quit);
+	}
 	signal(SIGINT, ft_sigchild);
-	signal(SIGQUIT, sig_quit);
+}
+
+void	set_termios()
+{
+	struct termios termios_p;
+
+	if (tcgetattr(STDIN_FILENO, &termios_p) == -1)
+		return ;
+	termios_p.c_lflag &= ~(ECHOCTL);
+	if (tcsetattr(0, 0, &termios_p) == -1)
+		return ;
 }
 
 void sig_in_heredoc(int sig)

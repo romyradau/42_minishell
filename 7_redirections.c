@@ -25,6 +25,7 @@ int	redirect_infiles(t_package *package, t_file *file)
 	int	i;
 
 	i = 0;
+	set_termios();
 	while (package->in_redirection[i])
 	{
 		if (package->in_redirection[i] == INFILE)

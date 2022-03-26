@@ -2,7 +2,7 @@
 
 void	execute_cp(t_file *file, t_data *data, t_builtin *builtin)
 {
-	signal(SIGQUIT, SIG_DFL);
+	// signal(SIGQUIT, SIG_DFL);
 	signal(SIGINT, SIG_DFL);
 	close(file->fd[0]);//TODO:protect
 	if (links(file, data->head) == 1)
