@@ -55,6 +55,7 @@ int	execute_single_builtin(t_file *file, t_data *data, t_builtin *builtin)
 
 	rechts(file, data->head);
 	links(file, data->head);
+	print_package_normal(data->head, builtin);
 	builtin_picker(data->head, builtin);
 	error = (
 			dup2(file->out, STDOUT_FILENO) == -1
@@ -73,7 +74,10 @@ void	execute_packages(char *in, t_data *data, t_builtin *bi)
 	file = init_redirections();
 	add_history(in);
 	if (check_if_builtin(data->head) && data->head->next == NULL)
+	{
+		printf("hi\n");
 		execute_single_builtin(file, data, bi);
+	}
 	else
 		execute_function(data, bi, file);
 }

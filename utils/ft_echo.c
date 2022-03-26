@@ -25,13 +25,10 @@ int cmd_variants(char *str, const char *str2, unsigned int len)
 void	ft_echo(char **output, bool flag, t_package *package)
 {
 	int i;
-	int len;
 	// int j;
 	// int ret;
 	(void) package;
 	i = 0;
-	len = ft_d_strlen(output);
-	// printf("OUTPUT in FT_ECHO: %s\n", output[0]);
 	// printf("OUTPUT in FT_ECHO: %s\n", output[0]);
 	if (!output[0])
 	{
@@ -89,7 +86,7 @@ int prep_echo(t_package *package, bool flag)
 		write(STDOUT_FILENO, "\n", 1);
 		return (0);
 	}
-	output = (char **)malloc(doublestr_len(package->cmd_args) + 1 * sizeof(char *));
+	output = (char **)malloc(doublestr_len(package->cmd_args) + 2 * sizeof(char *));
 	if(!output)
 		return (0);
 	while (package->cmd_args[i] != NULL && check_for_flag(package->cmd_args[i], &flag))
@@ -105,13 +102,11 @@ int prep_echo(t_package *package, bool flag)
 		}
 		// printf("i: %d\n",i);
 		output[j] = ft_strdup(package->cmd_args[i]);
-		// fprintf(stderr, "output: %s\n", output[j]);
 		// printf("i: %d\n",i);
 		// printf("j: %d\n", j);
 		j++;
 		i++;
 	}
-	// printf("OUT OF LOOP!\n");
 	if (!flag)
 		output[j] = ft_strdup("\n");
 	ft_echo(output, flag, package);
