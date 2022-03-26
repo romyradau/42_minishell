@@ -57,7 +57,7 @@ int	handle_input(t_data *data, t_builtin *builtin)
 				return (1);
 			if (!process_packages(data, builtin))
 			{
-				unset_attr();
+				unset_attr(data->head);
 				execute_packages(input, data, builtin);
 			}
 			kill_d_str(data->processes);
