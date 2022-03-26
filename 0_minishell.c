@@ -55,7 +55,7 @@ int	handle_input(t_data *data, t_builtin *builtin)
 		{
 			if (prepare_packages(data, input))
 				return (1);
-			if (!process_packages(data, builtin))
+			if (data->processes[0][0] != 0 && !process_packages(data, builtin))
 			{
 				unset_attr(data->head);
 				execute_packages(input, data, builtin);

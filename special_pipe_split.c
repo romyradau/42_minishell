@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-static int	ft_findW_count(char const *s, char c)
+static	int	ft_find_wcount(char const *s, char c)
 {
 	int		i;
 	int	dq = 1;
@@ -12,7 +12,7 @@ static int	ft_findW_count(char const *s, char c)
 	while (s[i] != '\0')
 	{
 		while ((s[i] != c || sq == -1 || dq == -1) && s[i] != '\0')
- 		{
+		{
 			if (s[i] == '"' && sq == 1)
 				dq *= -1;
 			if (s[i] == '\'' && dq == 1)
@@ -20,7 +20,11 @@ static int	ft_findW_count(char const *s, char c)
 			i++;
 		}
 		while (s[i] == c)
+		{
 			i++;
+			if (s[i] == c)
+				return (cnt);
+		}
 		if (s[i] != '\0')
 			cnt++;
 	}
@@ -78,13 +82,13 @@ char	**special_pipe_split(char const *s, char c)
 		return (NULL);
 	start = 0;
 	i = 0;
-	int	numberStrings = ft_findW_count(s, c);
+	int	numberStrings = ft_find_wcount(s, c);
 	if (numberStrings == -1)
 		return (NULL);
 	result = (char **)malloc((numberStrings + 1) * sizeof(char *));
 	if (!result)
 		return (NULL);
-	while (i < (int)ft_findW_count(s, c) && ft_findW_count(s, c) != 0)
+	while (i < (int)ft_find_wcount(s, c) && ft_find_wcount(s, c) != 0)
 	{
 		start = ft_count(start, s, c);
 		end = ft_count_toNext(start, s, c);
