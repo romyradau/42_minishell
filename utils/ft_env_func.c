@@ -87,15 +87,55 @@ int print_env(t_builtin *builtin)
 	return (1);
 }
 
+int ft_equel_check(char *str, int c)
+{
+	int i;
+
+	i = 0;
+	while (str[i] != '\0')
+	{
+		if (str[i] == c)
+			break;
+		i++;
+	}
+	if ((int)ft_strlen(str) == i || i == 0)
+		return (0);
+	return (i);
+}
+
+int del_env_node(t_envlist **list, int len, t_envlist *tmp)
+{
+	if (len == 0)
+	{
+		*list = (*list)->next;
+		ft_bzero(tmp->content, ft_strlen(tmp->content));
+		free(tmp);
+		tmp = NULL;
+		if ((*list) != NULL)
+			(*list)->prev = NULL;
+		return (1);
+	}
+	tmp->prev->next = tmp->next;
+	tmp->next->prev = tmp->prev;
+	ft_bzero(tmp->content, ft_strlen(tmp->content));
+	free(tmp);
+	tmp = NULL;
+	return (1);
+}
+
 int	ft_unset(t_envlist **list, const char *arg)
 {
 	printf("UNSET runs\n");
 	t_envlist	*tmp;
 	// t_envlist	*tmp2;
 	int len;
+	int len_cont;
+	int len_arg;
 
 	tmp = *list;
 	len = 0;
+	len_cont = 0;
+	len_arg = 0;
 	if (arg == NULL)
 	{
 		g_exit_stat = 1;
@@ -103,27 +143,26 @@ int	ft_unset(t_envlist **list, const char *arg)
 	}
 	while (tmp->next != NULL)
 	{
-		if (!ft_strncmp((const char *)tmp->content, arg, ft_strlen(arg)))
+		len_cont = ft_equel_check(tmp->content, '=');
+		len_arg = (int)ft_strlen(arg);
+		if (!ft_strncmp((const char *)tmp->content, arg, len_cont) && (len_cont == len_arg))
 		{
-			if (len == 0)
-			{
-				*list = (*list)->next;
-				ft_bzero(tmp->content, ft_strlen(tmp->content));
-				free(tmp);
-				tmp = NULL;
-				if ((*list) != NULL)
-					(*list)->prev = NULL;
-				return (1);
-			}
-			tmp->prev->next = tmp->next;
-			tmp->next->prev = tmp->prev;
-			ft_bzero(tmp->content, ft_strlen(tmp->content));
-			free(tmp);
-			tmp = NULL;
+			del_env_node(list, len, tmp);
 			return (1);
 		}
 		tmp = tmp->next;
 		len++;
+	}
+	if (tmp->next == NULL)
+	{
+		len_cont = ft_equel_check(tmp->content, '=');
+		len_arg = (int)ft_strlen(arg);
+		if (!ft_strncmp((const char *)tmp->content, arg, len_cont) && (len_cont == len_arg))
+		{
+			tmp->prev->next = NULL;
+			free(tmp);
+			return(1);
+		}
 	}
 	return (0);
 }

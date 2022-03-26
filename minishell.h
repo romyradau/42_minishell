@@ -14,7 +14,7 @@
 # include <errno.h>
 # include <sys/stat.h>
 # include <string.h>
-
+# include <limits.h>
 //===============COLOR CODE=================================//
 
 # define BLK		"\e[0;30m"
@@ -185,5 +185,6 @@ int			allocate_redirections(t_package **newNode, char *current_process);
 bool		is_metachar(char c);
 int			char_compare(char *current_process, t_red **red, int *i);
 int			str_envlen(char *str, unsigned char c);
+int			ft_exit(t_package *package);
 
 #endif

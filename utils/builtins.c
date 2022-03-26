@@ -80,21 +80,7 @@ int builtin_picker(t_package *package, t_builtin *builtin)
 	}
 	else if (!ft_strncmp(package->cmd_args[0], "exit", ft_strlen("exit")))
 	{
-		int i;
-
-		i = 0;
-		while (package->cmd_args[i] != NULL)
-			i++;
-		if (package->cmd_args[1] == NULL)
-			exit(0);
-		else if (package->cmd_args[2] == NULL)
-			exit(ft_atoi(package->cmd_args[1]));
-		else if (package->cmd_args[2] != NULL)
-		{
-			fprintf(stderr ,"bash: exit: too many arguments\n");
-			g_exit_stat = 1;
-			return (0);
-		}
+		ft_exit(package);	
 	}
 	if (exit_state == 1)
 		g_exit_stat = 0;
