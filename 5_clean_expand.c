@@ -24,7 +24,7 @@ void	handle_dq(char *str, t_exp *exp, t_builtin *builtin)
 			write_in_pipe(str, exp);
 		if (str[exp->i] == '$')
 		{
-			if (expand_function(str, exp, builtin) == 1)
+			if (expand_function(str, exp, builtin) == 0)
 			{
 				write_in_pipe(str, exp);
 			}

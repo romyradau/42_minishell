@@ -183,5 +183,6 @@ void		dup2_protection(int *fd, int aim);
 int			allocate_redirections(t_package **newNode, char *current_process);
 bool		is_metachar(char c);
 int			char_compare(char *current_process, t_red **red, int *i);
+int			str_envlen(char *str, unsigned char c);
 
 #endif
