@@ -38,6 +38,7 @@ int	prepare_packages(t_data *data, char *input)
 	return (0);
 }
 
+
 int	handle_input(t_data *data, t_builtin *builtin)
 {
 	char	*user;
@@ -76,6 +77,7 @@ int	main(int argc, char **argv, char **envp)
 		return (0);
 	builtin->env_list = NULL;
 	(void) argc;
+	// input = argv[1];
 	(void)argv;
 	g_exit_stat = 0;
 	ft_bzero(&data, sizeof(t_data));
