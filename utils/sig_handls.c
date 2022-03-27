@@ -36,13 +36,10 @@ void unset_attr(t_package *package)
 		return ;
 	if (package->in_redirection[0] == HEREDOC)
 	{
-		printf("HERE!\n");
 		signal(SIGQUIT, SIG_IGN);
 	}
 	else
 	{
-
-		printf("here!\n");
 		signal(SIGQUIT, SIG_DFL);
 		signal(SIGQUIT, sig_quit);
 	}

@@ -85,14 +85,14 @@ char	**special_cmd_split(char const *s, char c)
 	int	numberStrings = ft_findW_count(s, c);
 	if (numberStrings == -1)
 		return (NULL);
-	result = (char **)malloc((numberStrings + 1) * sizeof(char *));
+	result = ft_calloc(numberStrings + 1, sizeof(char *));
 	if (!result)
 		return (NULL);
 	while (i < (int)ft_findW_count(s, c) && ft_findW_count(s, c) != 0)
 	{
 		start = ft_count(start, s, c);
 		end = ft_count_toNext(start, s, c);
-		result[i] = ft_substr(s, start, end - start);
+		result[i] = ft_substr(s, start, end - start + 1);
 		i++;
 		start = end;
 	}

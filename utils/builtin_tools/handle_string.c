@@ -25,6 +25,7 @@ int doublestr_len(char **cmd_arg)
 	s_t = 0;
 	while (cmd_arg[i])
 	{
+		j = 0;
 		while (cmd_arg[i][j])
 			j++;
 		s_t += j;
@@ -33,27 +34,23 @@ int doublestr_len(char **cmd_arg)
 	return (s_t);
 }
 
-char **kill_d_str(char **str)
+void	kill_d_str(char **str)
 {
-	char **tmp;
-	int len;
-	int i;
+	int		len;
+	int		i;
 
-	tmp = str;
 	len = 0;
 	i = 0;
-	while (*tmp)
-	{
-		tmp++;
+	if (str[len] == NULL)
+		return ;
+	while (str[len] != NULL)
 		len++;
-	}
 	while (i < len)
 	{
-		str[i] = ft_strcalloc(1);
-		i++;	
+		free(str[i]);
+		i++;
 	}
 	free(str);
-	return (str);
 }
 
 int ft_d_strlen(char **str)

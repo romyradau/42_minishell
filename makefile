@@ -6,25 +6,25 @@ FILES = 0_minishell.c 1_process_package.c 2_get_command.c 3_allocate_redirection
 		./utils/sig_handls.c ./utils/builtins.c ./utils/ft_echo.c ./utils/ft_exe_cd.c ./utils/ft_exit.c \
 		./utils/ft_env_func.c ./utils/ft_export_func.c ./utils/builtin_tools/handle_qouts.c ./utils/builtin_tools/handle_string.c 
 
-LDFLAGS		= -L/Users/$(USER)/.brew/opt/readline/lib
-CPPFLAGS	= -I/Users/$(USER)/.brew/opt/readline/include
+LDFLAGS		= -L/$(HOME)/.brew/opt/readline/lib -lreadline
+CPPFLAGS	= -I/$(HOME)/.brew/opt/readline/include
 
 CC = gcc
 
-CFLAGS = $(LDFLAGS) $(CPPFLAGS) -Wall -Wextra -Werror -lreadline -g
+CFLAGS = $(LDFLAGS) $(CPPFLAGS) -Wall -Wextra -Werror -g
 
 OBJ := $(FILES:.c=.o)
 
 LINKED_OBJ = ./libft/*.o
 
 %.o: %.c
-	@$(CC) -Wall -Wextra -Werror $(CPPFLAGS) $(INC) -o $@ -c $<
+	@$(CC) -Wall -Wextra -Werror -g $(CPPFLAGS) $(INC) -o $@ -c $<
 	@echo compiled $@
 
 all: linked_objects $(NAME)
 
 $(NAME): $(OBJ)
-	$(CC) $(CFLAGS) -o $(NAME) $(OBJ) $(LINKED_OBJ)
+	$(CC) $(CFLAGS) -o $(NAME) $(OBJ) $(LINKED_OBJ) -lreadline 
 	
 linked_objects: 
 	make -C ./libft

@@ -21,10 +21,8 @@ int	check_if_builtin(t_package *head)
 
 int check_for_flag(char *str, bool *flag) //TODO-> muss noch für andere flags ausgebaut werden
 {
-	int index;
-	
-	// printf("CHECKING FOR FLAGS!\n");
-	// printf("STRING: %s\n", str);
+	int	index;
+
 	index = 0;
 	while (str[index] != '\0')
 	{
@@ -44,18 +42,15 @@ int check_for_flag(char *str, bool *flag) //TODO-> muss noch für andere flags a
 	return (0);
 }
 
-int builtin_picker(t_package *package, t_builtin *builtin)
+int	builtin_picker(t_package *package, t_builtin *builtin)
 {
 	bool	flag;
-	char	**output;
 	int		exit_state;
 
 	flag = false;
-	output = NULL;
 	exit_state = 0;
 	if (!package)
 		return (0);
-	
 	if (cmd_variants(package->cmd_args[0], "echo", ft_strlen("echo")))
 	{
 		exit_state = prep_echo(package, flag);
@@ -80,12 +75,12 @@ int builtin_picker(t_package *package, t_builtin *builtin)
 	}
 	else if (!ft_strncmp(package->cmd_args[0], "exit", ft_strlen("exit")))
 	{
-		ft_exit(package);	
+		ft_exit(package);
 	}
 	if (exit_state == 1)
 		g_exit_stat = 0;
 	else
 		g_exit_stat = 1;
 	printf("exit_state %d\n", exit_state);
-    return (0);
+	return (0);
 }

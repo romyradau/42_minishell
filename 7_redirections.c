@@ -63,7 +63,7 @@ int	links(t_file *file, t_package *current)
 	return (g_exit_stat);
 }
 
-void	redirect_outfiles(t_package *curr, int i, t_file *file)
+int	redirect_outfiles(t_package *curr, int i, t_file *file)
 {
 	if (curr->out_redirection[i] == TRUNCATE)
 		file->of = open(curr->outfiles[i], O_RDWR | O_CREAT | O_TRUNC, 0644);
@@ -75,10 +75,12 @@ void	redirect_outfiles(t_package *curr, int i, t_file *file)
 		if (file->infile > -1)
 			close(file->infile);
 		g_exit_stat = 1;
+		return (1);
 	}
 	if (curr->out_redirection[i + 1])
 		if (close(file->of) == -1)
 			g_exit_stat = 1;
+	return (0);
 }
 
 int	rechts(t_file *file, t_package *current)
@@ -96,7 +98,8 @@ int	rechts(t_file *file, t_package *current)
 		i = 0;
 		while (current->out_redirection[i])
 		{
-			redirect_outfiles(current, i, file);
+			if (redirect_outfiles(current, i, file))
+				return (1);
 			i++;
 		}
 		dup2_protection(&file->of, STDOUT_FILENO);

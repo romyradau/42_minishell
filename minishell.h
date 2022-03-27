@@ -13,6 +13,7 @@
 # include <signal.h>
 # include <errno.h>
 # include <sys/stat.h>
+# include <sys/wait.h>
 # include <string.h>
 # include <limits.h>
 //===============COLOR CODE=================================//
@@ -100,6 +101,8 @@ typedef struct s_data
 	char				**processes;
 	char				**env;
 	t_package			*head;
+	t_package			*orig_head;
+	t_file				*file;
 }	t_data;
 
 /*====================FUNCTIONS=========*/
@@ -113,7 +116,7 @@ int			prep_signal(t_data *data);
 int			handle_input(t_data *data, t_builtin *builtin);
 char		**special_pipe_split(char const *s, char c);
 char		**special_cmd_split(char const *s, char c);
-char		**kill_d_str(char **str);
+void		kill_d_str(char **str);
 int			check_if_builtin(t_package *package);
 void		free_packages(t_data *data);
 int			prepare_packages(t_data *data, char *input);
@@ -138,6 +141,8 @@ void		ft_sigchild(int sig);
 int			manage_red_files(t_package **newNode, char *current, t_red *red);
 int			complex_expand(char *str, t_exp *exp, t_envlist *tmp_list);
 int			end_of_env_var(t_exp *exp, char *str, int *count, int *end_of_var);
+void		write_in_pipe(char *str, t_exp *exp);
+
 
 /*====================BUILTIN==========*/
 
@@ -147,7 +152,6 @@ char		*handle_qouts(char **cmd_arg, int index);
 char		*ft_strcalloc(int size);
 int			doublestr_len(char **cmd_arg);
 int			ft_d_strlen(char **str);
-char		**kill_d_str(char **str);
 int			cmd_variants(char *str, const char *str2, unsigned int len);
 int			check_for_flag(char *str, bool *flag);
 void		ft_echo(char **output, bool flag, t_package *package);
@@ -175,7 +179,7 @@ void		unset_attr(t_package *package);
 void		set_termios(void);
 void		execute_packages(char *input, t_data *data, t_builtin *builtin);
 int			redirect_parent(t_file *file);
-void		do_the_execution(t_package *current, char **envp);
+void		do_the_execution(t_package *current, char **envp, t_data *data);
 void		open_heredoc(char *limiter, t_file *file);
 void		dup2_protection(int *fd, int aim);
 

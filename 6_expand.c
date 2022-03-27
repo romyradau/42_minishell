@@ -4,9 +4,7 @@ char	*simple_expand(const char *s, int c)
 {
 	char			ch;
 	char			*str;
-	unsigned int	cnt;
 
-	cnt = 0;
 	ch = (char) c;
 	str = (char *)s;
 	while (*str != ch)
@@ -84,7 +82,11 @@ int	expand_function(char *str, t_exp *exp, t_builtin *builtin)
 
 	tmp_list = builtin->env_list;
 	if (str[exp->i] == '$' && str[exp->i + 1] == '\0')
+	{
+		write_in_pipe(str, exp);
+		exp->i++;
 		return (1);
+	}
 	if (complex_expand(str, exp, tmp_list) == 0)
 	{
 		return (1);

@@ -35,6 +35,7 @@ void	handle_dq(char *str, t_exp *exp, t_builtin *builtin)
 
 void	search_for_dollar_quotes(char *str, t_exp *exp, t_builtin *builtin)
 {
+	// exp->i = 0;
 	while (str[exp->i] != '\0')
 	{
 		if (str[exp->i] == -1)
@@ -63,11 +64,11 @@ void	clean_expand(char	**origin, t_builtin *builtin)
 	{
 		if (pipe(exp.fd) == -1)
 			write(2, "Error: tmp_pipe creation unsuccessfull\n", 40);
-		exp.i = 0;
 		exp.len = 0;
+		exp.i = 0;
 		search_for_dollar_quotes(origin[i], &exp, builtin);
 		tmp = origin[i];
-		origin[i] = ft_strcalloc(exp.len + 1);
+		origin[i] = ft_calloc(exp.len + 1, sizeof(char));
 		if (exp.len)
 			read(exp.fd[0], origin[i], exp.len);
 		close(exp.fd[0]);

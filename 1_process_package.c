@@ -26,8 +26,10 @@ char	*get_command(t_package **newNode, char *current)
 int	fill_package(t_package **new, char *current, t_builtin *builtin)
 {
 	char	*full_cmd;
-
-	full_cmd = ft_strtrim(get_command(new, current), " ");
+	char	*red_left_over;
+	red_left_over = get_command(new, current);
+	full_cmd = ft_strtrim(red_left_over, " ");
+	free(red_left_over);
 	if (full_cmd != NULL)
 	{
 		(*new)->cmd_args = special_cmd_split(full_cmd, ' ');
@@ -40,12 +42,12 @@ int	fill_package(t_package **new, char *current, t_builtin *builtin)
 		return (0);
 }
 
-int	push_package(t_package **head, char *current_process, t_builtin *builtin)
+int	push_package(t_package **head, char *current_process, t_builtin *builtin, t_data *data)
 {
 	t_package	*new;
 	t_package	*last;
 
-	new = malloc(sizeof(t_package));
+	new = ft_calloc(sizeof(t_package), 1);
 	if (new == NULL)
 		return (1);
 	ft_bzero(new, sizeof(t_package));
@@ -55,16 +57,21 @@ int	push_package(t_package **head, char *current_process, t_builtin *builtin)
 		if (*head == NULL)
 		{
 			*head = new;
+			data->orig_head = *head;
 			(*head)->next = NULL;
 			return (0);
 		}
-		while (last->next != NULL)
-			last = last->next;
-		last->next = new;
-		new->next = NULL;
-		return (0);
+		else
+		{
+			while (last->next != NULL)
+				last = last->next;
+			last->next = new;
+			new->next = NULL;
+			return (0);
+		}
 	}
-	free(new);
+	else
+		free(new);
 	return (1);
 }
 
@@ -78,7 +85,7 @@ int	process_packages(t_data *data, t_builtin *builtin)
 	{
 		if (data->processes[i][0] != '\0')
 		{
-			if (push_package(&data->head, data->processes[i], builtin))
+			if (push_package(&data->head, data->processes[i], builtin, data))
 				return (1);
 		}
 		current_package = data->head;

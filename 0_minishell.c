@@ -22,8 +22,8 @@ char	**trim_spaces(t_data *data)
 	while (data->processes[i])
 	{
 		temp = data->processes[i];
-		free(data->processes[i]);
 		data->processes[i] = ft_strtrim(temp, " ");
+		free(temp);
 		i++;
 	}
 	return (data->processes);
@@ -37,7 +37,6 @@ int	prepare_packages(t_data *data, char *input)
 	data->processes = trim_spaces(data);
 	return (0);
 }
-
 
 int	handle_input(t_data *data, t_builtin *builtin)
 {
@@ -63,8 +62,23 @@ int	handle_input(t_data *data, t_builtin *builtin)
 			kill_d_str(data->processes);
 			free_packages(data);
 		}
+		free(input);
 	}
 	return (0);
+}
+
+void	free_env(t_builtin *builtin)
+{
+	t_envlist *tmp;
+
+	while(builtin->env_list != NULL)
+	{
+		free(builtin->env_list->content);
+		tmp = builtin->env_list;
+		builtin->env_list = builtin->env_list->next;
+		free(tmp);
+	}
+	free(builtin);
 }
 
 int	main(int argc, char **argv, char **envp)
@@ -77,20 +91,13 @@ int	main(int argc, char **argv, char **envp)
 		return (0);
 	builtin->env_list = NULL;
 	(void) argc;
-	// input = argv[1];
 	(void)argv;
 	g_exit_stat = 0;
 	ft_bzero(&data, sizeof(t_data));
 	data.env = envp;
 	builtin->home_path = getenv("HOME");
 	set_envlist(&data, &builtin->env_list);
-	if (handle_input(&data, builtin))
-		return (1);
+	handle_input(&data, builtin);
+	free_env(builtin);
 	return (0);
 }
-
-/*
-main = introduction of t_data & stores env & sends to->
-prompt = readline & packages vorbereiten
-process_packages = pusht die packages & setzt den pipe bool fur alle packages
-*/
