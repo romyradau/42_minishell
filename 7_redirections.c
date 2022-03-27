@@ -1,12 +1,7 @@
 #include "minishell.h"
 
-t_file	*init_redirections(void)
+int init_redirections(t_file *ret)
 {
-	t_file	*ret;
-
-	ret = malloc(sizeof(t_file));
-	if (ret == NULL)
-		return (NULL);
 	ret->in = dup(STDIN_FILENO);
 	ret->out = dup(STDOUT_FILENO);
 	ret->tmp_fd = dup(STDIN_FILENO);
@@ -17,7 +12,8 @@ t_file	*init_redirections(void)
 	ret->fd[0] = -1;
 	ret->fd[1] = -1;
 	ret->pid = -1;
-	return (ret);
+
+    return 0;
 }
 
 int	redirect_infiles(t_package *package, t_file *file)

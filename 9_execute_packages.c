@@ -74,12 +74,12 @@ void	execute_packages(char *in, t_data *data, t_builtin *bi)
 {
 	// t_file	*file;
 
-	data->file = init_redirections();
+    init_redirections(&data->file);
 	add_history(in);
 	if (check_if_builtin(data->head) && data->head->next == NULL)
-		execute_single_builtin(data->file, data, bi);
+		execute_single_builtin(&data->file, data, bi);
 	else
-		execute_function(data, bi, data->file);
+		execute_function(data, bi, &data->file);
 }
 
 /*TODO: was soll denn genau passieren wenn hier etwas schief lauft?

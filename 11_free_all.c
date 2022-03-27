@@ -39,4 +39,5 @@ void	free_packages(t_data *data)
 		data->orig_head = data->orig_head->next;
 		free(tmp);
 	}
+	data->head = data->orig_head;
 }
