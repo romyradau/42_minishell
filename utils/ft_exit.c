@@ -13,8 +13,8 @@ int ft_exit(t_package *package)
 			printf("is invalid: %s, %c\n", package->cmd_args[i], package->cmd_args[i][0]);
 			return (0);
 		}
-		else if (ft_atoi(package->cmd_args[i]) <= INT_MAX
-			|| ft_atoi(package->cmd_args[i]) >= INT_MIN)
+		else if (ft_atoi(package->cmd_args[i]) >= INT_MAX
+			|| ft_atoi(package->cmd_args[i]) <= INT_MIN)
 		{
 			printf("minishell : exit: %d : numeric argument required\n", ft_atoi(package->cmd_args[i]));
 			g_exit_stat = 255;

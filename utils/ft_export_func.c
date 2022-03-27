@@ -19,7 +19,10 @@ int simple_check(char *str)
 {
 	int index;
 
-	index = 1;
+	index = 0;
+    if (!str) {
+        return 0;
+    }
 	while (str[index] != '\0' && (str[index] == '_' || ft_isalnum(str[index])))
 	{
 		printf("str[%d] : %c\n", index, str[index]);
@@ -145,10 +148,12 @@ bool check_same_var(t_envlist **head, char *str)
 			printf("CONTENT: %s\n", tmp_list->content);
 			ft_change_var(&tmp_list->content, str);
 			printf("CONTENT: %s\n", tmp_list->content);
+            free(test_str);
 			return (same);
 		}
 		tmp_list = tmp_list->next;
 	}
+    free(test_str);
 	return (same);
 }
 

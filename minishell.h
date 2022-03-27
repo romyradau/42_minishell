@@ -102,7 +102,7 @@ typedef struct s_data
 	char				**env;
 	t_package			*head;
 	t_package			*orig_head;
-	t_file				*file;
+	t_file				file;
 }	t_data;
 
 /*====================FUNCTIONS=========*/
@@ -169,7 +169,7 @@ int			print_export(t_builtin *builtin);
 
 /*====================EXECUTION=========*/
 
-t_file		*init_redirections(void);
+int 		init_redirections(t_file *ret);
 int			links(t_file *file, t_package *current);
 int			rechts(t_file *file, t_package *current);
 void		execute_function(t_data *data, t_builtin *builtin, t_file *file);

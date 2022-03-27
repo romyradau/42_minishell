@@ -36,7 +36,7 @@ void	handle_dq(char *str, t_exp *exp, t_builtin *builtin)
 void	search_for_dollar_quotes(char *str, t_exp *exp, t_builtin *builtin)
 {
 	// exp->i = 0;
-	while (str[exp->i] != '\0')
+	while (exp->i <= exp->len && str[exp->i] != '\0')
 	{
 		if (str[exp->i] == -1)
 			handle_sq(str, exp);
@@ -52,7 +52,7 @@ void	search_for_dollar_quotes(char *str, t_exp *exp, t_builtin *builtin)
 	}
 }
 
-void	clean_expand(char	**origin, t_builtin *builtin)
+void	clean_expand(char **origin, t_builtin *builtin)
 {
 	int		i;
 	char	*tmp;

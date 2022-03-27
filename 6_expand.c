@@ -73,6 +73,7 @@ int	complex_expand(char *str, t_exp *exp, t_envlist *tmp_list)
 		tmp_list = tmp_list->next;
 	}
 	exp->i += count;
+	exp->i--;
 	return (1);
 }
 

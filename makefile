@@ -24,7 +24,7 @@ LINKED_OBJ = ./libft/*.o
 all: linked_objects $(NAME)
 
 $(NAME): $(OBJ)
-	$(CC) $(CFLAGS) -o $(NAME) $(OBJ) $(LINKED_OBJ) -lreadline 
+	$(CC) $(CFLAGS) -o $(NAME) $(OBJ) $(LINKED_OBJ) -lreadline
 	
 linked_objects: 
 	make -C ./libft
