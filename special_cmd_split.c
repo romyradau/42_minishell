@@ -92,7 +92,7 @@ char	**special_cmd_split(char const *s, char c)
 	{
 		start = ft_count(start, s, c);
 		end = ft_count_toNext(start, s, c);
-		result[i] = ft_substr(s, start, end - start + 1);
+		result[i] = ft_substr(s, start, end - start);
 		i++;
 		start = end;
 	}

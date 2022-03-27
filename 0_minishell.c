@@ -98,6 +98,6 @@ int	main(int argc, char **argv, char **envp)
 	builtin->home_path = getenv("HOME");
 	set_envlist(&data, &builtin->env_list);
 	handle_input(&data, builtin);
-	free_env(builtin);
+	// free_env(builtin);
 	return (0);
 }
