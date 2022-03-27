@@ -18,13 +18,13 @@ OBJ := $(FILES:.c=.o)
 LINKED_OBJ = ./libft/*.o
 
 %.o: %.c
-	@$(CC) -Wall -Wextra -Werror -g $(CPPFLAGS) $(INC) -fsanitize=address -o $@ -c $<
+	@$(CC) -Wall -Wextra -Werror -g $(CPPFLAGS) $(INC) -o $@ -c $<
 	@echo compiled $@
 
 all: linked_objects $(NAME)
 
 $(NAME): $(OBJ)
-	$(CC) $(CFLAGS) -o $(NAME) $(OBJ) $(LINKED_OBJ) -lreadline -fsanitize=address
+	$(CC) $(CFLAGS) -o $(NAME) $(OBJ) $(LINKED_OBJ) -lreadline
 	
 linked_objects: 
 	make -C ./libft

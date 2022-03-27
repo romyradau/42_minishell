@@ -46,7 +46,6 @@ void	execute_function(t_data *data, t_builtin *builtin, t_file *file)
 		g_exit_stat = WTERMSIG(status) + 128;
 	else
 		g_exit_stat = WEXITSTATUS(status);
-	free(file);
 }
 
 int	execute_single_builtin(t_file *file, t_data *data, t_builtin *builtin)
