@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strlcpy.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mjeyavat <mjeyavat@student.42.fr>          +#+  +:+       +#+        */
+/*   By: rschleic <rschleic@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/17 18:45:24 by mjeyavat          #+#    #+#             */
-/*   Updated: 2021/07/12 16:28:30 by mjeyavat         ###   ########.fr       */
+/*   Updated: 2022/03/26 20:02:12 by rschleic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,10 +15,8 @@
 size_t	ft_strlcpy(char *dst, const char *src, size_t dstsize)
 {
 	unsigned long	cnt;
-	unsigned long	len;
 
 	cnt = 0;
-	len = 0;
 	if ((dst == NULL) || (src == NULL))
 		return (0);
 	if (dstsize == 0)

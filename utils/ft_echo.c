@@ -19,17 +19,14 @@ int cmd_variants(char *str, const char *str2, unsigned int len)
 	if (i == len)
 		return (1);
 	return (0);
-	
 }
 
 void	ft_echo(char **output, bool flag, t_package *package)
 {
 	int i;
-	// int j;
-	// int ret;
+
 	(void) package;
 	i = 0;
-	// printf("OUTPUT in FT_ECHO: %s\n", output[0]);
 	if (!output[0])
 	{
 		return ;
@@ -47,6 +44,7 @@ void	ft_echo(char **output, bool flag, t_package *package)
 		write(STDOUT_FILENO, "\n", 1);
 	g_exit_stat = 0;
 	kill_d_str(output);
+	output = NULL;
 }
 
 int	write_to_pipe(char **output, bool flag, t_file *file)
@@ -74,19 +72,17 @@ int prep_echo(t_package *package, bool flag)
 	char	**output;
 	int		i;
 	int		j;
-	bool	put_in_pipe;
 
 	output = NULL;
 	i = 1;
 	j = 0;
-	put_in_pipe = false;
 	// package = echo_pipecase(package);
 	if (package->cmd_args[i] == NULL)
 	{
 		write(STDOUT_FILENO, "\n", 1);
 		return (0);
 	}
-	output = (char **)malloc(doublestr_len(package->cmd_args) + 2 * sizeof(char *));
+	output = ft_calloc(doublestr_len(package->cmd_args) + 2, sizeof(char *));
 	if(!output)
 		return (0);
 	while (package->cmd_args[i] != NULL && check_for_flag(package->cmd_args[i], &flag))

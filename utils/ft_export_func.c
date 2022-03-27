@@ -134,8 +134,8 @@ bool check_same_var(t_envlist **head, char *str)
 		return (same);
 	while (str[i] != '\0' && str[i] != '=')
 		i++;
-	test_str = ft_strcalloc(i+2);
-	ft_strlcpy(test_str, str, i+1);
+	test_str = ft_strcalloc(i);
+	ft_strlcpy(test_str, str, i);
 	while (tmp_list != NULL)
 	{
 		if (!ft_strncmp(tmp_list->content, test_str, ft_strlen(test_str)) && tmp_list->content[ft_strlen(test_str)] == '=')
@@ -180,7 +180,6 @@ int print_export(t_builtin *builtin)
 	t_envlist *tmp;
 	if (builtin->env_list == NULL)
 	{
-		fprintf(stderr, "HERE!\n");
 		return (0);
 	}
 	tmp = builtin->env_list;

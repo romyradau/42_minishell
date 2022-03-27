@@ -29,22 +29,14 @@ void	free_redirections(t_package	*tmp)
 
 void	free_packages(t_data *data)
 {
-	t_package	*tmp;
-	int			i;
+	t_package *tmp;
 
-	i = 0;
-	while (data->head != NULL)
+	while (data->orig_head != NULL)
 	{
-		tmp = data->head;
-		while (tmp->cmd_args && tmp->cmd_args[i] != NULL)
-		{
-			free(tmp->cmd_args[i]);
-			i++;
-		}
-		if (tmp->cmd_args)
-			free(tmp->cmd_args);
-		free_redirections(tmp);
+		kill_d_str(data->orig_head->cmd_args);
+		free_redirections(data->orig_head);
+		tmp = data->orig_head;
+		data->orig_head = data->orig_head->next;
 		free(tmp);
-		data->head = data->head->next;
 	}
 }

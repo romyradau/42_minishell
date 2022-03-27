@@ -35,7 +35,6 @@ int	aargh(char **paths, t_package *current, int i, char **envp)
 		&& (!stat(match, &s) && !S_ISDIR(s.st_mode)))
 	{
 		execve(match, current->cmd_args, envp);
-		perror("");
 		printf("miniShell: %s: %s\n", current->cmd_args[0], strerror(errno)); //TODO:error funtion
 		return (126);
 	}
@@ -72,7 +71,7 @@ int	find_path(char **paths, t_package *current, char **envp)
 	}
 }
 
-void	do_the_execution(t_package *current, char **envp)
+void	do_the_execution(t_package *current, char **envp, t_data *data)
 {
 	char	**paths;
 	int		i;
@@ -85,6 +84,7 @@ void	do_the_execution(t_package *current, char **envp)
 	if (envp[i])
 		paths = ft_split(envp[i] + 6, ':');
 	error = find_path(paths, current, envp);
-	free(paths);
+	kill_d_str(paths);
+	free_packages(data);
 	exit(error);
 }
