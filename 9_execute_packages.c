@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-void	execute_cp(t_file *file, t_data *data, t_builtin *builtin)
+void	execute_cp(t_file *file, t_data *data, t_builtin *builtin, char ***env_cpy)
 {
 	// signal(SIGQUIT, SIG_DFL);
 	signal(SIGINT, SIG_DFL);
@@ -13,14 +13,14 @@ void	execute_cp(t_file *file, t_data *data, t_builtin *builtin)
 	// close(file->infile);//TODO:protect
 	if (check_if_builtin(data->head))
 	{
-		builtin_picker(data->head, builtin);
+		builtin_picker(data->head, builtin, env_cpy);
 		exit(0);
 	}
 	else
-		do_the_execution(data->head, data->env, data);
+		do_the_execution(data->head, (*env_cpy), data);
 }
 
-void	execute_function(t_data *data, t_builtin *builtin, t_file *file)
+void	execute_function(t_data *data, t_builtin *builtin, t_file *file, char ***env_cpy)
 {
 	int	status;
 
@@ -32,7 +32,7 @@ void	execute_function(t_data *data, t_builtin *builtin, t_file *file)
 		if (file->pid == -1)
 			perror("fork");
 		if (file->pid == 0)
-			execute_cp(file, data, builtin);
+			execute_cp(file, data, builtin, env_cpy);
 		close(file->fd[1]);//TODO:protect
 		redirect_parent(file);//TODO:was wenn das schief schlagt!!!???
 		data->head = data->head->next;
@@ -48,7 +48,7 @@ void	execute_function(t_data *data, t_builtin *builtin, t_file *file)
 		g_exit_stat = WEXITSTATUS(status);
 }
 
-int	execute_single_builtin(t_file *file, t_data *data, t_builtin *builtin)
+int	execute_single_builtin(t_file *file, t_data *data, t_builtin *builtin, char ***env_cpy)
 {
 	int	error;
 
@@ -58,7 +58,7 @@ int	execute_single_builtin(t_file *file, t_data *data, t_builtin *builtin)
 		g_exit_stat = 1;
 		return (1);
 	}	
-	builtin_picker(data->head, builtin);
+	builtin_picker(data->head, builtin, env_cpy);
 	error = (
 			dup2(file->out, STDOUT_FILENO) == -1
 			|| dup2(file->in, STDIN_FILENO) == -1
@@ -69,16 +69,16 @@ int	execute_single_builtin(t_file *file, t_data *data, t_builtin *builtin)
 	return (error);
 }
 
-void	execute_packages(char *in, t_data *data, t_builtin *bi)
+void	execute_packages(char *in, t_data *data, t_builtin *bi, char ***env_cpy)
 {
 	// t_file	*file;
 
     init_redirections(&data->file);
 	add_history(in);
 	if (check_if_builtin(data->head) && data->head->next == NULL)
-		execute_single_builtin(&data->file, data, bi);
+		execute_single_builtin(&data->file, data, bi, env_cpy);
 	else
-		execute_function(data, bi, &data->file);
+		execute_function(data, bi, &data->file, env_cpy);
 }
 
 /*TODO: was soll denn genau passieren wenn hier etwas schief lauft?

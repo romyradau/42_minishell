@@ -9,6 +9,8 @@ static t_envlist *creat_node(const char *src)
 	if (!tmp)
 		return (NULL);
 	tmp->content = ft_strdup(src);
+	if (!tmp->content)
+		return (NULL);
 	if (!ft_strchr(src, '='))
 		tmp->hiden = true;
 	else
@@ -20,7 +22,7 @@ static t_envlist *creat_node(const char *src)
 int add_node(t_envlist **head, const char *src)
 {
 	t_envlist *newnode;
-	
+
 	newnode = creat_node(src);
 	if (!newnode)
 		return (0);
@@ -30,7 +32,6 @@ int add_node(t_envlist **head, const char *src)
 		(*head)->prev = newnode;
 	(*head) = newnode;
 	return (1);
-
 }
 
 int reverse_envlist(t_envlist **list)
@@ -123,7 +124,7 @@ int del_env_node(t_envlist **list, int len, t_envlist *tmp)
 	return (1);
 }
 
-int	ft_unset(t_envlist **list, const char *arg)
+int	ft_unset(t_envlist **list, const char *arg, char ***env_cpy)
 {
 	printf("UNSET runs\n");
 	t_envlist	*tmp;
@@ -148,7 +149,9 @@ int	ft_unset(t_envlist **list, const char *arg)
 		if (!ft_strncmp((const char *)tmp->content, arg, len_cont) && (len_cont == len_arg))
 		{
 			del_env_node(list, len, tmp);
-			return (1);
+			if (update_new_env(env_cpy, (*list)))
+				return (1);
+			return (0);
 		}
 		tmp = tmp->next;
 		len++;
@@ -161,7 +164,9 @@ int	ft_unset(t_envlist **list, const char *arg)
 		{
 			tmp->prev->next = NULL;
 			free(tmp);
-			return(1);
+			if (update_new_env(env_cpy, (*list)))
+				return(1);
+			return (0);
 		}
 	}
 	return (0);

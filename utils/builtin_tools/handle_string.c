@@ -42,7 +42,9 @@ void	kill_d_str(char **str)
 	len = 0;
 	i = 0;
 	if (str[len] == NULL)
+	{
 		return ;
+	}
 	while (str[len] != NULL)
 		len++;
 	while (i < len)
@@ -89,6 +91,52 @@ char *get_path(char **env, const char *search_str)
 		i++;
 	}
 	return (NULL);
+}
+
+int env_list_len(t_envlist *list)
+{
+	int i;
+
+	i = 0;
+	while (list->next != NULL)
+	{
+		i++;
+		list = list->next;
+	}
+	return (i + 1);
+}
+
+void set_new_env(char ***cpy_envp, t_envlist *env_list)
+{
+	int i;
+	int size;
+
+	size = env_list_len(env_list);
+	i = 0;
+	while (env_list->next != NULL)
+	{
+		(*cpy_envp)[i] = ft_strdup(env_list->content);
+		i++;
+		env_list = env_list->next;
+	}
+	if (env_list->next == NULL)
+	{
+		(*cpy_envp)[i] = ft_strdup(env_list->content);
+	}
+}
+
+int update_new_env(char ***cpy, t_envlist	*envlist)
+{
+	if ((*cpy) != NULL)
+	{
+		printf("%p\n", cpy);
+		kill_d_str((*cpy));
+	}
+	(*cpy) = ft_calloc(env_list_len(envlist) + 1, sizeof(char *));
+	if (!(*cpy))
+		return (0);
+	set_new_env(cpy, envlist);
+	return (1);
 }
 
 char **cut_from_path(t_data *data, t_package *package)
