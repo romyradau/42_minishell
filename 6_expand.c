@@ -36,7 +36,9 @@ int	end_of_env_var(t_exp *exp, char *str, int *count, int *end_of_var)
 {
 	if (str[exp->i] == '?' && str[exp->i + 1] == '\0')
 	{
-		get_exit_status(g_exit_stat, exp->fd[1], exp);
+		printf("exit:	%d\n", g_exit_stat);
+		get_exit_status(g_exit_stat, exp->fd, exp);
+		// exp->i++;
 		return (1);
 	}
 	(*count) = 0;

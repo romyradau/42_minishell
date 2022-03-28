@@ -1,90 +1,88 @@
 #include "minishell.h"
 
-void	execute_cp(t_file *file, t_data *data, t_builtin *builtin, char ***env_cpy)
+void	execute_cp(t_file *file, t_data *data, t_builtin *bi, char ***env_cpy)
 {
-	// signal(SIGQUIT, SIG_DFL);
 	signal(SIGINT, SIG_DFL);
-	close(file->fd[0]);//TODO:protect
+	close(file->fd[0]);
 	if (links(file, data->head) == 1)
 		exit(1);
 	if (rechts(file, data->head) == 1)
 		exit(1);
-	close (file->fd[1]);//TODO:protect
-	// close(file->infile);//TODO:protect
+	close (file->fd[1]);
+	// close(file->infile)?? brauchts das vlt noch?
 	if (check_if_builtin(data->head))
 	{
-		builtin_picker(data->head, builtin, env_cpy);
+		builtin_picker(data->head, bi, env_cpy);
 		exit(0);
 	}
 	else
 		do_the_execution(data->head, (*env_cpy), data);
 }
 
-void	execute_function(t_data *data, t_builtin *builtin, t_file *file, char ***env_cpy)
+void	execute(t_data *data, t_builtin *bi, t_file *file, char ***env_cpy)
 {
 	int	status;
 
 	while (data->head)
 	{
 		if (pipe(file->fd) == -1)
+		{
 			perror("pipe");
+			break ;
+		}
 		file->pid = fork();
 		if (file->pid == -1)
+		{
 			perror("fork");
+			break ;
+		}
 		if (file->pid == 0)
-			execute_cp(file, data, builtin, env_cpy);
-		close(file->fd[1]);//TODO:protect
-		redirect_parent(file);//TODO:was wenn das schief schlagt!!!???
+			execute_cp(file, data, bi, env_cpy);
+		close(file->fd[1]);
+		redirect_parent(file);
 		data->head = data->head->next;
 	}
 	close(file->tmp_fd);//TODO:protect
 	close(file->in);//TODO:protect
 	close(file->out);//TODO:protect
-	waitpid(file->pid, &status, 0);
-	while (wait(NULL) > 0);
+	waitpid(file->pid, &status, 0);//auf den zuletzt ausgefuhrten prozess
+	while (wait(NULL) > 0);// uaf irgenein child
 	if (WIFSIGNALED(status))
 		g_exit_stat = WTERMSIG(status) + 128;
 	else
 		g_exit_stat = WEXITSTATUS(status);
 }
 
-int	execute_single_builtin(t_file *file, t_data *data, t_builtin *builtin, char ***env_cpy)
+void	single(t_file *file, t_data *data, t_builtin *builtin, char ***env_cpy)
 {
-	int	error;
+	int error;
 
-	links(file, data->head);
+	close(file->in);
+	close(file->tmp_fd);
 	if (rechts(file, data->head) == 1)
 	{
 		g_exit_stat = 1;
-		return (1);
-	}	
+		return ;
+	}
 	builtin_picker(data->head, builtin, env_cpy);
-	error = (
-			dup2(file->out, STDOUT_FILENO) == -1
-			|| dup2(file->in, STDIN_FILENO) == -1
-			|| close(file->tmp_fd) == -1
-			|| close(file->in) == -1
-			|| close(file->out) == -1
-			);
-	return (error);
+	if (data->head->out_redirection[0] != NOTHING)
+	{
+		error = (
+				dup2(file->out, STDOUT_FILENO) == -1
+				|| close(file->out) == -1
+				);
+		if (error == 1)
+			perror("minishell");
+	}
 }
 
-void	execute_packages(char *in, t_data *data, t_builtin *bi, char ***env_cpy)
+void	exec_packages(char *in, t_data *data, t_builtin *bi, char ***env_cpy)
 {
-	// t_file	*file;
 
-    init_redirections(&data->file);
+	init_redirections(&data->file);
 	add_history(in);
 	if (check_if_builtin(data->head) && data->head->next == NULL)
-		execute_single_builtin(&data->file, data, bi, env_cpy);
+		single(&data->file, data, bi, env_cpy);
 	else
-		execute_function(data, bi, &data->file, env_cpy);
+		execute(data, bi, &data->file, env_cpy);
 }
-
-/*TODO: was soll denn genau passieren wenn hier etwas schief lauft?
-wie soll man die ganzen 
-dup
-close
-pipe 
-errors handlen??
-*/
