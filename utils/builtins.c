@@ -42,7 +42,7 @@ int check_for_flag(char *str, bool *flag) //TODO-> muss noch für andere flags a
 	return (0);
 }
 
-int	builtin_picker(t_package *package, t_builtin *builtin)
+int	builtin_picker(t_package *package, t_builtin *builtin, char ***env_cpy)
 {
 	bool	flag;
 	int		exit_state;
@@ -63,7 +63,7 @@ int	builtin_picker(t_package *package, t_builtin *builtin)
 	else if (cmd_variants(package->cmd_args[0], "env", ft_strlen("env")))
 		exit_state = print_env(builtin);
 	else if (cmd_variants(package->cmd_args[0], "unset", ft_strlen("unset")))
-		exit_state = ft_unset(&builtin->env_list, package->cmd_args[1]);
+		exit_state = ft_unset(&builtin->env_list, package->cmd_args[1], env_cpy);
 	else if (cmd_variants(package->cmd_args[0], "export", ft_strlen("export")))
 	{
 		if (package->cmd_args[1] == NULL)
@@ -71,7 +71,7 @@ int	builtin_picker(t_package *package, t_builtin *builtin)
 			print_export(builtin);
 			return (1);
 		}
-		exit_state = ft_export(&builtin->env_list, package);
+		exit_state = ft_export(&builtin->env_list, package, env_cpy);
 	}
 	else if (!ft_strncmp(package->cmd_args[0], "exit", ft_strlen("exit")))
 	{

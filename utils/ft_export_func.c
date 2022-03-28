@@ -157,7 +157,7 @@ bool check_same_var(t_envlist **head, char *str)
 	return (same);
 }
 
-int ft_export(t_envlist **head, t_package *package)
+int ft_export(t_envlist **head, t_package *package, char ***env_cpy)
 {
 	char *str;
 
@@ -167,7 +167,10 @@ int ft_export(t_envlist **head, t_package *package)
 	if (str == NULL)
 		return (0);
 	if (add_node(head, str))
-			return (1);
+	{
+		update_new_env(env_cpy, (*head));
+		return (1);
+	}
 	if (ft_isdigit(package->cmd_args[1][0]))
 	{
 		//TODO: in write
@@ -197,21 +200,3 @@ int print_export(t_builtin *builtin)
 	}
 	return (1);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

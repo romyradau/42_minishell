@@ -110,10 +110,10 @@ typedef struct s_data
 void		init_lex(char **input);
 char		*cut_quot_sequence(char *str, char c);
 char		*get_path(char **env, const char *search_str);
-int			builtin_picker(t_package *package, t_builtin *builtin);
+int			builtin_picker(t_package *package, t_builtin *builtin, char ***env_cpy);
 void		btn_handler(int sig);
 int			prep_signal(t_data *data);
-int			handle_input(t_data *data, t_builtin *builtin);
+int			handle_input(t_data *data, t_builtin *builtin, char ***env_cpy);
 char		**special_pipe_split(char const *s, char c);
 char		**special_cmd_split(char const *s, char c);
 void		kill_d_str(char **str);
@@ -143,7 +143,6 @@ int			complex_expand(char *str, t_exp *exp, t_envlist *tmp_list);
 int			end_of_env_var(t_exp *exp, char *str, int *count, int *end_of_var);
 void		write_in_pipe(char *str, t_exp *exp);
 
-
 /*====================BUILTIN==========*/
 
 int			check_quot_sequence(char *str, char c, bool *q);
@@ -160,24 +159,26 @@ int			prep_cd(t_package *package, t_builtin *builtin);
 int			call_pwd(int fd);
 int			set_envlist(t_data *data, t_envlist **list);
 int			print_env(t_builtin *builtin);
-int			ft_unset(t_envlist **list, const char *arg);
+int			ft_unset(t_envlist **list, const char *arg, char ***env_cpy);
 char		**cut_from_path(t_data *data, t_package *package);
 int			add_node(t_envlist **head, const char *src);
-int			ft_export(t_envlist **head, t_package *package);
+int			ft_export(t_envlist **head, t_package *package, char ***env_cpy);
 int			expand_function(char *str, t_exp *exp, t_builtin *builtin);
 int			print_export(t_builtin *builtin);
-
+void		set_new_env(char ***cpy_envp, t_envlist *env_list);
+int			env_list_len(t_envlist *list);
+int			update_new_env(char ***cpy, t_envlist *envlist);
 /*====================EXECUTION=========*/
 
 int 		init_redirections(t_file *ret);
 int			links(t_file *file, t_package *current);
 int			rechts(t_file *file, t_package *current);
-void		execute_function(t_data *data, t_builtin *builtin, t_file *file);
+void		execute_function(t_data *data, t_builtin *builtin, t_file *file, char ***env_cpy);
 void		sig_in_heredoc(int sig);
 void		set_attr(void);
 void		unset_attr(t_package *package);
 void		set_termios(void);
-void		execute_packages(char *input, t_data *data, t_builtin *builtin);
+void		execute_packages(char *input, t_data *data, t_builtin *builtin, char ***env_cpy);
 int			redirect_parent(t_file *file);
 void		do_the_execution(t_package *current, char **envp, t_data *data);
 void		open_heredoc(char *limiter, t_file *file);
