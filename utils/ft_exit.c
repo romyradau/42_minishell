@@ -9,6 +9,15 @@ static int	ft_exit_valid(t_package *pack, int i)
 			pack->cmd_args[i][0]);
 		return (0);
 	}
+	else if ((pack->cmd_args[i][0] == '-'
+		&& pack->cmd_args[i][1] == '-')
+		|| (pack->cmd_args[i][0] == '+'
+		&& pack->cmd_args[i][1] == '+'))
+	{
+		printf("minishel : exit: %s: numeric argument required\n",
+			pack->cmd_args[i]);
+		exit(255);
+	}
 	else
 		return (1);
 }
@@ -19,6 +28,11 @@ static void	handle_exit(t_package *pack)
 		exit(0);
 	else if (pack->cmd_args[2] == NULL)
 		exit(ft_atoi(pack->cmd_args[1]));
+	else if (pack->cmd_args[2] != NULL)
+	{
+		printf("bash: exit: too many arguments\n");
+		g_exit_stat = 1;
+	}
 }
 
 int	ft_exit(t_package *pack)
@@ -41,11 +55,7 @@ int	ft_exit(t_package *pack)
 		i++;
 	}
 	handle_exit(pack);
-	if (pack->cmd_args[2] != NULL)
-	{
-		printf("bash: exit: too many arguments\n");
-		g_exit_stat = 1;
+	if (g_exit_stat == 1)
 		return (0);
-	}
 	return (1);
 }
