@@ -39,6 +39,8 @@ void	kill_d_str(char **str)
 	int		len;
 	int		i;
 
+	if (!str)
+		return ;
 	len = 0;
 	i = 0;
 	if (str[len] == NULL)

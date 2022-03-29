@@ -55,7 +55,6 @@ int	do_the_expansion(t_envlist *tmp_list, t_exp *exp, int end_of_var)
 	free(expand_content);
 	(void)end_of_var;
 	//exp->i = end_of_var;
-	printf("exp->i show me	%d\n", exp->i);
 	return (0);
 }
 
@@ -83,21 +82,17 @@ int	complex_expand(char *str, t_exp *exp, t_envlist *tmp_list)
 
 	if (str[exp->i] == '?' && str[exp->i + 1] == '\0')
 	{
-		printf("exit: %d\n", g_exit_stat);
 		get_exit_status(g_exit_stat, exp->fd[1], exp);
 		return (1);
 	}
 	count = 0;
 	end_of_var = exp->i;
-	printf("str[end_of_var]	%c\n", str[end_of_var]);
 	while (str[end_of_var] != '\0'
 		&& (ft_isalnum(str[end_of_var]) || str[end_of_var] == '_'))
 	{
-		printf("lala\n");
 		end_of_var++;
 		count++;
 	}
-	printf("ende str[end_of_var]	%c\n", str[end_of_var]);
 	while (tmp_list != NULL && count)
 	{
 		if (!ft_strncmp(tmp_list->content, &str[exp->i], str_envlen(tmp_list->content, '='))&& (str_envlen(tmp_list->content, '=') == count))

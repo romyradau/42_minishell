@@ -58,15 +58,20 @@ int	handle_input(t_data *data, t_builtin *builtin, char ***env_cpy)//this is the
 			// 	printf("INPUT WAS A PATH\n");
 			// 	return (0);
 			// }
-			if (prepare_packages(data, input))
+			if(!input)
 				return (1);
-			if (data->processes[0][0] != 0 && !process_packages(data, builtin))
+			if (!prepare_packages(data, input))
 			{
-				unset_attr(data->head);
-				exec_packages(input, data, builtin, env_cpy);
+				if (data->processes[0][0] != 0 && !process_packages(data, builtin))
+				{
+					unset_attr(data->head);
+					exec_packages(input, data, builtin, env_cpy);
+				}
+				free_packages(data);
 			}
+			else
+				add_history(input);
 			kill_d_str(data->processes);
-			free_packages(data);
 		}
 		free(input);
 	}
