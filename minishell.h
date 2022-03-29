@@ -136,7 +136,7 @@ void		skip_sq(char *s, int *i);
 void		skip_dq(char *s, int *i);
 int			trim_and_expand(char **res, t_builtin *builtin);
 void		clean_expand(char	**origin, t_builtin *builtin);
-void		get_exit_status(int n, int *fd, t_exp *exp);
+void		get_exit_status(int n, int fd, t_exp *exp);
 void		ft_sigchild(int sig);
 int			manage_red_files(t_package **newNode, char *current, t_red *red);
 int			complex_expand(char *str, t_exp *exp, t_envlist *tmp_list);
