@@ -1,27 +1,16 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   6_expand.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: rschleic <rschleic@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/03/29 19:51:03 by rschleic          #+#    #+#             */
+/*   Updated: 2022/03/29 20:04:09 by rschleic         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
-
-void	get_exit_status(int n, int fd, t_exp *exp)
-{
-	char	c;
-
-	if (n < 0)
-	{
-		n = n * (-1);
-		write(fd, "-", 1);
-		if (n == -2147483648)
-		{
-			write(fd, "2", 1);
-			n = 147483648;
-		}
-	}
-	if (n / 10 > 0)
-	{
-		get_exit_status((n / 10), fd, exp);
-		exp->len++;
-	}
-	c = (n % 10) + '0';
-	write(fd, &c, 1);
-}
 
 char	*simple_expand(const char *s, int c)
 {
@@ -54,29 +43,11 @@ int	do_the_expansion(t_envlist *tmp_list, t_exp *exp, int end_of_var)
 	write(exp->fd[1], expand_content, ft_strlen(expand_content));
 	free(expand_content);
 	(void)end_of_var;
-	//exp->i = end_of_var;
 	return (0);
 }
 
-int	str_envlen(char *str, unsigned char c)
+int	find_end_of_var(t_exp *exp, char *str, int *count, int *end_of_var)
 {
-	int	i;
-
-	i = 0;
-	while (str && str[i] != c)
-		i++;
-	return (i);
-}
-
-int	complex_expand(char *str, t_exp *exp, t_envlist *tmp_list)
-{
-	int		end_of_var;
-	int		count;
-
-	if (str[exp->i + 1] != ' ')
-		exp->i++;
-	else
-		return (0);
 	if (str[exp->i] == -1 || str[exp->i] == -2)
 		return (1);
 
@@ -85,22 +56,38 @@ int	complex_expand(char *str, t_exp *exp, t_envlist *tmp_list)
 		get_exit_status(g_exit_stat, exp->fd[1], exp);
 		return (1);
 	}
-	count = 0;
-	end_of_var = exp->i;
-	while (str[end_of_var] != '\0'
-		&& (ft_isalnum(str[end_of_var]) || str[end_of_var] == '_'))
+	(*count) = 0;
+	(*end_of_var) = exp->i;
+	while (str[(*end_of_var)] != '\0'
+		&& (ft_isalnum(str[(*end_of_var)]) || str[(*end_of_var)] == '_'))
 	{
-		end_of_var++;
-		count++;
+		(*end_of_var)++;
+		(*count)++;
 	}
-	while (tmp_list != NULL && count)
+	return (0);
+}
+
+int	complex_expand(char *str, t_exp *exp, t_envlist *list)
+{
+	int		end_of_var;
+	int		count;
+
+	if (str[exp->i + 1] != ' ')
+		exp->i++;
+	else
+		return (0);
+	if (find_end_of_var(exp, str, &count, &end_of_var) == 1)
+		return (1);
+
+	while (list != NULL && count)
 	{
-		if (!ft_strncmp(tmp_list->content, &str[exp->i], str_envlen(tmp_list->content, '='))&& (str_envlen(tmp_list->content, '=') == count))
+		if (!ft_strncmp(list->content, &str[exp->i], xyz(list->content, '='))
+			&& (xyz(list->content, '=') == count))
 		{
-			if (do_the_expansion(tmp_list, exp, end_of_var))
+			if (do_the_expansion(list, exp, end_of_var))
 				return (0);
 		}
-		tmp_list = tmp_list->next;
+		list = list->next;
 	}
 	exp->i += count;
 	if (!count)

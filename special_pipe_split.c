@@ -1,14 +1,41 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   special_pipe_split.c                               :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: rschleic <rschleic@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/03/29 22:21:15 by rschleic          #+#    #+#             */
+/*   Updated: 2022/03/29 22:29:36 by rschleic         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
-static	int	ft_find_wcount(char const *s, char c)
+int	taste_of_my_lips(const char *s, char c, int *i, int *cnt)
+{
+	while (s[(*i)] == c)
+	{
+		(*i)++;
+		if (s[(*i)] == c)
+			return ((*cnt));
+	}
+	if (s[(*i)] != '\0')
+		(*cnt)++;
+	return (-1);
+}
+
+int	ft_find_pipe(char const *s, char c)
 {
 	int		i;
-	int	dq = 1;
-	int	sq = 1;
-	int	cnt;
+	int		dq;
+	int		sq;
+	int		cnt;
 
 	i = 0;
 	cnt = 1;
+	dq = 1;
+	sq = 1;
 	while (s[i] != '\0')
 	{
 		while ((s[i] != c || sq == -1 || dq == -1) && s[i] != '\0')
@@ -19,14 +46,8 @@ static	int	ft_find_wcount(char const *s, char c)
 				sq *= -1;
 			i++;
 		}
-		while (s[i] == c)
-		{
-			i++;
-			if (s[i] == c)
-				return (cnt);
-		}
-		if (s[i] != '\0')
-			cnt++;
+		if (taste_of_my_lips(s, c, &i, &cnt) != -1)
+			return (cnt);
 	}
 	if (sq == -1 || dq == -1)
 		return (-1);
@@ -36,9 +57,12 @@ static	int	ft_find_wcount(char const *s, char c)
 static int	ft_count(int cnt, char const *str, char c)
 {
 	int	i;
-	int	dq = 1;
-	int	sq = 1;
+	int	dq;
+	int	sq;
 
+
+	sq = 1;
+	dq = 1;
 	i = cnt;
 	while ((str[i] == c) && (str[i] != '\0') && sq == 1 && dq == 1)
 	{
@@ -52,12 +76,14 @@ static int	ft_count(int cnt, char const *str, char c)
 	return (cnt);
 }
 
-static int	ft_count_toNext(int cnt, char const *str, char c)
+static int	ft_count_tonext(int cnt, char const *str, char c)
 {
 	int	i;
-	int	dq = 1;
-	int	sq = 1;
+	int	dq;
+	int	sq;
 
+	dq = 1;
+	sq = 1;
 	i = cnt;
 	while (((str[i] != c) && (str[i] != '\0')) || (sq == -1 || dq == -1))
 	{
@@ -78,20 +104,15 @@ char	**special_pipe_split(char const *s, char c)
 	int		end;
 	int		i;
 
-	if (!s)
+	if (helper(s, &start, &i, c) == -1)
 		return (NULL);
-	start = 0;
-	i = 0;
-	int	numberStrings = ft_find_wcount(s, c);
-	if (numberStrings == -1)
-		return (NULL);
-	result = (char **)malloc((numberStrings + 1) * sizeof(char *));
+	result = (char **)malloc((helper(s, &start, &i, c) + 1) * sizeof(char *));
 	if (!result)
 		return (NULL);
-	while (i < (int)ft_find_wcount(s, c) && ft_find_wcount(s, c) != 0)
+	while (i < (int)ft_find_pipe(s, c) && ft_find_pipe(s, c) != 0)
 	{
 		start = ft_count(start, s, c);
-		end = ft_count_toNext(start, s, c);
+		end = ft_count_tonext(start, s, c);
 		result[i] = ft_substr(s, start, end - start);
 		i++;
 		start = end;
