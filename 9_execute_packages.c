@@ -6,7 +6,7 @@
 /*   By: rschleic <rschleic@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/29 19:59:53 by rschleic          #+#    #+#             */
-/*   Updated: 2022/03/29 20:05:24 by rschleic         ###   ########.fr       */
+/*   Updated: 2022/03/29 23:29:29 by rschleic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,8 @@ void	get_error_code(t_file *file)
 	close(file->out);
 	waitpid(file->pid, &status, 0);
 	while (wait(NULL) > 0);
+	// while (wait(NULL) > 0)
+	// 	wait(NULL);
 	if (WIFSIGNALED(status))
 		g_exit_stat = WTERMSIG(status) + 128;
 	else
@@ -94,7 +96,6 @@ void	single(t_file *file, t_data *data, t_builtin *builtin, char ***env_cpy)
 
 void	exec_packages(char *in, t_data *data, t_builtin *bi, char ***env_cpy)
 {
-
 	init_redirections(&data->file);
 	add_history(in);
 	if (check_if_builtin(data->head) && data->head->next == NULL)

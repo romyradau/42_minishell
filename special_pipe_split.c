@@ -6,7 +6,7 @@
 /*   By: rschleic <rschleic@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/29 22:21:15 by rschleic          #+#    #+#             */
-/*   Updated: 2022/03/29 22:29:36 by rschleic         ###   ########.fr       */
+/*   Updated: 2022/03/29 23:12:27 by rschleic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,6 @@ static int	ft_count(int cnt, char const *str, char c)
 	int	i;
 	int	dq;
 	int	sq;
-
 
 	sq = 1;
 	dq = 1;

@@ -1,3 +1,14 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   list_del_tools.c                                   :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: rschleic <rschleic@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/03/29 22:48:22 by rschleic          #+#    #+#             */
+/*   Updated: 2022/03/30 00:04:08 by rschleic         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "../../minishell.h"
 
@@ -6,7 +17,7 @@ int	del_env_node(t_envlist **list, int len, t_envlist *tmp)
 	if (len == 0)
 	{
 		*list = (*list)->next;
-		ft_bzero(tmp->content, ft_strlen(tmp->content));
+		free(tmp->content);
 		free(tmp);
 		tmp = NULL;
 		if ((*list) != NULL)
@@ -15,28 +26,28 @@ int	del_env_node(t_envlist **list, int len, t_envlist *tmp)
 	}
 	tmp->prev->next = tmp->next;
 	tmp->next->prev = tmp->prev;
-	ft_bzero(tmp->content, ft_strlen(tmp->content));
+	free(tmp->content);
 	free(tmp);
 	tmp = NULL;
 	return (1);
 }
 
-int	del_lasnode(t_envlist **l, const char *arg, char ***env_cpy, t_envlist *tmp)
+int	dlasnode(t_envlist **l, const char *a, char ***env_cpy, t_envlist *t)
 {
 	int	len_cont;
 	int	len_arg;
 
 	len_cont = 0;
 	len_arg = 0;
-	if (tmp->next == NULL)
+	if (t->next == NULL)
 	{
-		len_cont = ft_equel_check(tmp->content, '=');
-		len_arg = (int)ft_strlen(arg);
-		if (!ft_strncmp((const char *)tmp->content, arg, len_cont)
+		len_cont = ft_equel_check(t->content, '=');
+		len_arg = (int)ft_strlen(a);
+		if (!ft_strncmp((const char *)t->content, a, len_cont)
 			&& (len_cont == len_arg))
 		{
-			tmp->prev->next = NULL;
-			free(tmp);
+			t->prev->next = NULL;
+			free(t);
 			if (update_new_env(env_cpy, (*l)))
 				return (1);
 			return (0);

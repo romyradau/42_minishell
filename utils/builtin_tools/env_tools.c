@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   env_tools.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: rschleic <rschleic@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/03/29 22:48:05 by rschleic          #+#    #+#             */
+/*   Updated: 2022/03/30 00:11:02 by rschleic         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../minishell.h"
 
 char	*get_path(char **env_cpy, const char *search_str)
@@ -40,9 +52,7 @@ int	env_list_len(t_envlist *list)
 void	set_new_env(char ***cpy_envp, t_envlist *env_list)
 {
 	int	i;
-	int	size;
 
-	size = env_list_len(env_list);
 	i = 0;
 	while (env_list->next != NULL)
 	{

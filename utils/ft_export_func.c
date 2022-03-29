@@ -1,19 +1,16 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_export_func.c                                   :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: rschleic <rschleic@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/03/29 22:46:52 by rschleic          #+#    #+#             */
+/*   Updated: 2022/03/29 22:47:00 by rschleic         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "../minishell.h"
-
-//TODO: Extra Function aussagen dies das merk dia 
-/*        bsp                       *
- *   bash-3.2$ export !Hallo        *
- *   bash: !Hallo: event not found  *
-*/
-
-//TODO: export + sing rules
-/*
-	*rule 1: darf nicht vorne sein (handelt) oder mitten drin (muss noch gehandelt werden)
-	*rule 2: darf nur vor dem isgleich sign aber muss weg gemacht werden
-	*rule 3: darf nach dem istgleich sein.
-	*rule 4: der scheis muss in einer while loop laufen mon amie
-*/
 
 int	simple_check(char *str)
 {
@@ -23,10 +20,7 @@ int	simple_check(char *str)
 	if (!str)
 		return (0);
 	while (str[index] != '\0' && (str[index] == '_' || ft_isalnum(str[index])))
-	{
-		// printf("str[%d] : %c\n", index, str[index]);
 		index++;
-	}
 	if (index == (int)ft_strlen(str))
 		return (1);
 	return (0);
@@ -57,7 +51,7 @@ char	*input_checker(char *str)
 
 int	ft_change_var(char **str1, char *str2)
 {
-	char		*tmp;
+	char	*tmp;
 
 	tmp = (*str1);
 	(*str1) = ft_strdup(str2);

@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   builtins.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: rschleic <rschleic@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/03/29 22:44:37 by rschleic          #+#    #+#             */
+/*   Updated: 2022/03/30 00:10:26 by rschleic         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../minishell.h"
 
 int	check_if_builtin(t_package *head)
@@ -50,7 +62,7 @@ int	check_for_non_env(t_package *package, t_builtin *builtin, bool flag)
 	else if (cmd_variants(package->cmd_args[0], "cd", ft_strlen("cd")))
 		g_exit_stat = prep_cd(package, builtin);
 	else if (cmd_variants(package->cmd_args[0], "pwd", ft_strlen("pwd")))
-		g_exit_stat = call_pwd(1);
+		g_exit_stat = call_pwd();
 	return (g_exit_stat);
 }
 
@@ -72,27 +84,24 @@ int	check_for_env_func(t_package *package, t_builtin *blin, char ***env_cpy)
 	return (g_exit_stat);
 }
 
-int	builtin_picker(t_package *package, t_builtin *builtin, char ***env_cpy)
+int	builtin_picker(t_package *p, t_builtin *builtin, char ***env_cpy)
 {
 	bool	flag;
-	bool	nl;
 	int		exit_state;
 
 	flag = false;
-	nl = false;
 	exit_state = 0;
-	if (!package)
+	if (!p)
 		return (0);
-	exit_state = check_for_non_env(package, builtin, flag);
-	exit_state = check_for_env_func(package, builtin, env_cpy);
-	if (!ft_strncmp(package->cmd_args[0], "exit", ft_strlen("exit")))
+	exit_state = check_for_non_env(p, builtin, flag);
+	exit_state = check_for_env_func(p, builtin, env_cpy);
+	if (!ft_strncmp(p->cmd_args[0], "exit", ft_strlen("exit")))
 	{
-		ft_exit(package);
+		ft_exit(p);
 	}
 	if (exit_state == 1)
 		g_exit_stat = 0;
 	else
 		g_exit_stat = 1;
-	printf("exit_state %d\n", exit_state);
 	return (0);
 }

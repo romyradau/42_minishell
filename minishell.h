@@ -6,7 +6,7 @@
 /*   By: rschleic <rschleic@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/29 20:07:57 by rschleic          #+#    #+#             */
-/*   Updated: 2022/03/29 21:34:11 by rschleic         ###   ########.fr       */
+/*   Updated: 2022/03/29 23:05:10 by rschleic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,7 +122,7 @@ typedef struct s_data
 void		init_lex(char **input);
 char		*cut_quot_sequence(char *str, char c);
 char		*get_path(char **env_cpy, const char *search_str);
-int			builtin_picker(t_package *package, t_builtin *builtin, char ***env_cpy);
+int			builtin_picker(t_package *p, t_builtin *builtin, char ***env_cpy);
 void		btn_handler(int sig);
 int			prep_signal(t_data *data);
 int			handle_input(t_data *data, t_builtin *builtin, char ***env_cpy);
@@ -177,11 +177,11 @@ int			check_for_flag(char *str, bool *flag);
 void		ft_echo(char **output, bool flag, t_package *package);
 int			prep_echo(t_package *package, bool flag);
 int			prep_cd(t_package *package, t_builtin *builtin);
-int			call_pwd();
+int			call_pwd(void);
 int			ft_equel_check(char *str, int c);
 int			set_envlist(t_data *data, t_envlist **list);
 int			del_env_node(t_envlist **list, int len, t_envlist *tmp);
-int			del_lasnode(t_envlist **l, const char *arg, char ***env_cpy, t_envlist *tmp);
+int			dlasnode(t_envlist **l, const char *a, char ***e_cpy, t_envlist *t);
 int			print_env(t_builtin *builtin);
 int			ft_unset(t_envlist **list, const char *arg, char ***env_cpy);
 int			add_node(t_envlist **head, const char *src);

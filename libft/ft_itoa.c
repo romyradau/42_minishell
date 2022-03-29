@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   ft_itoa.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mjeyavat <mjeyavat@student.42.fr>          +#+  +:+       +#+        */
+/*   By: rschleic <rschleic@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/06 17:35:03 by mjeyavat          #+#    #+#             */
-/*   Updated: 2021/07/21 11:32:52 by mjeyavat         ###   ########.fr       */
+/*   Updated: 2022/03/29 23:15:02 by rschleic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-static int	number_lenght (int n)
+static int	number_lenght(int n)
 {
 	int	len;
 
@@ -30,7 +30,7 @@ static int	number_lenght (int n)
 	return (len);
 }
 
-static char	*ft_setToNegativ(char *result, int f)
+static char	*ft_settonegativ(char *result, int f)
 {
 	if (f)
 	{
@@ -74,5 +74,5 @@ char	*ft_itoa(int n)
 		return (result);
 	result[len] = '\0';
 	result = ft_fill(result, len, n);
-	return (ft_setToNegativ(result, f));
+	return (ft_settonegativ(result, f));
 }

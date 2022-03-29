@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   export_tools.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: rschleic <rschleic@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/03/29 22:48:11 by rschleic          #+#    #+#             */
+/*   Updated: 2022/03/29 23:22:11 by rschleic         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../minishell.h"
 
 static char	*empty_case(int index, char *tmp, int fd[], char *str_final)
@@ -31,7 +43,7 @@ char	*exp_special_case(char *str, int end)
 	tmp = NULL;
 	str_final = NULL;
 	if (end <= 1)
-		return (NULL); 
+		return (NULL);
 	if (str[(end - 1)] == '+')
 	{
 		pipe(fd);

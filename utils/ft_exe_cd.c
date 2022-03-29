@@ -1,3 +1,14 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_exe_cd.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: rschleic <rschleic@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/03/29 22:45:17 by rschleic          #+#    #+#             */
+/*   Updated: 2022/03/29 23:21:51 by rschleic         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "../minishell.h"
 
@@ -6,7 +17,7 @@ int	call_pwd(void)
 	char	cur_dir[10000];
 
 	if (!getcwd(cur_dir, sizeof(cur_dir)))
-		return (0);	
+		return (0);
 	ft_putstr_fd(cur_dir, STDOUT_FILENO);
 	write(STDOUT_FILENO, "\n", 1);
 	return (1);

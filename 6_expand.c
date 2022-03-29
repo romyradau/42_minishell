@@ -6,7 +6,7 @@
 /*   By: rschleic <rschleic@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/29 19:51:03 by rschleic          #+#    #+#             */
-/*   Updated: 2022/03/29 20:04:09 by rschleic         ###   ########.fr       */
+/*   Updated: 2022/03/30 00:04:51 by rschleic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,9 +16,7 @@ char	*simple_expand(const char *s, int c)
 {
 	char			ch;
 	char			*str;
-	unsigned int	cnt;
 
-	cnt = 0;
 	ch = (char) c;
 	str = (char *)s;
 	while (*str != ch)
@@ -50,7 +48,6 @@ int	find_end_of_var(t_exp *exp, char *str, int *count, int *end_of_var)
 {
 	if (str[exp->i] == -1 || str[exp->i] == -2)
 		return (1);
-
 	if (str[exp->i] == '?' && str[exp->i + 1] == '\0')
 	{
 		get_exit_status(g_exit_stat, exp->fd[1], exp);
@@ -78,7 +75,6 @@ int	complex_expand(char *str, t_exp *exp, t_envlist *list)
 		return (0);
 	if (find_end_of_var(exp, str, &count, &end_of_var) == 1)
 		return (1);
-
 	while (list != NULL && count)
 	{
 		if (!ft_strncmp(list->content, &str[exp->i], xyz(list->content, '='))
@@ -94,7 +90,6 @@ int	complex_expand(char *str, t_exp *exp, t_envlist *list)
 		write(1, "$", 1);
 	return (1);
 }
-
 
 int	expand_function(char *str, t_exp *exp, t_builtin *builtin)
 {

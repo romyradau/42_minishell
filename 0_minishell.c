@@ -6,7 +6,7 @@
 /*   By: rschleic <rschleic@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/29 19:15:57 by rschleic          #+#    #+#             */
-/*   Updated: 2022/03/29 20:09:42 by rschleic         ###   ########.fr       */
+/*   Updated: 2022/03/29 23:49:14 by rschleic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,12 +87,12 @@ int	main(int argc, char **argv, char **envp)
 	g_exit_stat = 0;
 	ft_bzero(&data, sizeof(t_data));
 	data.env = envp;
-	builtin->home_path = getenv("HOME");
 	set_envlist(&data, &builtin->env_list);
 	cpy_env = ft_calloc(env_list_len(builtin->env_list) + 2, sizeof(char *));
 	if (!cpy_env)
 		return (0);
 	set_new_env(&cpy_env, builtin->env_list);
+	builtin->home_path = get_path(cpy_env, "HOME");
 	handle_input(&data, builtin, &cpy_env);
 	free_env(builtin);
 	kill_d_str(cpy_env);

@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strjoin.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mjeyavat <mjeyavat@student.42.fr>          +#+  +:+       +#+        */
+/*   By: rschleic <rschleic@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/29 12:24:14 by mjeyavat          #+#    #+#             */
-/*   Updated: 2021/07/13 18:05:48 by mjeyavat         ###   ########.fr       */
+/*   Updated: 2022/03/29 23:19:58 by rschleic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-static int	ft_strSet(char const *s1, char *dest, unsigned int i)
+static int	ft_strset(char const *s1, char *dest, unsigned int i)
 {
 	while (s1[i] != '\0')
 	{
@@ -22,7 +22,7 @@ static int	ft_strSet(char const *s1, char *dest, unsigned int i)
 	return (i);
 }
 
-static char	*ft_strSet_second(char const *s2, char *dest, size_t i, size_t i2)
+static char	*ft_strset_second(char const *s2, char *dest, size_t i, size_t i2)
 {
 	while (s2[i2] != '\0')
 	{
@@ -52,8 +52,8 @@ char	*ft_strjoin(char const *s1, char const *s2)
 		if (!cat_str)
 			return (0);
 		ft_bzero(cat_str, 0);
-		cnt = ft_strSet(s1, cat_str, cnt);
-		return (ft_strSet_second(s2, cat_str, cnt, cnt2));
+		cnt = ft_strset(s1, cat_str, cnt);
+		return (ft_strset_second(s2, cat_str, cnt, cnt2));
 	}
 	return (cat_str);
 }

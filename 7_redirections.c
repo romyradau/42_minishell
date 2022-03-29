@@ -6,7 +6,7 @@
 /*   By: rschleic <rschleic@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/29 19:59:37 by rschleic          #+#    #+#             */
-/*   Updated: 2022/03/29 19:59:37 by rschleic         ###   ########.fr       */
+/*   Updated: 2022/03/29 22:51:13 by rschleic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,6 @@ void	init_redirections(t_file *ret)
 	ret->fd[0] = -1;
 	ret->fd[1] = -1;
 	ret->pid = -1;
-
 }
 
 int	redirect_infiles(t_package *package, t_file *file)

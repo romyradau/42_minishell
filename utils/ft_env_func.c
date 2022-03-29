@@ -1,3 +1,14 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_env_func.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: rschleic <rschleic@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/03/29 22:45:04 by rschleic          #+#    #+#             */
+/*   Updated: 2022/03/29 23:04:51 by rschleic         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "../minishell.h"
 
@@ -58,7 +69,7 @@ int	ft_unset(t_envlist **list, const char *arg, char ***env_cpy)
 		tmp = tmp->next;
 		len++;
 	}
-	if (del_lasnode(list, arg, env_cpy, tmp))
+	if (dlasnode(list, arg, env_cpy, tmp))
 		return (g_exit_stat = 0);
 	return (0);
 }
