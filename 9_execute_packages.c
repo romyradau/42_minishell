@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   9_execute_packages.c                               :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: rschleic <rschleic@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/03/29 19:59:53 by rschleic          #+#    #+#             */
+/*   Updated: 2022/03/29 20:05:24 by rschleic         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 void	execute_cp(t_file *file, t_data *data, t_builtin *bi, char ***env_cpy)
@@ -9,7 +21,6 @@ void	execute_cp(t_file *file, t_data *data, t_builtin *bi, char ***env_cpy)
 	if (rechts(file, data->head) == 1)
 		exit(1);
 	close (file->fd[1]);
-	// close(file->infile)?? brauchts das vlt noch?
 	if (check_if_builtin(data->head))
 	{
 		builtin_picker(data->head, bi, env_cpy);
@@ -19,10 +30,23 @@ void	execute_cp(t_file *file, t_data *data, t_builtin *bi, char ***env_cpy)
 		do_the_execution(data->head, (*env_cpy), data);
 }
 
-void	execute(t_data *data, t_builtin *bi, t_file *file, char ***env_cpy)
+void	get_error_code(t_file *file)
 {
 	int	status;
 
+	close(file->tmp_fd);
+	close(file->in);
+	close(file->out);
+	waitpid(file->pid, &status, 0);
+	while (wait(NULL) > 0);
+	if (WIFSIGNALED(status))
+		g_exit_stat = WTERMSIG(status) + 128;
+	else
+		g_exit_stat = WEXITSTATUS(status);
+}
+
+void	execute(t_data *data, t_builtin *bi, t_file *file, char ***env_cpy)
+{
 	while (data->head)
 	{
 		if (pipe(file->fd) == -1)
@@ -42,20 +66,12 @@ void	execute(t_data *data, t_builtin *bi, t_file *file, char ***env_cpy)
 		redirect_parent(file);
 		data->head = data->head->next;
 	}
-	close(file->tmp_fd);//TODO:protect
-	close(file->in);//TODO:protect
-	close(file->out);//TODO:protect
-	waitpid(file->pid, &status, 0);//auf den zuletzt ausgefuhrten prozess
-	while (wait(NULL) > 0);// uaf irgenein child
-	if (WIFSIGNALED(status))
-		g_exit_stat = WTERMSIG(status) + 128;
-	else
-		g_exit_stat = WEXITSTATUS(status);
+	get_error_code(file);
 }
 
 void	single(t_file *file, t_data *data, t_builtin *builtin, char ***env_cpy)
 {
-	int error;
+	int	error;
 
 	close(file->in);
 	close(file->tmp_fd);

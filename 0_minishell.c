@@ -1,3 +1,14 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   0_minishell.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: rschleic <rschleic@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/03/29 19:15:57 by rschleic          #+#    #+#             */
+/*   Updated: 2022/03/29 20:09:42 by rschleic         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "minishell.h"
 
@@ -13,22 +24,6 @@ int	empty_input(char *input)
 	return (1);
 }
 
-char	**trim_spaces(t_data *data)
-{
-	char	*temp;
-	int		i;
-
-	i = 0;
-	while (data->processes[i])
-	{
-		temp = data->processes[i];
-		data->processes[i] = ft_strtrim(temp, " ");
-		free(temp);
-		i++;
-	}
-	return (data->processes);
-}
-
 int	prepare_packages(t_data *data, char *input)
 {
 	data->processes = special_pipe_split(input, '|');
@@ -38,7 +33,17 @@ int	prepare_packages(t_data *data, char *input)
 	return (0);
 }
 
-int	handle_input(t_data *data, t_builtin *builtin, char ***env_cpy)//this is the new path wicht execv will execute (MOHAN)
+void	do_shell(t_data *data, t_builtin *builtin, char *input, char ***envcp)
+{
+	if (data->processes[0][0] != 0 && !parsepackages(data, builtin))
+	{
+		unset_attr(data->head);
+		exec_packages(input, data, builtin, envcp);
+	}
+	free_packages(data);
+}
+
+int	handle_input(t_data *data, t_builtin *builtin, char ***env_cpy)
 {
 	char	*input;
 	char	*user;
@@ -52,22 +57,11 @@ int	handle_input(t_data *data, t_builtin *builtin, char ***env_cpy)//this is the
 		errno = 0;
 		if (empty_input(input))
 		{
-			//to see if the input was a dirrect path to a command by mohan
-			// if (access(input, F_OK) == 0)
-			// {
-			// 	printf("INPUT WAS A PATH\n");
-			// 	return (0);
-			// }
-			if(!input)
+			if (!input)
 				return (1);
 			if (!prepare_packages(data, input))
 			{
-				if (data->processes[0][0] != 0 && !process_packages(data, builtin))
-				{
-					unset_attr(data->head);
-					exec_packages(input, data, builtin, env_cpy);
-				}
-				free_packages(data);
+				do_shell(data, builtin, input, env_cpy);
 			}
 			else
 				add_history(input);
@@ -78,25 +72,11 @@ int	handle_input(t_data *data, t_builtin *builtin, char ***env_cpy)//this is the
 	return (0);
 }
 
-void	free_env(t_builtin *builtin)
-{
-	t_envlist *tmp;
-
-	while(builtin->env_list != NULL)
-	{
-		free(builtin->env_list->content);
-		tmp = builtin->env_list;
-		builtin->env_list = builtin->env_list->next;
-		free(tmp);
-	}
-	free(builtin);
-}
-
 int	main(int argc, char **argv, char **envp)
 {
 	t_data		data;
 	t_builtin	*builtin;
-	char		**cpy_env;// nicht wegmachen neuer ENV VARAIBLE (MOHAN)
+	char		**cpy_env;
 
 	builtin = (t_builtin *)malloc(sizeof(t_builtin));
 	if (!builtin)
@@ -112,7 +92,7 @@ int	main(int argc, char **argv, char **envp)
 	cpy_env = ft_calloc(env_list_len(builtin->env_list) + 2, sizeof(char *));
 	if (!cpy_env)
 		return (0);
-	set_new_env(&cpy_env, builtin->env_list); //to set the new path, the t_envlist will update this.
+	set_new_env(&cpy_env, builtin->env_list);
 	handle_input(&data, builtin, &cpy_env);
 	free_env(builtin);
 	kill_d_str(cpy_env);

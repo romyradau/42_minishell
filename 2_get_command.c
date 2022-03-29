@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   2_get_command.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: rschleic <rschleic@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/03/29 19:16:25 by rschleic          #+#    #+#             */
+/*   Updated: 2022/03/29 19:16:27 by rschleic         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 char	*filename(char *current, t_red **red)
@@ -65,15 +77,6 @@ int	in_or_out(char *current, int *i)
 		return (NOTHING);
 }
 
-int	char_compare(char *current, t_red **red, int *i)
-{
-	if (double_quotes(current, red, i))
-		(*i)++;
-	if (single_quotes(current, red, i))
-		(*i)++;
-	return (in_or_out(current, i));
-}
-
 int	manage_red_files(t_package **newNode, char *current, t_red *red)
 {
 	red->i = 0;
@@ -103,10 +106,25 @@ int	manage_red_files(t_package **newNode, char *current, t_red *red)
 	return (1);
 }
 
-/*
-fill_package = speichert den command & seine cmd_args
-get_command = macht platz fur den command und die reds und die files
-manage_red_files = sucht nach der aktuellen red schickt weiter zu
-store_redirection = speichert die red an
-store_filename = speichert den dazugehörigen filename ab
-*/
+char	*get_command(t_package **newNode, char *current)
+{
+	t_red	red;
+
+	ft_bzero(&red, sizeof(t_red));
+	red.left_over = ft_calloc(ft_strlen(current) + 1, sizeof(char));
+	if (allocate_redirections(newNode, current) == -1)
+	{
+		free(red.left_over);
+		return (NULL);
+	}
+	if (manage_red_files(newNode, current, &red) == 0)
+	{
+		free(red.left_over);
+		return (NULL);
+	}
+	(*newNode)->in_redirection[red.in] = NOTHING;
+	(*newNode)->out_redirection[red.out] = NOTHING;
+	(*newNode)->infiles[red.in] = NULL;
+	(*newNode)->outfiles[red.out] = NULL;
+	return (red.left_over);
+}

@@ -1,8 +1,9 @@
 NAME = minishell
 
 FILES = 0_minishell.c 1_process_package.c 2_get_command.c 3_allocate_redirections.c 4_quote_rules.c \
-		5_clean_expand.c 6_complex_exp.c 6_expand.c 7_redirections.c 8_heredoc.c 9_execute_packages.c 10_do_the_execution.c 11_free_all.c \
-		special_pipe_split.c special_cmd_split.c print_stuff.c \
+		5_clean_expand.c 6_expand.c 7_redirections.c 8_heredoc.c 9_execute_packages.c \
+		10_do_the_execution.c 11_free_all.c 12_get_exit_status.c\
+		special_pipe_split.c special_cmd_split.c helpers.c\
 		./utils/sig_handls.c ./utils/builtins.c ./utils/ft_echo.c ./utils/ft_exe_cd.c ./utils/ft_exit.c \
 		./utils/ft_env_func.c ./utils/ft_export_func.c ./utils/builtin_tools/handle_qouts.c ./utils/builtin_tools/handle_string.c 
 

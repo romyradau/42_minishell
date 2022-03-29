@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   10_do_the_execution.c                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: rschleic <rschleic@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/03/29 20:05:39 by rschleic          #+#    #+#             */
+/*   Updated: 2022/03/29 20:05:48 by rschleic         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 void	dup2_protection(int *fd, int aim)
@@ -19,7 +31,6 @@ void	redirect_parent(t_file *file)
 	if (g_exit_stat == 1)
 		perror("minishell");
 }
-
 
 int	join_path(char **paths, t_package *current, int i, char **envp)
 {

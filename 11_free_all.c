@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   11_free_all.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: rschleic <rschleic@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/03/29 20:06:07 by rschleic          #+#    #+#             */
+/*   Updated: 2022/03/29 20:06:15 by rschleic         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 void	free_redirections(t_package	*tmp)
@@ -29,7 +41,7 @@ void	free_redirections(t_package	*tmp)
 
 void	free_packages(t_data *data)
 {
-	t_package *tmp;
+	t_package	*tmp;
 
 	while (data->orig_head != NULL)
 	{
@@ -40,4 +52,18 @@ void	free_packages(t_data *data)
 		free(tmp);
 	}
 	data->head = data->orig_head;
+}
+
+void	free_env(t_builtin *builtin)
+{
+	t_envlist	*tmp;
+
+	while (builtin->env_list != NULL)
+	{
+		free(builtin->env_list->content);
+		tmp = builtin->env_list;
+		builtin->env_list = builtin->env_list->next;
+		free(tmp);
+	}
+	free(builtin);
 }

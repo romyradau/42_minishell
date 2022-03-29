@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   minishell.h                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: rschleic <rschleic@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/03/29 20:07:57 by rschleic          #+#    #+#             */
+/*   Updated: 2022/03/29 21:34:11 by rschleic         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
@@ -110,7 +122,7 @@ typedef struct s_data
 void		init_lex(char **input);
 char		*cut_quot_sequence(char *str, char c);
 char		*get_path(char **env, const char *search_str);
-int			builtin_picker(t_package *package, t_builtin *builtin, char ***env_cpy);
+int			builtin_picker(t_package *p, t_builtin *builtin, char ***env_cpy);
 void		btn_handler(int sig);
 int			prep_signal(t_data *data);
 int			handle_input(t_data *data, t_builtin *builtin, char ***env_cpy);
@@ -120,10 +132,17 @@ void		kill_d_str(char **str);
 int			check_if_builtin(t_package *package);
 void		free_packages(t_data *data);
 int			prepare_packages(t_data *data, char *input);
+void		free_env(t_builtin *builtin);
+char		**trim_spaces(t_data *data);
+int			in_or_out(char *current, int *i);
+int			help(char const *s, int *start, int *i, char c);
+int			helper(char const *s, int *start, int *i, char c);
+int			ft_find_cmd(char const *s, char c);
+int			ft_find_pipe(char const *s, char c);
 
 /*====================PARSING=========*/
 
-int			process_packages(t_data *data, t_builtin *builtin);
+int			parsepackages(t_data *data, t_builtin *builtin);
 int			fill_package(t_package **new, char *current, t_builtin *builtin);
 t_package	*print_package_normal(t_package *head, t_builtin *builtin);
 t_package	*print_package_builtin(t_package *head, t_builtin *builtin);
@@ -168,6 +187,7 @@ int			print_export(t_builtin *builtin);
 void		set_new_env(char ***cpy_envp, t_envlist *env_list);
 int			env_list_len(t_envlist *list);
 int			update_new_env(char ***cpy, t_envlist *envlist);
+
 /*====================EXECUTION=========*/
 
 void		init_redirections(t_file *ret);
@@ -178,7 +198,7 @@ void		sig_in_heredoc(int sig);
 void		set_attr(void);
 void		unset_attr(t_package *package);
 void		set_termios(void);
-void		exec_packages(char *in, t_data *data, t_builtin *bi, char ***env_cpy);
+void		exec_packages(char *in, t_data *data, t_builtin *bi, char ***envcp);
 void		redirect_parent(t_file *file);
 void		do_the_execution(t_package *current, char **envp, t_data *data);
 void		open_heredoc(char *limiter, t_file *file);
@@ -189,7 +209,7 @@ void		dup2_protection(int *fd, int aim);
 int			allocate_redirections(t_package **newNode, char *current_process);
 bool		is_metachar(char c);
 int			char_compare(char *current_process, t_red **red, int *i);
-int			str_envlen(char *str, unsigned char c);
+int			xyz(char *str, unsigned char c);
 int			ft_exit(t_package *package);
 
 #endif

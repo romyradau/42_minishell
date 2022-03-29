@@ -1,32 +1,38 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   1_process_package.c                                :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: rschleic <rschleic@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/03/29 19:02:19 by rschleic          #+#    #+#             */
+/*   Updated: 2022/03/29 19:11:39 by rschleic         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
-char	*get_command(t_package **newNode, char *current)
+char	**trim_spaces(t_data *data)
 {
-	t_red	red;
+	char	*temp;
+	int		i;
 
-	ft_bzero(&red, sizeof(t_red));
-	red.left_over = ft_calloc(ft_strlen(current) + 1, sizeof(char));
-	if (allocate_redirections(newNode, current) == -1)
+	i = 0;
+	while (data->processes[i])
 	{
-		free(red.left_over);
-		return (NULL);
+		temp = data->processes[i];
+		data->processes[i] = ft_strtrim(temp, " ");
+		free(temp);
+		i++;
 	}
-	if (manage_red_files(newNode, current, &red) == 0)
-	{
-		free(red.left_over);
-		return (NULL);
-	}
-	(*newNode)->in_redirection[red.in] = NOTHING;
-	(*newNode)->out_redirection[red.out] = NOTHING;
-	(*newNode)->infiles[red.in] = NULL;
-	(*newNode)->outfiles[red.out] = NULL;
-	return (red.left_over);
+	return (data->processes);
 }
 
 int	fill_package(t_package **new, char *current, t_builtin *builtin)
 {
 	char	*full_cmd;
 	char	*red_left_over;
+
 	red_left_over = get_command(new, current);
 	full_cmd = ft_strtrim(red_left_over, " ");
 	free(red_left_over);
@@ -42,7 +48,27 @@ int	fill_package(t_package **new, char *current, t_builtin *builtin)
 		return (0);
 }
 
-int	push_package(t_package **head, char *current_process, t_builtin *builtin, t_data *data)
+int	prep_push(t_package **head, t_package **last, t_data *data, t_package **new)
+{
+	if (*head == NULL)
+	{
+		*head = (*new);
+		data->orig_head = *head;
+		(*head)->next = NULL;
+		return (0);
+	}
+	else
+	{
+		while ((*last)->next != NULL)
+			(*last) = (*last)->next;
+		(*last)->next = (*new);
+		(*new)->next = NULL;
+		return (0);
+	}
+	return (1);
+}
+
+int	push_package(t_package **head, char *curr, t_builtin *builtin, t_data *data)
 {
 	t_package	*new;
 	t_package	*last;
@@ -51,31 +77,18 @@ int	push_package(t_package **head, char *current_process, t_builtin *builtin, t_
 	if (new == NULL)
 		return (1);
 	ft_bzero(new, sizeof(t_package));
-	if (fill_package(&new, current_process, builtin))
+	if (fill_package(&new, curr, builtin))
 	{
 		last = *head;
-		if (*head == NULL)
-		{
-			*head = new;
-			data->orig_head = *head;
-			(*head)->next = NULL;
+		if (!prep_push(head, &last, data, &new))
 			return (0);
-		}
-		else
-		{
-			while (last->next != NULL)
-				last = last->next;
-			last->next = new;
-			new->next = NULL;
-			return (0);
-		}
 	}
 	else
 		free(new);
 	return (1);
 }
 
-int	process_packages(t_data *data, t_builtin *builtin)
+int	parsepackages(t_data *data, t_builtin *builtin)
 {
 	t_package	*current_package;
 	int			i;
