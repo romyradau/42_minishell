@@ -44,7 +44,7 @@ void	search_for_dollar_quotes(char *str, t_exp *exp, t_builtin *builtin)
 			handle_dq(str, exp, builtin);
 		else if (str[exp->i] == '$')
 		{
-			if (expand_function(str, exp, builtin) == 1 && str[exp->i] != '$')
+			if (expand_function(str, exp, builtin) == 0 && str[exp->i] != '$')
 				write_in_pipe(str, exp);
 		}
 		else if (str[exp->i] != '$')
@@ -77,4 +77,3 @@ void	clean_expand(char **origin, t_builtin *builtin)
 		i++;
 	}
 }
-//theoretisch kann man noch $$ als ID handlen...

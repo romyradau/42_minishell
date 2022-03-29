@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-int init_redirections(t_file *ret)
+void	init_redirections(t_file *ret)
 {
 	ret->in = dup(STDIN_FILENO);
 	ret->out = dup(STDOUT_FILENO);
@@ -13,7 +13,6 @@ int init_redirections(t_file *ret)
 	ret->fd[1] = -1;
 	ret->pid = -1;
 
-    return 0;
 }
 
 int	redirect_infiles(t_package *package, t_file *file)
@@ -52,10 +51,7 @@ int	links(t_file *file, t_package *current)
 		if (redirect_infiles(current, file) == 1)
 			return (1);
 	}
-	g_exit_stat = (
-			dup2(file->tmp_fd, STDIN_FILENO) == -1
-			|| close(file->tmp_fd) == -1
-			);
+	dup2_protection(&file->tmp_fd, STDIN_FILENO);
 	return (g_exit_stat);
 }
 

@@ -6,21 +6,22 @@ void	dup2_protection(int *fd, int aim)
 			dup2((*fd), aim) == -1
 			|| close ((*fd)) == -1
 			);
+	if (g_exit_stat == 1)
+		perror("minishell");
 }
 
-int	redirect_parent(t_file *file)
+void	redirect_parent(t_file *file)
 {
-	int	error;
-
-	error = (
+	g_exit_stat = (
 			dup2(file->fd[0], file->tmp_fd) == -1
 			|| close(file->fd[0]) == -1
 			);
-	return (error);
+	if (g_exit_stat == 1)
+		perror("minishell");
 }
-//was wenn das schief schlagt?
 
-int	aargh(char **paths, t_package *current, int i, char **envp)
+
+int	join_path(char **paths, t_package *current, int i, char **envp)
 {
 	char		*match;
 	char		*tmp_match;
@@ -35,7 +36,7 @@ int	aargh(char **paths, t_package *current, int i, char **envp)
 		&& (!stat(match, &s) && !S_ISDIR(s.st_mode)))
 	{
 		execve(match, current->cmd_args, envp);
-		printf("miniShell: %s: %s\n", current->cmd_args[0], strerror(errno)); //TODO:error funtion
+		perror("minishell");
 		return (126);
 	}
 	free(match);
@@ -60,13 +61,13 @@ int	find_path(char **paths, t_package *current, char **envp)
 		i = 0;
 		while (paths && paths[i])
 		{
-			if (aargh(paths, current, i, envp) == 1)
+			if (join_path(paths, current, i, envp) == 1)
 				return (1);
-			else if (aargh(paths, current, i, envp) == 126)
+			else if (join_path(paths, current, i, envp) == 126)
 				return (126);
 			i++;
 		}
-		printf("miniShell: %s: %s\n", current->cmd_args[0], strerror(errno)); //TODO:error funtion
+		printf("minishell: %s: command not found\n", current->cmd_args[0]);
 		return (127);
 	}
 }

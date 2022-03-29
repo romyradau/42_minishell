@@ -40,8 +40,8 @@ int	prepare_packages(t_data *data, char *input)
 
 int	handle_input(t_data *data, t_builtin *builtin, char ***env_cpy)//this is the new path wicht execv will execute (MOHAN)
 {
-	char	*user;
 	char	*input;
+	char	*user;
 
 	user = "\e[0;36mminishell@rschleic&mjeyavat\033[0m>";
 	signal(SIGQUIT, SIG_IGN);
@@ -63,7 +63,7 @@ int	handle_input(t_data *data, t_builtin *builtin, char ***env_cpy)//this is the
 			if (data->processes[0][0] != 0 && !process_packages(data, builtin))
 			{
 				unset_attr(data->head);
-				execute_packages(input, data, builtin, env_cpy);
+				exec_packages(input, data, builtin, env_cpy);
 			}
 			kill_d_str(data->processes);
 			free_packages(data);
