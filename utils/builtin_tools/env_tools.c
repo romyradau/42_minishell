@@ -1,6 +1,6 @@
 #include "../../minishell.h"
 
-char	*get_path(char **env, const char *search_str)
+char	*get_path(char **env_cpy, const char *search_str)
 {
 	int		start_len;
 	int		i;
@@ -8,14 +8,15 @@ char	*get_path(char **env, const char *search_str)
 
 	start_len = 0;
 	i = 0;
-	while (env[i] != NULL)
+	path = NULL;
+	while (env_cpy[i] != NULL)
 	{
-		if (!ft_strncmp(env[i], search_str, ft_strlen(search_str)))
+		if (!ft_strncmp(env_cpy[i], search_str, ft_strlen(search_str)))
 		{
-			while (env[i][start_len] != '=')
+			while (env_cpy[i][start_len] != '=')
 				start_len++;
 			start_len++;
-			path = ft_strdup(&env[i][start_len]);
+			path = ft_strdup(&env_cpy[i][start_len]);
 			return (path);
 		}
 		i++;

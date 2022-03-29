@@ -109,7 +109,7 @@ typedef struct s_data
 
 void		init_lex(char **input);
 char		*cut_quot_sequence(char *str, char c);
-char		*get_path(char **env, const char *search_str);
+char		*get_path(char **env_cpy, const char *search_str);
 int			builtin_picker(t_package *package, t_builtin *builtin, char ***env_cpy);
 void		btn_handler(int sig);
 int			prep_signal(t_data *data);
