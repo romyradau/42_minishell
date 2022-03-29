@@ -24,19 +24,19 @@ void	handle_dq(char *str, t_exp *exp, t_builtin *builtin)
 			write_in_pipe(str, exp);
 		if (str[exp->i] == '$')
 		{
-			if (expand_function(str, exp, builtin) == 0 && str[exp->i] != -2)
+			if (expand_function(str, exp, builtin) == 1)
 			{
+				printf("XX\n");
 				write_in_pipe(str, exp);
 			}
-		}
+		}	
 	}
 	exp->i++;
 }
 
 void	search_for_dollar_quotes(char *str, t_exp *exp, t_builtin *builtin)
 {
-	// exp->i = 0;
-	while (exp->i <= exp->len && str[exp->i] != '\0')
+	while (str[exp->i] != '\0')
 	{
 		if (str[exp->i] == -1)
 			handle_sq(str, exp);
@@ -44,15 +44,20 @@ void	search_for_dollar_quotes(char *str, t_exp *exp, t_builtin *builtin)
 			handle_dq(str, exp, builtin);
 		else if (str[exp->i] == '$')
 		{
-			if (expand_function(str, exp, builtin) == 0 && str[exp->i] != '$')
+			printf("exp->i	%d\n", exp->i);
+			if (expand_function(str, exp, builtin) == 1)
+			{
+				printf("\nhere\n");
 				write_in_pipe(str, exp);
+			}
 		}
 		else if (str[exp->i] != '$')
 			write_in_pipe(str, exp);
+		// printf("str[exp->i]	%c\n", str[exp->i]);
 	}
 }
 
-void	clean_expand(char **origin, t_builtin *builtin)
+void	clean_expand(char	**origin, t_builtin *builtin)
 {
 	int		i;
 	char	*tmp;
@@ -64,11 +69,11 @@ void	clean_expand(char **origin, t_builtin *builtin)
 	{
 		if (pipe(exp.fd) == -1)
 			write(2, "Error: tmp_pipe creation unsuccessfull\n", 40);
-		exp.len = 0;
 		exp.i = 0;
+		exp.len = 0;
 		search_for_dollar_quotes(origin[i], &exp, builtin);
 		tmp = origin[i];
-		origin[i] = ft_calloc(exp.len + 1, sizeof(char));
+		origin[i] = ft_strcalloc(exp.len + 1);
 		if (exp.len)
 			read(exp.fd[0], origin[i], exp.len);
 		close(exp.fd[0]);
