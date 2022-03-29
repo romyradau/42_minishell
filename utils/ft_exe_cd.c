@@ -1,10 +1,10 @@
 
 #include "../minishell.h"
 
-int call_pwd(int fd)
+int	call_pwd(void)
 {
-	char cur_dir[10000];
-	(void)fd;
+	char	cur_dir[10000];
+
 	if (!getcwd(cur_dir, sizeof(cur_dir)))
 		return (0);	
 	ft_putstr_fd(cur_dir, STDOUT_FILENO);
@@ -12,11 +12,21 @@ int call_pwd(int fd)
 	return (1);
 }
 
-int prep_cd(t_package *package, t_builtin *builtin)
+static int	check_dir(t_package *package, int i)
 {
+	if (chdir(package->cmd_args[i]) != 0)
+	{
+		printf("cd: %s:  no such file or directory\n", package->cmd_args[1]);
+		g_exit_stat = 1;
+		return (0);
+	}
+	return (1);
+}
 
+int	prep_cd(t_package *package, t_builtin *builtin)
+{
 	int		i;
-	
+
 	i = 1;
 	if (package->cmd_args[i] == NULL)
 	{
@@ -24,7 +34,8 @@ int prep_cd(t_package *package, t_builtin *builtin)
 			return (0);
 		return (1);
 	}
-	if (!ft_strncmp(package->cmd_args[i], "..", 2) || !ft_strncmp(package->cmd_args[i], "-", 1))
+	if (!ft_strncmp(package->cmd_args[i], "..", 2)
+		|| !ft_strncmp(package->cmd_args[i], "-", 1))
 	{
 		if (chdir("..") != 0)
 			return (0);
@@ -32,12 +43,8 @@ int prep_cd(t_package *package, t_builtin *builtin)
 	}
 	else if (ft_strncmp(package->cmd_args[i], "..", 2))
 	{
-		if (chdir(package->cmd_args[i]) != 0)
-		{
-			printf("cd: %s:  no such file or directory\n", package->cmd_args[1]);
-			g_exit_stat = 1;
+		if (check_dir(package, i) == 0)
 			return (0);
-		}
 		return (1);
 	}
 	return (1);

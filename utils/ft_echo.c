@@ -1,14 +1,13 @@
 
 #include "../minishell.h"
 
-int cmd_variants(char *str, const char *str2, unsigned int len)
+int	cmd_variants(char *str, const char *str2, unsigned int len)
 {
-	unsigned int i;
+	unsigned int	i;
 
 	i = 0;
 	while (str[i] && (i <= len))
 	{
-
 		if (str[i] == str2[i])
 			i++;
 		else if (str[i] == ft_toupper(str2[i]))
@@ -23,7 +22,7 @@ int cmd_variants(char *str, const char *str2, unsigned int len)
 
 void	ft_echo(char **output, bool flag, t_package *package)
 {
-	int i;
+	int	i;
 
 	(void) package;
 	i = 0;
@@ -31,12 +30,10 @@ void	ft_echo(char **output, bool flag, t_package *package)
 	{
 		return ;
 	}
-	while (output[i] && output[i][0] != 10)
+	while (output[i])
 	{	
-
-		// printf("OUTPUT in FT_ECHO: %s\n", output[i]);
 		ft_putstr_fd(output[i], STDOUT_FILENO);
-		if (output[i+1] != NULL)
+		if (output[i + 1] != NULL)
 			write(STDOUT_FILENO, " ", 1);
 		i++;
 	}
@@ -47,27 +44,25 @@ void	ft_echo(char **output, bool flag, t_package *package)
 	output = NULL;
 }
 
-int	write_to_pipe(char **output, bool flag, t_file *file)
+int	check_if_empty(t_package *package, int i)
 {
-	int j;
-
-	j = 0;
-	(void)file;
-	// if (pipe(file) == -1)
-	// 	return (0);
-	while (output[j])
+	if (package->cmd_args[i] == NULL)
 	{
-		write(STDOUT_FILENO, output[j], ft_strlen(output[j]));
-		j++;
-	}
-	if (!flag)
 		write(STDOUT_FILENO, "\n", 1);
-	kill_d_str(output);
-	return (1);
-
+		g_exit_stat = 0;
+		return (1);
+	}
+	else if (package->cmd_args[i] != NULL
+		&& !ft_strncmp(package->cmd_args[i], "-n", ft_strlen("-n"))
+		&& package->cmd_args[i + 1] == NULL)
+	{
+		g_exit_stat = 0;
+		return (1);
+	}
+	return (0);
 }
 
-int prep_echo(t_package *package, bool flag)
+int	prep_echo(t_package *package, bool flag)
 {
 	char	**output;
 	int		i;
@@ -76,35 +71,20 @@ int prep_echo(t_package *package, bool flag)
 	output = NULL;
 	i = 1;
 	j = 0;
-	// package = echo_pipecase(package);
-	if (package->cmd_args[i] == NULL)
-	{
-		write(STDOUT_FILENO, "\n", 1);
+	if (check_if_empty(package, i) == 1)
 		return (0);
-	}
-	output = ft_calloc(doublestr_len(package->cmd_args) + 2, sizeof(char *));
-	if(!output)
+	output = ft_calloc(doublestr_len(package->cmd_args) + 1, sizeof(char *));
+	if (!output)
 		return (0);
-	while (package->cmd_args[i] != NULL && check_for_flag(package->cmd_args[i], &flag))
+	while (package->cmd_args[i] != NULL
+		&& check_for_flag(package->cmd_args[i], &flag))
 		i++;
 	while (package->cmd_args[i] != NULL)
 	{
-		// printf("HERE!\n");
-		if (!package->cmd_args[i])
-		{
-			// printf("HERE IF!\n");
-			printf("\n");//wird das benotigt?
-			return (1);
-		}
-		// printf("i: %d\n",i);
 		output[j] = ft_strdup(package->cmd_args[i]);
-		// printf("i: %d\n",i);
-		// printf("j: %d\n", j);
 		j++;
 		i++;
 	}
-	if (!flag)
-		output[j] = ft_strdup("\n");
 	ft_echo(output, flag, package);
 	return (1);
 }
