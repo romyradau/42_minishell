@@ -6,7 +6,7 @@
 /*   By: rschleic <rschleic@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/29 19:59:53 by rschleic          #+#    #+#             */
-/*   Updated: 2022/03/29 23:29:29 by rschleic         ###   ########.fr       */
+/*   Updated: 2022/03/30 14:23:20 by rschleic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,9 +38,8 @@ void	get_error_code(t_file *file)
 	close(file->in);
 	close(file->out);
 	waitpid(file->pid, &status, 0);
-	while (wait(NULL) > 0);
-	// while (wait(NULL) > 0)
-	// 	wait(NULL);
+	while (wait(NULL) > 0)
+		continue ;
 	if (WIFSIGNALED(status))
 		g_exit_stat = WTERMSIG(status) + 128;
 	else
